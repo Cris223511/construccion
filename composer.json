@@ -1,0 +1,6 @@
+{
+    "require": {
+        "barcode-bakery/barcode-common": ">=7",
+        "barcode-bakery/barcode-1d": ">=7"
+    }
+}
