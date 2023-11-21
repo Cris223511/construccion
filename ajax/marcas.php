@@ -70,7 +70,7 @@ if (!isset($_SESSION["nombre"])) {
 				$fecha_inicio = $_GET["fecha_inicio"];
 				$fecha_fin = $_GET["fecha_fin"];
 
-				if ($cargo == "superadmin" || $cargo == "admin") {
+				if ($cargo == "superadmin") {
 					if ($fecha_inicio == "" && $fecha_fin == "") {
 						$rspta = $marcas->listar();
 					} else {
@@ -143,7 +143,7 @@ if (!isset($_SESSION["nombre"])) {
 				break;
 
 				// case 'selectMarcas':
-				// 	if ($cargo == "superadmin" || $cargo == "admin") {
+				// 	if ($cargo == "superadmin") {
 				// 		$rspta = $marcas->listar();
 				// 	} else {
 				// 		$rspta = $marcas->listarPorUsuario($idusuario);

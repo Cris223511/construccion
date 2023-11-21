@@ -39,7 +39,7 @@ if (!isset($_SESSION["nombre"])) {
     $idusuario = $_SESSION["idusuario"];
     $cargo = $_SESSION["cargo"];
 
-    if ($cargo == "superadmin" || $cargo == "admin") {
+    if ($cargo == "superadmin") {
       $rspta = $proveedores->listarFechaNormal();
     } else {
       $rspta = $proveedores->listarFechaNormalPorUsuario($idusuario);

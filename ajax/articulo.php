@@ -32,7 +32,6 @@ if (!isset($_SESSION["nombre"])) {
 		$idlocal = isset($_POST["idlocal"]) ? limpiarCadena($_POST["idlocal"]) : "";
 		$idmarca = isset($_POST["idmarca"]) ? limpiarCadena($_POST["idmarca"]) : "";
 		$idmedida = isset($_POST["idmedida"]) ? limpiarCadena($_POST["idmedida"]) : "";
-		$idtipo = isset($_POST["idtipo"]) ? limpiarCadena($_POST["idtipo"]) : "";
 		$codigo = isset($_POST["codigo"]) ? limpiarCadena($_POST["codigo"]) : "";
 		$codigo_producto = isset($_POST["codigo_producto"]) ? limpiarCadena($_POST["codigo_producto"]) : "";
 		$nombre = isset($_POST["nombre"]) ? limpiarCadena($_POST["nombre"]) : "";
@@ -64,7 +63,7 @@ if (!isset($_SESSION["nombre"])) {
 					} else if ($codigoExiste && $codigo != "") {
 						echo "El código de barra del producto que ha ingresado ya existe.";
 					} else {
-						$rspta = $articulo->insertar($idusuario, $idcategoria, $idlocal, $idmarca, $idmedida, $idtipo, $codigo, $codigo_producto, $nombre, $stock, $stock_minimo, $descripcion, $peso, $casillero, $imagen);
+						$rspta = $articulo->insertar($idusuario, $idcategoria, $idlocal, $idmarca, $idmedida, $codigo, $codigo_producto, $nombre, $stock, $stock_minimo, $descripcion, $peso, $casillero, $imagen);
 						echo $rspta ? "Producto registrado" : "El producto no se pudo registrar";
 					}
 				} else {
@@ -72,7 +71,7 @@ if (!isset($_SESSION["nombre"])) {
 					if ($nombreExiste) {
 						echo "El código del producto que ha ingresado ya existe.";
 					} else {
-						$rspta = $articulo->editar($idarticulo, $idcategoria, $idlocal, $idmarca, $idmedida, $idtipo, $codigo, $codigo_producto, $nombre, $stock, $stock_minimo, $descripcion, $peso, $casillero, $imagen);
+						$rspta = $articulo->editar($idarticulo, $idcategoria, $idlocal, $idmarca, $idmedida, $codigo, $codigo_producto, $nombre, $stock, $stock_minimo, $descripcion, $peso, $casillero, $imagen);
 						echo $rspta ? "Producto actualizado" : "El producto no se pudo actualizar";
 					}
 				}
@@ -109,7 +108,7 @@ if (!isset($_SESSION["nombre"])) {
 				$fecha_inicio = $_GET["fecha_inicio"];
 				$fecha_fin = $_GET["fecha_fin"];
 
-				if ($cargo == "superadmin" || $cargo == "admin") {
+				if ($cargo == "superadmin") {
 					if ($param == 0) {
 						if ($fecha_inicio != "" && $fecha_fin != "") {
 							$rspta = $articulo->listarPorFecha($fecha_inicio, $fecha_fin);
@@ -298,7 +297,7 @@ if (!isset($_SESSION["nombre"])) {
 				/* ======================= SELECTS ======================= */
 
 			case 'listarTodosActivos':
-				if ($cargo == "superadmin" || $cargo == "admin") {
+				if ($cargo == "superadmin") {
 					$rspta = $articulo->listarTodosActivos();
 				} else {
 					$rspta = $articulo->listarTodosActivosPorUsuario($idusuario);

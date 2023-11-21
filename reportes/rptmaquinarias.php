@@ -36,7 +36,7 @@ if (!isset($_SESSION["nombre"])) {
     $idusuario = $_SESSION["idusuario"];
     $cargo = $_SESSION["cargo"];
 
-    if ($cargo == "superadmin" || $cargo == "admin") {
+    if ($cargo == "superadmin") {
       $rspta = $maquinarias->listar();
     } else {
       $rspta = $maquinarias->listarPorUsuario($idusuario);

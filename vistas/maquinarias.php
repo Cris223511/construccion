@@ -101,7 +101,7 @@ if (!isset($_SESSION["nombre"])) {
 
   require 'footer.php';
   ?>
-  <script type="text/javascript" src="scripts/maquinarias1.js"></script>
+  <script type="text/javascript" src="scripts/maquinarias2.js"></script>
 <?php
 }
 ob_end_flush();

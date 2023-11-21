@@ -10,13 +10,13 @@ class Articulo
 	}
 
 	//Implementamos un método para insertar registros
-	public function insertar($idusuario, $idcategoria, $idlocal, $idmarca, $idmedida, $idtipo, $codigo, $codigo_producto, $nombre, $stock, $stock_minimo, $descripcion, $peso, $casillero, $imagen)
+	public function insertar($idusuario, $idcategoria, $idlocal, $idmarca, $idmedida, $codigo, $codigo_producto, $nombre, $stock, $stock_minimo, $descripcion, $peso, $casillero, $imagen)
 	{
 		if (empty($imagen))
 			$imagen = "product.jpg";
 
-		$sql = "INSERT INTO articulo (idusuario,idcategoria,idlocal,idmarca,idmedida,idtipo,codigo,codigo_producto,nombre,stock,stock_minimo,descripcion,peso,casillero,imagen,fecha,estado,eliminado)
-		VALUES ('$idusuario','$idcategoria','$idlocal','$idmarca','$idmedida','$idtipo','$codigo','$codigo_producto','$nombre','$stock', '$stock_minimo','$descripcion','$peso','$casillero','$imagen',SYSDATE(),'1','0')";
+		$sql = "INSERT INTO articulo (idusuario,idcategoria,idlocal,idmarca,idmedida,codigo,codigo_producto,nombre,stock,stock_minimo,descripcion,peso,casillero,imagen,fecha,estado,eliminado)
+		VALUES ('$idusuario','$idcategoria','$idlocal','$idmarca','$idmedida','$codigo','$codigo_producto','$nombre','$stock', '$stock_minimo','$descripcion','$peso','$casillero','$imagen',SYSDATE(),'1','0')";
 		return ejecutarConsulta($sql);
 	}
 
@@ -70,9 +70,9 @@ class Articulo
 	}
 
 	//Implementamos un método para editar registros
-	public function editar($idarticulo, $idcategoria, $idlocal, $idmarca, $idmedida, $idtipo, $codigo, $codigo_producto, $nombre, $stock, $stock_minimo, $descripcion, $peso, $casillero, $imagen)
+	public function editar($idarticulo, $idcategoria, $idlocal, $idmarca, $idmedida, $codigo, $codigo_producto, $nombre, $stock, $stock_minimo, $descripcion, $peso, $casillero, $imagen)
 	{
-		$sql = "UPDATE articulo SET idcategoria='$idcategoria',idlocal='$idlocal',idmarca='$idmarca',idmedida='$idmedida',idtipo='$idtipo',codigo='$codigo',codigo_producto='$codigo_producto',nombre='$nombre',stock='$stock',stock_minimo='$stock_minimo',descripcion='$descripcion',peso='$peso',casillero='$casillero',imagen='$imagen' WHERE idarticulo='$idarticulo'";
+		$sql = "UPDATE articulo SET idcategoria='$idcategoria',idlocal='$idlocal',idmarca='$idmarca',idmedida='$idmedida',codigo='$codigo',codigo_producto='$codigo_producto',nombre='$nombre',stock='$stock',stock_minimo='$stock_minimo',descripcion='$descripcion',peso='$peso',casillero='$casillero',imagen='$imagen' WHERE idarticulo='$idarticulo'";
 		return ejecutarConsulta($sql);
 	}
 
@@ -154,13 +154,6 @@ class Articulo
 		return ejecutarConsulta($sql);
 	}
 
-	//Implementar un método para listar los registros activos
-	public function listarActivos()
-	{
-		$sql = "SELECT a.idarticulo,a.idcategoria,c.titulo as categoria,a.codigo,a.codigo_producto,a.nombre,a.stock,a.descripcion,a.imagen,a.estado FROM articulo a LEFT JOIN categoria c ON a.idcategoria=c.idcategoria ORDER BY a.idarticulo DESC";
-		return ejecutarConsulta($sql);
-	}
-
 	/* ======================= SELECTS ======================= */
 
 	public function listarTodosActivos()
@@ -171,9 +164,7 @@ class Articulo
 			UNION ALL
 			SELECT 'local' AS tabla, l.idlocal AS id, l.titulo, u.nombre AS usuario, local_ruc AS ruc FROM locales l LEFT JOIN usuario u ON l.idusuario = u.idusuario WHERE l.idusuario <> 0 AND l.estado='activado' AND l.eliminado='0'
 			UNION ALL
-			SELECT 'medida' AS tabla, m.idmedida AS id, m.titulo, u.nombre AS usuario, NULL AS ruc FROM medidas m LEFT JOIN usuario u ON m.idusuario = u.idusuario WHERE m.estado='activado' AND m.eliminado='0'
-			UNION ALL
-			SELECT 'tipo' AS tabla, t.idtipo AS id, t.titulo, u.nombre AS usuario, NULL AS ruc FROM tipos t LEFT JOIN usuario u ON t.idusuario = u.idusuario WHERE t.estado='activado' AND t.eliminado='0'";
+			SELECT 'medida' AS tabla, m.idmedida AS id, m.titulo, u.nombre AS usuario, NULL AS ruc FROM medidas m LEFT JOIN usuario u ON m.idusuario = u.idusuario WHERE m.estado='activado' AND m.eliminado='0'";
 
 		return ejecutarConsulta($sql);
 	}
@@ -186,10 +177,15 @@ class Articulo
 			UNION ALL
 			SELECT 'local' AS tabla, l.idlocal AS id, l.titulo, u.nombre AS usuario, local_ruc AS ruc FROM locales l LEFT JOIN usuario u ON l.idusuario = u.idusuario WHERE l.idusuario='$idusuario' AND l.idusuario <> 0 AND l.estado='activado' AND l.eliminado='0'
 			UNION ALL
-			SELECT 'medida' AS tabla, m.idmedida AS id, m.titulo, u.nombre AS usuario, NULL AS ruc FROM medidas m LEFT JOIN usuario u ON m.idusuario = u.idusuario WHERE m.idusuario='$idusuario' AND m.estado='activado' AND m.eliminado='0'
-			UNION ALL
-			SELECT 'tipo' AS tabla, t.idtipo AS id, t.titulo, u.nombre AS usuario, NULL AS ruc FROM tipos t LEFT JOIN usuario u ON t.idusuario = u.idusuario WHERE t.idusuario='$idusuario' AND t.estado='activado' AND t.eliminado='0'";
+			SELECT 'medida' AS tabla, m.idmedida AS id, m.titulo, u.nombre AS usuario, NULL AS ruc FROM medidas m LEFT JOIN usuario u ON m.idusuario = u.idusuario WHERE m.estado='activado' AND m.eliminado='0'";
 
+		return ejecutarConsulta($sql);
+	}
+
+	//Implementar un método para listar los registros
+	public function listarActivosPorArticulo($idarticulo)
+	{
+		$sql = "SELECT a.idarticulo,a.idusuario,u.nombre as usuario,u.cargo as cargo,u.cargo,a.idcategoria,c.titulo as categoria,DATE_FORMAT(a.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,al.titulo as local,m.titulo as marca,a.codigo,a.codigo_producto,a.nombre,a.stock,a.stock_minimo,a.descripcion,a.imagen,a.estado FROM articulo a LEFT JOIN categoria c ON a.idcategoria=c.idcategoria LEFT JOIN locales al ON a.idlocal=al.idlocal LEFT JOIN usuario u ON a.idusuario=u.idusuario LEFT JOIN marcas m ON a.idmarca=m.idmarca WHERE a.eliminado = '0' AND a.idarticulo = $idarticulo ORDER BY a.idarticulo DESC";
 		return ejecutarConsulta($sql);
 	}
 }

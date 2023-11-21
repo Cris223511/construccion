@@ -81,7 +81,7 @@ if (!isset($_SESSION["nombre"])) {
                 </div>
               </div>
               <div class="panel-body listadoregistros" style="background-color: #ecf0f5 !important; padding-left: 0 !important; padding-right: 0 !important; height: max-content;">
-                <div class="table-responsive listadoregistros2" style="padding-top: 20px !important; background-color: white; height: max-content;">
+                <div class="table-responsive listadoregistros2" style="overflow-x: visible; display: inline-block; width: 100%; padding-top: 20px !important; background-color: white; height: max-content;">
                   <div class="form-group col-lg-3 col-md-3 col-sm-4 col-xs-12">
                     <label>Buscar por marca:</label>
                     <select id="idmarcaBuscar" name="idmarcaBuscar" class="form-control selectpicker" data-live-search="true" data-size="5">
@@ -185,12 +185,6 @@ if (!isset($_SESSION["nombre"])) {
                       </select>
                     </div>
                     <div class="form-group col-lg-6 col-md-12">
-                      <label>Tipo(*):</label>
-                      <select id="idtipo" name="idtipo" class="form-control selectpicker" data-live-search="true" required>
-                        <option value="">- Seleccione -</option>
-                      </select>
-                    </div>
-                    <div class="form-group col-lg-6 col-md-12">
                       <label>Local(*):</label>
                       <select id="idlocal" name="idlocal" class="form-control selectpicker idlocal" data-live-search="true" data-size="5" onchange="actualizarRUC()">
                         <option value="">- Seleccione -</option>
@@ -201,8 +195,8 @@ if (!isset($_SESSION["nombre"])) {
                       <input type="number" class="form-control" id="local_ruc" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="11" placeholder="RUC del local" disabled>
                     </div>
                     <div class="form-group col-lg-6 col-md-12">
-                      <label>Peso(*):</label>
-                      <input type="number" class="form-control" name="peso" id="peso" step="any" onkeydown="evitarNegativo(event)" oninput="if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="6" min="0" placeholder="Ingrese el peso.">
+                      <label>Medida(*):</label>
+                      <input type="number" class="form-control" name="peso" id="peso" step="any" onkeydown="evitarNegativo(event)" oninput="if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="6" min="0" placeholder="Ingrese la medida.">
                     </div>
                     <div class="form-group col-lg-6 col-md-12">
                       <label>Unidad de medida(*):</label>
@@ -210,7 +204,7 @@ if (!isset($_SESSION["nombre"])) {
                         <option value="">- Seleccione -</option>
                       </select>
                     </div>
-                    <div class="form-group col-lg-6 col-md-12">
+                    <div class="form-group col-lg-12 col-md-12">
                       <label>Descripción:</label>
                       <input type="text" class="form-control" name="descripcion" id="descripcion" maxlength="50" placeholder="Ingrese la descripción del producto." autocomplete="off">
                     </div>
@@ -268,7 +262,7 @@ if (!isset($_SESSION["nombre"])) {
   ?>
   <script type="text/javascript" src="../public/js/JsBarcode.all.min.js"></script>
   <script type="text/javascript" src="../public/js/jquery.PrintArea.js"></script>
-  <script type="text/javascript" src="scripts/articulo23.js"></script>
+  <script type="text/javascript" src="scripts/articulo24.js"></script>
 <?php
 }
 ob_end_flush();

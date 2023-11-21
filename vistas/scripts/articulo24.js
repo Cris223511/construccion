@@ -23,7 +23,6 @@ function init() {
 			"idcategoria": $("#idcategoria, #idcategoriaBuscar"),
 			"idlocal": $("#idlocal"),
 			"idmedida": $("#idmedida"),
-			"idtipo": $("#idtipo"),
 		};
 
 		for (const selectId in selects) {
@@ -91,8 +90,6 @@ function limpiar() {
 	$("#idmarca").selectpicker('refresh');
 	$("#idmedida").val($("#idmedida option:first").val());
 	$("#idmedida").selectpicker('refresh');
-	$("#idtipo").val($("#idtipo option:first").val());
-	$("#idtipo").selectpicker('refresh');
 	actualizarRUC();
 }
 
@@ -244,8 +241,6 @@ function mostrar(idarticulo) {
 		$('#idmarca').selectpicker('refresh');
 		$("#idmedida").val(data.idmedida);
 		$('#idmedida').selectpicker('refresh');
-		$("#idtipo").val(data.idtipo);
-		$('#idtipo').selectpicker('refresh');
 		$("#codigo").val(data.codigo);
 		$("#codigo_producto").val(data.codigo_producto);
 		$("#nombre").val(data.nombre);

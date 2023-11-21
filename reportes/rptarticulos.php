@@ -37,7 +37,14 @@ if (!isset($_SESSION["nombre"])) {
     require_once "../modelos/Articulo.php";
     $articulo = new Articulo();
 
-    $rspta = $articulo->listar();
+    $idusuario = $_SESSION["idusuario"];
+    $cargo = $_SESSION["cargo"];
+
+    if ($cargo == "superadmin") {
+      $rspta = $articulo->listar();
+    } else {
+      $rspta = $articulo->listarPorUsuario($idusuario);
+    }
 
     $pdf->SetWidths(array(60, 35, 60, 35, 35, 25, 25));
 

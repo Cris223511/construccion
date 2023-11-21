@@ -70,7 +70,7 @@ if (!isset($_SESSION["nombre"])) {
 				$fecha_inicio = $_GET["fecha_inicio"];
 				$fecha_fin = $_GET["fecha_fin"];
 				
-				if ($cargo == "superadmin" || $cargo == "admin") {
+				if ($cargo == "superadmin" || $cargo == "admin" || $cargo == "usuario") {
 					if ($fecha_inicio == "" && $fecha_fin == "") {
 						$rspta = $medidas->listar();
 					} else {
@@ -142,7 +142,7 @@ if (!isset($_SESSION["nombre"])) {
 				break;
 
 				// case 'selectMedidas':
-				// 	if ($cargo == "superadmin" || $cargo == "admin") {
+				// 	if ($cargo == "superadmin") {
 				// 		$rspta = $medidas->listar();
 				// 	} else {
 				// 		$rspta = $medidas->listarPorUsuario($idusuario);

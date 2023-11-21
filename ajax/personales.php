@@ -75,7 +75,7 @@ if (!isset($_SESSION["nombre"])) {
 				$fecha_inicio = $_GET["fecha_inicio"];
 				$fecha_fin = $_GET["fecha_fin"];
 				
-				if ($cargo == "superadmin" || $cargo == "admin") {
+				if ($cargo == "superadmin") {
 					if ($fecha_inicio == "" && $fecha_fin == "") {
 						$rspta = $personales->listar();
 					} else {
