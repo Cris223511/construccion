@@ -45,8 +45,6 @@ if (!isset($_SESSION["nombre"])) {
                     <th>Número</th>
                     <th>Teléfono</th>
                     <th>Email</th>
-                    <th>Local</th>
-                    <th style="white-space: nowrap;">RUC local</th>
                     <th>Foto</th>
                     <th>Estado</th>
                   </thead>
@@ -61,8 +59,6 @@ if (!isset($_SESSION["nombre"])) {
                     <th>Número</th>
                     <th>Teléfono</th>
                     <th>Email</th>
-                    <th>Local</th>
-                    <th style="white-space: nowrap;">RUC local</th>
                     <th>Foto</th>
                     <th>Estado</th>
                   </tfoot>
@@ -74,16 +70,6 @@ if (!isset($_SESSION["nombre"])) {
                     <label>Nombre(*):</label>
                     <input type="hidden" name="idusuario" id="idusuario">
                     <input type="text" class="form-control" name="nombre" id="nombre" maxlength="20" placeholder="Nombre" required>
-                  </div>
-                  <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                    <label id="locales">Locales disponibles(*):</label>
-                    <select id="idlocal" name="idlocal" class="form-control selectpicker" data-live-search="true" required onchange="actualizarRUC()">
-                      <option value="">- Seleccione -</option>
-                    </select>
-                  </div>
-                  <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                    <label>RUC local(*):</label>
-                    <input type="number" class="form-control" id="local_ruc" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="11" placeholder="RUC del local" disabled>
                   </div>
                   <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
                     <label>Tipo Documento(*):</label>
@@ -114,7 +100,7 @@ if (!isset($_SESSION["nombre"])) {
                     <label>Cargo(*):</label>
                     <select name="cargo" id="cargo" class="form-control selectpicker" required>
                       <option value="admin">Administrador</option>
-                      <option value="cajero">Cajero</option>
+                      <option value="usuario">Usuario</option>
                     </select>
                   </div>
                   <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
@@ -158,7 +144,7 @@ if (!isset($_SESSION["nombre"])) {
   require 'footer.php';
   ?>
 
-  <script type="text/javascript" src="scripts/usuario25.js"></script>
+  <script type="text/javascript" src="scripts/usuario26.js"></script>
 <?php
 }
 ob_end_flush();

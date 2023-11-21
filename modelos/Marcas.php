@@ -75,12 +75,24 @@ class Marca
 		return ejecutarConsulta($sql);
 	}
 
+	public function listarPorFecha($fecha_inicio, $fecha_fin)
+	{
+		$sql = "SELECT m.idmarca, u.idusuario, u.nombre as nombre, u.cargo as cargo, m.titulo, m.descripcion, DATE_FORMAT(m.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, m.estado FROM marcas m LEFT JOIN usuario u ON m.idusuario = u.idusuario WHERE m.eliminado = '0' AND DATE(m.fecha_hora) >= '$fecha_inicio' AND DATE(m.fecha_hora) <= '$fecha_fin' ORDER BY m.idmarca DESC";
+		return ejecutarConsulta($sql);
+	}
+
 	public function listarPorUsuario($idusuario)
 	{
 		$sql = "SELECT m.idmarca, u.idusuario, u.nombre as nombre, u.cargo as cargo, m.titulo, m.descripcion, DATE_FORMAT(m.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, m.estado FROM marcas m LEFT JOIN usuario u ON m.idusuario = u.idusuario WHERE m.idusuario = '$idusuario' AND m.eliminado = '0' ORDER BY m.idmarca DESC";
 		return ejecutarConsulta($sql);
 	}
 
+	public function listarPorUsuarioFecha($idusuario, $fecha_inicio, $fecha_fin)
+	{
+		$sql = "SELECT m.idmarca, u.idusuario, u.nombre as nombre, u.cargo as cargo, m.titulo, m.descripcion, DATE_FORMAT(m.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, m.estado FROM marcas m LEFT JOIN usuario u ON m.idusuario = u.idusuario WHERE m.idusuario = '$idusuario' AND m.eliminado = '0' AND DATE(m.fecha_hora) >= '$fecha_inicio' AND DATE(m.fecha_hora) <= '$fecha_fin' ORDER BY m.idmarca DESC";
+		return ejecutarConsulta($sql);
+	}
+	
 	public function listarActivos()
 	{
 		$sql = "SELECT idmarca, titulo FROM marcas WHERE estado='activado' AND eliminado = '0' ORDER BY idmarca DESC";

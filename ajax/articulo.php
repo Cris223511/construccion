@@ -32,19 +32,16 @@ if (!isset($_SESSION["nombre"])) {
 		$idlocal = isset($_POST["idlocal"]) ? limpiarCadena($_POST["idlocal"]) : "";
 		$idmarca = isset($_POST["idmarca"]) ? limpiarCadena($_POST["idmarca"]) : "";
 		$idmedida = isset($_POST["idmedida"]) ? limpiarCadena($_POST["idmedida"]) : "";
-		$idservicio = isset($_POST["idservicio"]) ? limpiarCadena($_POST["idservicio"]) : "";
+		$idtipo = isset($_POST["idtipo"]) ? limpiarCadena($_POST["idtipo"]) : "";
 		$codigo = isset($_POST["codigo"]) ? limpiarCadena($_POST["codigo"]) : "";
 		$codigo_producto = isset($_POST["codigo_producto"]) ? limpiarCadena($_POST["codigo_producto"]) : "";
 		$nombre = isset($_POST["nombre"]) ? limpiarCadena($_POST["nombre"]) : "";
 		$stock = isset($_POST["stock"]) ? limpiarCadena($_POST["stock"]) : "";
 		$stock_minimo = isset($_POST["stock_minimo"]) ? limpiarCadena($_POST["stock_minimo"]) : "";
 		$descripcion = isset($_POST["descripcion"]) ? limpiarCadena($_POST["descripcion"]) : "";
-		$talla = isset($_POST["talla"]) ? limpiarCadena($_POST["talla"]) : "";
-		$color = isset($_POST["color"]) ? limpiarCadena($_POST["color"]) : "";
 		$peso = isset($_POST["peso"]) ? limpiarCadena($_POST["peso"]) : "";
+		$casillero = isset($_POST["casillero"]) ? limpiarCadena($_POST["casillero"]) : "";
 		$imagen = isset($_POST["imagen"]) ? limpiarCadena($_POST["imagen"]) : "";
-		$precio_compra = isset($_POST["precio_compra"]) ? limpiarCadena($_POST["precio_compra"]) : "";
-		$precio_venta = isset($_POST["precio_venta"]) ? limpiarCadena($_POST["precio_venta"]) : "";
 		$barra = isset($_POST["barra"]) ? limpiarCadena($_POST["barra"]) : "";
 
 		switch ($_GET["op"]) {
@@ -67,7 +64,7 @@ if (!isset($_SESSION["nombre"])) {
 					} else if ($codigoExiste && $codigo != "") {
 						echo "El código de barra del producto que ha ingresado ya existe.";
 					} else {
-						$rspta = $articulo->insertar($idusuario, $idcategoria, $idlocal, $idmarca, $idmedida, $idservicio, $codigo, $codigo_producto, $nombre, $stock, $stock_minimo, $descripcion, $talla, $color, $peso, $imagen, $precio_compra, $precio_venta);
+						$rspta = $articulo->insertar($idusuario, $idcategoria, $idlocal, $idmarca, $idmedida, $idtipo, $codigo, $codigo_producto, $nombre, $stock, $stock_minimo, $descripcion, $peso, $casillero, $imagen);
 						echo $rspta ? "Producto registrado" : "El producto no se pudo registrar";
 					}
 				} else {
@@ -75,7 +72,7 @@ if (!isset($_SESSION["nombre"])) {
 					if ($nombreExiste) {
 						echo "El código del producto que ha ingresado ya existe.";
 					} else {
-						$rspta = $articulo->editar($idarticulo, $idcategoria, $idlocal, $idmarca, $idmedida, $idservicio, $codigo, $codigo_producto, $nombre, $stock, $stock_minimo, $descripcion, $talla, $color, $peso, $imagen, $precio_compra, $precio_venta);
+						$rspta = $articulo->editar($idarticulo, $idcategoria, $idlocal, $idmarca, $idmedida, $idtipo, $codigo, $codigo_producto, $nombre, $stock, $stock_minimo, $descripcion, $peso, $casillero, $imagen);
 						echo $rspta ? "Producto actualizado" : "El producto no se pudo actualizar";
 					}
 				}
@@ -103,117 +100,138 @@ if (!isset($_SESSION["nombre"])) {
 				break;
 
 			case 'listar':
+				$param = $_GET["param"]; // valor buscar
+
 				$param1 = $_GET["param1"]; // valor marca
 				$param2 = $_GET["param2"]; // valor categoria
 				$param3 = $_GET["param3"]; // valor estado
 
+				$fecha_inicio = $_GET["fecha_inicio"];
+				$fecha_fin = $_GET["fecha_fin"];
+
 				if ($cargo == "superadmin" || $cargo == "admin") {
-					if ($param1 != '' && $param2 == '' && $param3 == '') {
-						$rspta = $articulo->listarPorParametro("a.idmarca = '$param1'");
-					} else if ($param1 == '' && $param2 != '' && $param3 == '') {
-						$rspta = $articulo->listarPorParametro("a.idcategoria = '$param2'");
-					} else if ($param1 == '' && $param2 == '' && $param3 != '') {
-						if ($param3 == "1") {
-							// Disponible
-							$rspta = $articulo->listarPorParametro("a.stock > a.stock_minimo");
-						} else if ($param3 == "2") {
-							// Agotándose
-							$rspta = $articulo->listarPorParametro("a.stock > 0 AND a.stock < a.stock_minimo");
+					if ($param == 0) {
+						if ($fecha_inicio != "" && $fecha_fin != "") {
+							$rspta = $articulo->listarPorFecha($fecha_inicio, $fecha_fin);
 						} else {
-							// Agotado
-							$rspta = $articulo->listarPorParametro("a.stock = 0");
-						}
-					} else if ($param1 != '' && $param2 != '' && $param3 == '') {
-						$rspta = $articulo->listarPorParametro("a.idmarca = '$param1' AND a.idcategoria = '$param2'");
-					} else if ($param1 != '' && $param2 == '' && $param3 != '') {
-						if ($param3 == "1") {
-							// Disponible
-							$rspta = $articulo->listarPorParametro("a.idmarca = '$param1' AND a.stock > a.stock_minimo");
-						} else if ($param3 == "2") {
-							// Agotándose
-							$rspta = $articulo->listarPorParametro("a.idmarca = '$param1' AND a.stock > 0 AND a.stock < a.stock_minimo");
-						} else {
-							// Agotado
-							$rspta = $articulo->listarPorParametro("a.idmarca = '$param1' AND a.stock = 0");
-						}
-					} else if ($param1 == '' && $param2 != '' && $param3 != '') {
-						if ($param3 == "1") {
-							// Disponible
-							$rspta = $articulo->listarPorParametro("a.idcategoria = '$param2' AND a.stock > a.stock_minimo");
-						} else if ($param3 == "2") {
-							// Agotándose
-							$rspta = $articulo->listarPorParametro("a.idcategoria = '$param2' AND a.stock > 0 AND a.stock < a.stock_minimo");
-						} else {
-							// Agotado
-							$rspta = $articulo->listarPorParametro("a.idcategoria = '$param2' AND a.stock = 0");
-						}
-					} else if ($param1 != '' && $param2 != '' && $param3 != '') {
-						if ($param3 == "1") {
-							// Disponible
-							$rspta = $articulo->listarPorParametro("a.idmarca = '$param1' AND a.idcategoria = '$param2' AND a.stock > a.stock_minimo");
-						} else if ($param3 == "2") {
-							// Agotándose
-							$rspta = $articulo->listarPorParametro("a.idmarca = '$param1' AND a.idcategoria = '$param2' AND a.stock > 0 AND a.stock < a.stock_minimo");
-						} else {
-							// Agotado
-							$rspta = $articulo->listarPorParametro("a.idmarca = '$param1' AND a.idcategoria = '$param2' AND a.stock = 0");
+							$rspta = $articulo->listar();
 						}
 					} else {
-						$rspta = $articulo->listar();
+						if ($param1 != '' && $param2 == '' && $param3 == '') {
+							$rspta = $articulo->listarPorParametro("a.idmarca = '$param1'");
+						} else if ($param1 == '' && $param2 != '' && $param3 == '') {
+							$rspta = $articulo->listarPorParametro("a.idcategoria = '$param2'");
+						} else if ($param1 == '' && $param2 == '' && $param3 != '') {
+							if ($param3 == "1") {
+								// Disponible
+								$rspta = $articulo->listarPorParametro("a.stock > a.stock_minimo");
+							} else if ($param3 == "2") {
+								// Agotándose
+								$rspta = $articulo->listarPorParametro("a.stock > 0 AND a.stock < a.stock_minimo");
+							} else {
+								// Agotado
+								$rspta = $articulo->listarPorParametro("a.stock = 0");
+							}
+						} else if ($param1 != '' && $param2 != '' && $param3 == '') {
+							$rspta = $articulo->listarPorParametro("a.idmarca = '$param1' AND a.idcategoria = '$param2'");
+						} else if ($param1 != '' && $param2 == '' && $param3 != '') {
+							if ($param3 == "1") {
+								// Disponible
+								$rspta = $articulo->listarPorParametro("a.idmarca = '$param1' AND a.stock > a.stock_minimo");
+							} else if ($param3 == "2") {
+								// Agotándose
+								$rspta = $articulo->listarPorParametro("a.idmarca = '$param1' AND a.stock > 0 AND a.stock < a.stock_minimo");
+							} else {
+								// Agotado
+								$rspta = $articulo->listarPorParametro("a.idmarca = '$param1' AND a.stock = 0");
+							}
+						} else if ($param1 == '' && $param2 != '' && $param3 != '') {
+							if ($param3 == "1") {
+								// Disponible
+								$rspta = $articulo->listarPorParametro("a.idcategoria = '$param2' AND a.stock > a.stock_minimo");
+							} else if ($param3 == "2") {
+								// Agotándose
+								$rspta = $articulo->listarPorParametro("a.idcategoria = '$param2' AND a.stock > 0 AND a.stock < a.stock_minimo");
+							} else {
+								// Agotado
+								$rspta = $articulo->listarPorParametro("a.idcategoria = '$param2' AND a.stock = 0");
+							}
+						} else if ($param1 != '' && $param2 != '' && $param3 != '') {
+							if ($param3 == "1") {
+								// Disponible
+								$rspta = $articulo->listarPorParametro("a.idmarca = '$param1' AND a.idcategoria = '$param2' AND a.stock > a.stock_minimo");
+							} else if ($param3 == "2") {
+								// Agotándose
+								$rspta = $articulo->listarPorParametro("a.idmarca = '$param1' AND a.idcategoria = '$param2' AND a.stock > 0 AND a.stock < a.stock_minimo");
+							} else {
+								// Agotado
+								$rspta = $articulo->listarPorParametro("a.idmarca = '$param1' AND a.idcategoria = '$param2' AND a.stock = 0");
+							}
+						} else {
+							$rspta = $articulo->listar();
+						}
 					}
 				} else {
-					if ($param1 != '' && $param2 == '' && $param3 == '') {
-						$rspta = $articulo->listarPorUsuarioParametro($idusuario, "a.idmarca = '$param1'");
-					} else if ($param1 == '' && $param2 != '' && $param3 == '') {
-						$rspta = $articulo->listarPorUsuarioParametro($idusuario, "a.idcategoria = '$param2'");
-					} else if ($param1 == '' && $param2 == '' && $param3 != '') {
-						if ($param3 == "1") {
-							// Disponible
-							$rspta = $articulo->listarPorUsuarioParametro($idusuario, "a.stock > a.stock_minimo");
-						} else if ($param3 == "2") {
-							// Agotándose
-							$rspta = $articulo->listarPorUsuarioParametro($idusuario, "a.stock > 0 AND a.stock < a.stock_minimo");
+					if ($param == 0) {
+						if ($fecha_inicio != "" && $fecha_fin != "") {
+							$rspta = $articulo->listarPorFechaUsuario($idusuario, $fecha_inicio, $fecha_fin);
 						} else {
-							// Agotado
-							$rspta = $articulo->listarPorUsuarioParametro($idusuario, "a.stock = 0");
-						}
-					} else if ($param1 != '' && $param2 != '' && $param3 == '') {
-						$rspta = $articulo->listarPorUsuarioParametro($idusuario, "a.idmarca = '$param1' AND a.idcategoria = '$param2'");
-					} else if ($param1 != '' && $param2 == '' && $param3 != '') {
-						if ($param3 == "1") {
-							// Disponible
-							$rspta = $articulo->listarPorUsuarioParametro($idusuario, "a.idmarca = '$param1' AND a.stock > a.stock_minimo");
-						} else if ($param3 == "2") {
-							// Agotándose
-							$rspta = $articulo->listarPorUsuarioParametro($idusuario, "a.idmarca = '$param1' AND a.stock > 0 AND a.stock < a.stock_minimo");
-						} else {
-							// Agotado
-							$rspta = $articulo->listarPorUsuarioParametro($idusuario, "a.idmarca = '$param1' AND a.stock = 0");
-						}
-					} else if ($param1 == '' && $param2 != '' && $param3 != '') {
-						if ($param3 == "1") {
-							// Disponible
-							$rspta = $articulo->listarPorUsuarioParametro($idusuario, "a.idcategoria = '$param2' AND a.stock > a.stock_minimo");
-						} else if ($param3 == "2") {
-							// Agotándose
-							$rspta = $articulo->listarPorUsuarioParametro($idusuario, "a.idcategoria = '$param2' AND a.stock > 0 AND a.stock < a.stock_minimo");
-						} else {
-							// Agotado
-							$rspta = $articulo->listarPorUsuarioParametro($idusuario, "a.idcategoria = '$param2' AND a.stock = 0");
-						}
-					} else if ($param1 != '' && $param2 != '' && $param3 != '') {
-						if ($param3 == "1") {
-							// Disponible
-							$rspta = $articulo->listarPorUsuarioParametro($idusuario, "a.idmarca = '$param1' AND a.idcategoria = '$param2' AND a.stock > a.stock_minimo");
-						} else if ($param3 == "2") {
-							// Agotándose
-							$rspta = $articulo->listarPorUsuarioParametro($idusuario, "a.idmarca = '$param1' AND a.idcategoria = '$param2' AND a.stock > 0 AND a.stock < a.stock_minimo");
-						} else {
-							// Agotado
-							$rspta = $articulo->listarPorUsuarioParametro($idusuario, "a.idmarca = '$param1' AND a.idcategoria = '$param2' AND a.stock = 0");
+							$rspta = $articulo->listarPorUsuario($idusuario);
 						}
 					} else {
-						$rspta = $articulo->listarPorUsuario($idusuario);
+						if ($param1 != '' && $param2 == '' && $param3 == '') {
+							$rspta = $articulo->listarPorUsuarioParametro($idusuario, "a.idmarca = '$param1'");
+						} else if ($param1 == '' && $param2 != '' && $param3 == '') {
+							$rspta = $articulo->listarPorUsuarioParametro($idusuario, "a.idcategoria = '$param2'");
+						} else if ($param1 == '' && $param2 == '' && $param3 != '') {
+							if ($param3 == "1") {
+								// Disponible
+								$rspta = $articulo->listarPorUsuarioParametro($idusuario, "a.stock > a.stock_minimo");
+							} else if ($param3 == "2") {
+								// Agotándose
+								$rspta = $articulo->listarPorUsuarioParametro($idusuario, "a.stock > 0 AND a.stock < a.stock_minimo");
+							} else {
+								// Agotado
+								$rspta = $articulo->listarPorUsuarioParametro($idusuario, "a.stock = 0");
+							}
+						} else if ($param1 != '' && $param2 != '' && $param3 == '') {
+							$rspta = $articulo->listarPorUsuarioParametro($idusuario, "a.idmarca = '$param1' AND a.idcategoria = '$param2'");
+						} else if ($param1 != '' && $param2 == '' && $param3 != '') {
+							if ($param3 == "1") {
+								// Disponible
+								$rspta = $articulo->listarPorUsuarioParametro($idusuario, "a.idmarca = '$param1' AND a.stock > a.stock_minimo");
+							} else if ($param3 == "2") {
+								// Agotándose
+								$rspta = $articulo->listarPorUsuarioParametro($idusuario, "a.idmarca = '$param1' AND a.stock > 0 AND a.stock < a.stock_minimo");
+							} else {
+								// Agotado
+								$rspta = $articulo->listarPorUsuarioParametro($idusuario, "a.idmarca = '$param1' AND a.stock = 0");
+							}
+						} else if ($param1 == '' && $param2 != '' && $param3 != '') {
+							if ($param3 == "1") {
+								// Disponible
+								$rspta = $articulo->listarPorUsuarioParametro($idusuario, "a.idcategoria = '$param2' AND a.stock > a.stock_minimo");
+							} else if ($param3 == "2") {
+								// Agotándose
+								$rspta = $articulo->listarPorUsuarioParametro($idusuario, "a.idcategoria = '$param2' AND a.stock > 0 AND a.stock < a.stock_minimo");
+							} else {
+								// Agotado
+								$rspta = $articulo->listarPorUsuarioParametro($idusuario, "a.idcategoria = '$param2' AND a.stock = 0");
+							}
+						} else if ($param1 != '' && $param2 != '' && $param3 != '') {
+							if ($param3 == "1") {
+								// Disponible
+								$rspta = $articulo->listarPorUsuarioParametro($idusuario, "a.idmarca = '$param1' AND a.idcategoria = '$param2' AND a.stock > a.stock_minimo");
+							} else if ($param3 == "2") {
+								// Agotándose
+								$rspta = $articulo->listarPorUsuarioParametro($idusuario, "a.idmarca = '$param1' AND a.idcategoria = '$param2' AND a.stock > 0 AND a.stock < a.stock_minimo");
+							} else {
+								// Agotado
+								$rspta = $articulo->listarPorUsuarioParametro($idusuario, "a.idmarca = '$param1' AND a.idcategoria = '$param2' AND a.stock = 0");
+							}
+						} else {
+							$rspta = $articulo->listarPorUsuario($idusuario);
+						}
 					}
 				}
 
@@ -223,7 +241,7 @@ if (!isset($_SESSION["nombre"])) {
 				{
 					if ($reg == "admin" && $cargo == "admin" && $idusuario == $_SESSION["idusuario"]) {
 						return $buttonType;
-					} elseif ($cargo == "superadmin" || $cargo == "cajero" && $idusuario == $_SESSION["idusuario"]) {
+					} elseif ($cargo == "superadmin" || $cargo == "usuario" && $idusuario == $_SESSION["idusuario"]) {
 						return $buttonType;
 					} else {
 						return '';
@@ -240,8 +258,8 @@ if (!isset($_SESSION["nombre"])) {
 						case 'admin':
 							$cargo_detalle = "Administrador";
 							break;
-						case 'cajero':
-							$cargo_detalle = "Cajero";
+						case 'usuario':
+							$cargo_detalle = "Usuario";
 							break;
 						default:
 							break;
@@ -262,10 +280,9 @@ if (!isset($_SESSION["nombre"])) {
 						"8" => $reg->codigo,
 						"9" => ($reg->stock > 0 && $reg->stock < $reg->stock_minimo) ? '<span style="color: #Ea9900; font-weight: bold">' . $reg->stock . '</span>' : (($reg->stock != '0') ? '<span>' . $reg->stock . '</span>' : '<span style="color: red; font-weight: bold">' . $reg->stock . '</span>'),
 						"10" => $reg->stock_minimo,
-						"11" => "S/. " . number_format($reg->precio_compra, 2, '.', ','),
-						"12" => "S/. " . number_format($reg->precio_venta, 2, '.', ','),
-						"13" => "<img src='../files/articulos/" . $reg->imagen . "' height='50px' width='50px' >",
-						"14" => ($reg->stock > 0 && $reg->stock < $reg->stock_minimo) ? '<span class="label bg-orange">agotandose</span>' : (($reg->stock != '0') ? '<span class="label bg-green">Disponible</span>' : '<span class="label bg-red">agotado</span>')
+						"11" => "<img src='../files/articulos/" . $reg->imagen . "' height='50px' width='50px' >",
+						"12" => $reg->fecha,
+						"13" => ($reg->stock > 0 && $reg->stock < $reg->stock_minimo) ? '<span class="label bg-orange">agotandose</span>' : (($reg->stock != '0') ? '<span class="label bg-green">Disponible</span>' : '<span class="label bg-red">agotado</span>')
 					);
 				}
 				$results = array(

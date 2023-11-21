@@ -13,7 +13,6 @@ $perfil = new Perfiles();
 $idusuario = $_SESSION["idusuario"];
 $cargo = $_SESSION["cargo"];
 
-$idlocal = isset($_POST["idlocal"]) ? limpiarCadena($_POST["idlocal"]) : "";
 $nombre = isset($_POST["nombre"]) ? limpiarCadena($_POST["nombre"]) : "";
 $tipo_documento = isset($_POST["tipo_documento"]) ? limpiarCadena($_POST["tipo_documento"]) : "";
 $num_documento = isset($_POST["num_documento"]) ? limpiarCadena($_POST["num_documento"]) : "";
@@ -56,12 +55,11 @@ switch ($_GET["op"]) {
                 } else if ($usuarioExiste && $login != $perfilUsuario['login']) {
                     echo "El nombre del usuario que ha ingresado ya existe.";
                 } else {
-                    $rspta = $perfil->actualizarPerfilUsuario($idusuario, $idlocal, $nombre, $tipo_documento, $num_documento, $direccion, $telefono, $email, $login, $clave, $imagen);
+                    $rspta = $perfil->actualizarPerfilUsuario($idusuario, $nombre, $tipo_documento, $num_documento, $direccion, $telefono, $email, $login, $clave, $imagen);
                     echo $rspta ? "Perfil actualizado correctamente" : "Perfil no se pudo actualizar";
                     if ($rspta) {
                         $_SESSION['nombre'] = $nombre;
                         $_SESSION['imagen'] = $imagen;
-                        $_SESSION['idlocal'] = $idlocal;
                     }
                 }
             } else {

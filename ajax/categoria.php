@@ -67,11 +67,21 @@ if (!isset($_SESSION["nombre"])) {
 				break;
 
 			case 'listar':
+				$fecha_inicio = $_GET["fecha_inicio"];
+				$fecha_fin = $_GET["fecha_fin"];
 
 				if ($cargo == "superadmin" || $cargo == "admin") {
-					$rspta = $categorias->listar();
+					if ($fecha_inicio == "" && $fecha_fin == "") {
+						$rspta = $categorias->listar();
+					} else {
+						$rspta = $categorias->listarPorFecha($fecha_inicio, $fecha_fin);
+					}
 				} else {
-					$rspta = $categorias->listarPorUsuario($idusuario);
+					if ($fecha_inicio == "" && $fecha_fin == "") {
+						$rspta = $categorias->listarPorUsuario($idusuario);
+					} else {
+						$rspta = $categorias->listarPorUsuarioFecha($idusuario, $fecha_inicio, $fecha_fin);
+					}
 				}
 
 				$data = array();
@@ -80,7 +90,7 @@ if (!isset($_SESSION["nombre"])) {
 				{
 					if ($reg == "admin" && $cargo == "admin" && $idusuario == $_SESSION["idusuario"]) {
 						return $buttonType;
-					} elseif ($cargo == "superadmin" || $cargo == "cajero" && $idusuario == $_SESSION["idusuario"]) {
+					} elseif ($cargo == "superadmin" || $cargo == "usuario" && $idusuario == $_SESSION["idusuario"]) {
 						return $buttonType;
 					} else {
 						return '';
@@ -97,8 +107,8 @@ if (!isset($_SESSION["nombre"])) {
 						case 'admin':
 							$cargo_detalle = "Administrador";
 							break;
-						case 'cajero':
-							$cargo_detalle = "Cajero";
+						case 'usuario':
+							$cargo_detalle = "Usuario";
 							break;
 						default:
 							break;
@@ -109,8 +119,7 @@ if (!isset($_SESSION["nombre"])) {
 						"0" => '<div style="display: flex; flex-wrap: nowrap; gap: 3px">' .
 							mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-warning" style="margin-right: 3px; height: 35px;" onclick="mostrar(' . $reg->idcategoria . ')"><i class="fa fa-pencil"></i></button>') .
 							(($reg->estado == 'activado') ?
-								(mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-danger" style="margin-right: 3px; height: 35px;" onclick="desactivar(' . $reg->idcategoria . ')"><i class="fa fa-close"></i></button>')) :
-								(mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-success" style="margin-right: 3px; width: 35px; height: 35px;" onclick="activar(' . $reg->idcategoria . ')"><i style="margin-left: -2px" class="fa fa-check"></i></button>'))) .
+								(mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-danger" style="margin-right: 3px; height: 35px;" onclick="desactivar(' . $reg->idcategoria . ')"><i class="fa fa-close"></i></button>')) : (mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-success" style="margin-right: 3px; width: 35px; height: 35px;" onclick="activar(' . $reg->idcategoria . ')"><i style="margin-left: -2px" class="fa fa-check"></i></button>'))) .
 							mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-danger" style="height: 35px;" onclick="eliminar(' . $reg->idcategoria . ')"><i class="fa fa-trash"></i></button>') .
 							'</div>',
 						"1" => $reg->titulo,

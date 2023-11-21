@@ -75,9 +75,21 @@ class Categoria
 		return ejecutarConsulta($sql);
 	}
 
+	public function listarPorFecha($fecha_inicio, $fecha_fin)
+	{
+		$sql = "SELECT c.idcategoria, u.idusuario, u.nombre as nombre, u.cargo as cargo, c.titulo, c.descripcion, DATE_FORMAT(c.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, c.estado FROM categoria c LEFT JOIN usuario u ON c.idusuario = u.idusuario WHERE c.eliminado = '0' AND DATE(c.fecha_hora) >= '$fecha_inicio' AND DATE(c.fecha_hora) <= '$fecha_fin' ORDER BY c.idcategoria DESC";
+		return ejecutarConsulta($sql);
+	}
+
 	public function listarPorUsuario($idusuario)
 	{
 		$sql = "SELECT c.idcategoria, u.idusuario, u.nombre as nombre, u.cargo as cargo, c.titulo, c.descripcion, DATE_FORMAT(c.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, c.estado FROM categoria c LEFT JOIN usuario u ON c.idusuario = u.idusuario WHERE c.idusuario = '$idusuario' AND c.eliminado = '0' ORDER BY c.idcategoria DESC";
+		return ejecutarConsulta($sql);
+	}
+
+	public function listarPorUsuarioFecha($idusuario, $fecha_inicio, $fecha_fin)
+	{
+		$sql = "SELECT c.idcategoria, u.idusuario, u.nombre as nombre, u.cargo as cargo, c.titulo, c.descripcion, DATE_FORMAT(c.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, c.estado FROM categoria c LEFT JOIN usuario u ON c.idusuario = u.idusuario WHERE c.idusuario = '$idusuario' AND c.eliminado = '0' AND DATE(c.fecha_hora) >= '$fecha_inicio' AND DATE(c.fecha_hora) <= '$fecha_fin' ORDER BY c.idcategoria DESC";
 		return ejecutarConsulta($sql);
 	}
 

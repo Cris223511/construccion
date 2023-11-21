@@ -67,11 +67,21 @@ if (!isset($_SESSION["nombre"])) {
 				break;
 
 			case 'listar':
+				$fecha_inicio = $_GET["fecha_inicio"];
+				$fecha_fin = $_GET["fecha_fin"];
 
 				if ($cargo == "superadmin" || $cargo == "admin") {
-					$rspta = $marcas->listar();
+					if ($fecha_inicio == "" && $fecha_fin == "") {
+						$rspta = $marcas->listar();
+					} else {
+						$rspta = $marcas->listarPorFecha($fecha_inicio, $fecha_fin);
+					}
 				} else {
-					$rspta = $marcas->listarPorUsuario($idusuario);
+					if ($fecha_inicio == "" && $fecha_fin == "") {
+						$rspta = $marcas->listarPorUsuario($idusuario);
+					} else {
+						$rspta = $marcas->listarPorUsuarioFecha($idusuario, $fecha_inicio, $fecha_fin);
+					}
 				}
 
 				$data = array();
@@ -80,7 +90,7 @@ if (!isset($_SESSION["nombre"])) {
 				{
 					if ($reg == "admin" && $cargo == "admin" && $idusuario == $_SESSION["idusuario"]) {
 						return $buttonType;
-					} elseif ($cargo == "superadmin" || $cargo == "cajero" && $idusuario == $_SESSION["idusuario"]) {
+					} elseif ($cargo == "superadmin" || $cargo == "usuario" && $idusuario == $_SESSION["idusuario"]) {
 						return $buttonType;
 					} else {
 						return '';
@@ -97,8 +107,8 @@ if (!isset($_SESSION["nombre"])) {
 						case 'admin':
 							$cargo_detalle = "Administrador";
 							break;
-						case 'cajero':
-							$cargo_detalle = "Cajero";
+						case 'usuario':
+							$cargo_detalle = "Usuario";
 							break;
 						default:
 							break;

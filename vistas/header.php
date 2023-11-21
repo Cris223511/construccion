@@ -4,7 +4,6 @@ if (strlen(session_id()) < 1)
 
 $nombre_login = $_SESSION['nombre'];
 $cargo_login = $_SESSION['cargo_detalle'];
-$local_login = $_SESSION['local'];
 ?>
 
 <style>
@@ -142,7 +141,7 @@ $local_login = $_SESSION['local'];
   <meta http-equiv="Last-Modified" content="0">
   <meta http-equiv="Cache-Control" content="no-cache, mustrevalidate">
   <meta http-equiv="Pragma" content="no-cache">
-  <title>Sistema de Peluquería | www.DistemaDePeluqueria.com</title>
+  <title>Sistema de construcciones | www.SistemaDeConstrucciones.com</title>
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.5 -->
   <link rel="stylesheet" href="../public/css/bootstrap.min.css">
@@ -170,7 +169,7 @@ $local_login = $_SESSION['local'];
     <header class="main-header" style="box-shadow: 0px 0px 15px -7px; position: sticky !important; width: 100%">
       <a href="escritorio.php" class="logo" style="color: white !important; background-color: #002a8e !important;">
         <span class="logo-mini"><b>S.I.</b></span>
-        <span class="logo-lg" style="font-size: 15px;"><b>Sistema de Peluquería</b></span>
+        <span class="logo-lg" style="font-size: 15px;"><b>Sistema de construcciones</b></span>
       </a>
       <nav class="navbar" role="navigation" style="background-color: #002a8e !important;">
         <div style="display: flex; align-items: center; float: left;">
@@ -180,8 +179,7 @@ $local_login = $_SESSION['local'];
         </div>
         <div class="navbar-custom-menu">
           <ul class="nav navbar-nav">
-            <li class="dropdown user user-menu" style="background: #002a8e !important; display: flex; align-items: center;">
-              <span style="color: white !important;" class="hidden-xs user-info"><?php echo '<strong> Local: ' . $local_login . '</strong>' ?></span>
+            <li class="dropdown user user-menu" style="background: #002a8e !important;">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="color: white !important;">
                 <img src="../files/usuarios/<?php echo $_SESSION['imagen']; ?>" class="user-image" alt="User Image">
                 <span class="hidden-xs user-info"><?php echo $nombre_login; ?> - <?php echo '<strong> Rol: ' . $cargo_login . '</strong>' ?></span>
@@ -190,7 +188,7 @@ $local_login = $_SESSION['local'];
                 <li class="user-header" style="background: #002a8e !important;">
                   <img src="../files/usuarios/<?php echo $_SESSION['imagen']; ?>" class="img-circle" alt="User Image">
                   <p style="color: white !important;">
-                    Sistema de Peluquería
+                    Sistema de construcciones
                     <small>nuestro contacto: +51 937 075 845</small>
                   </p>
                 </li>
@@ -239,70 +237,34 @@ $local_login = $_SESSION['local'];
           ?>
 
           <?php
-          if ($_SESSION['ventas'] == 1) {
-            echo '<li id="mVentas" class="treeview">
+          if ($_SESSION['entradas'] == 1) {
+            echo '<li id="mEntradas" class="treeview">
               <a href="#">
-                <i class="fa fa-shopping-cart"></i>
-                <span>Ventas</span>
+                <i class="fa fa-sign-in"></i>
+                <span>Entradas</span>
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li id="lVentas"><a href="#"><i class="fa fa-circle-o"></i> Ventas</a></li>
-                <li id="lProformas"><a href="#"><i class="fa fa-circle-o"></i> Proformas</a></li>
-              </ul>
+                <li id="lEntradas"><a href="entradas.php"><i class="fa fa-circle-o"></i> Entradas</a></li>
+                <li id="lTipos"><a href="tipos.php"><i class="fa fa-circle-o"></i> Tipos</a></li>
+                <li id="lProveedores"><a href="proveedores.php"><i class="fa fa-circle-o"></i> Proveedores</a></li>
+                </ul>
             </li>';
           }
           ?>
 
           <?php
-          if ($_SESSION['cajas'] == 1) {
-            echo '<li id="mCajas" class="treeview">
+          if ($_SESSION['salidas'] == 1) {
+            echo '<li id="mSalidas" class="treeview">
               <a href="#">
-                <i class="fa fa-archive"></i>
-                <span>Flujo de caja</span>
+                <i style="margin-left: -6px; margin-right: 6px" class="fa fa-sign-in fa-flip-horizontal"></i>
+                <span>Salidas</span>
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li id="lAperturas"><a href="aperturas.php"><i class="fa fa-circle-o"></i> Aperturas</a></li>
-                <li id="lCierres"><a href="cierres.php"><i class="fa fa-circle-o"></i> Cierres</a></li>
-              </ul>
-            </li>';
-          }
-          ?>
-
-          <?php
-          if ($_SESSION['pagos'] == 1) {
-            echo '<li id="mPagos" class="treeview">
-              <a href="metodo_pago.php">
-                <i class="fa fa-credit-card"></i>
-                <span>Métodos de pago</span>
-              </a>
-            </li>';
-          }
-          ?>
-
-          <?php
-          if ($_SESSION['servicios'] == 1) {
-            echo '<li id="mServicios" class="treeview">
-              <a href="servicios.php">
-                <i class="fa fa-cogs"></i>
-                <span>Servicios</span>
-              </a>
-            </li>';
-          }
-          ?>
-
-          <?php
-          if ($_SESSION['personas'] == 1) {
-            echo '<li id="mPersonas" class="treeview">
-              <a href="#">
-                <i class="fa fa-users"></i>
-                <span>Personas</span>
-                <i class="fa fa-angle-left pull-right"></i>
-              </a>
-              <ul class="treeview-menu">
-                <li id="lTrabajadores"><a href="trabajadores.php"><i class="fa fa-circle-o"></i> Trabajadores</a></li>
-                <li id="lClientes"><a href="clientes.php"><i class="fa fa-circle-o"></i> Clientes</a></li>
+                <li id="lSalidas"><a href="salidas.php"><i class="fa fa-circle-o"></i> Salidas</a></li>
+                <li id="lPersonales"><a href="personales.php"><i class="fa fa-circle-o"></i> Personales</a></li>
+                <li id="lMaquinarias"><a href="maquinarias.php"><i class="fa fa-circle-o"></i> Maquinarias</a></li>
               </ul>
             </li>';
           }
@@ -333,18 +295,11 @@ $local_login = $_SESSION['local'];
             </a>
             <ul class="treeview-menu">
               <li id="lConfUsuario"><a href="confUsuario.php"><i class="fa fa-circle-o"></i> Configuración de perfil</a></li>
-              ';
-            if ($_SESSION['cargo'] == "superadmin" || $_SESSION['cargo'] == "admin") {
-              echo '
-              <li id="lLocalesExternos"><a href="localesExternos.php"><i class="fa fa-circle-o"></i> Locales externos</a></li>
-              <li id="lLocalesDisponibles"><a href="localesDisponibles.php"><i class="fa fa-circle-o"></i> Locales disponibles</a></li>
-              ';
-            }
-            echo '
             </ul>
           </li>';
           }
           ?>
+
           <li>
             <a href="ayuda.php">
               <i class="fa fa-plus-square"></i> <span>Ayuda</span>

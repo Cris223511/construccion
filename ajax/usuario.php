@@ -14,7 +14,6 @@ require_once "../modelos/Usuario.php";
 $usuario = new Usuario();
 
 $idusuario = isset($_POST["idusuario"]) ? limpiarCadena($_POST["idusuario"]) : "";
-$idlocal = isset($_POST["idlocal"]) ? limpiarCadena($_POST["idlocal"]) : "";
 $nombre = isset($_POST["nombre"]) ? limpiarCadena($_POST["nombre"]) : "";
 $tipo_documento = isset($_POST["tipo_documento"]) ? limpiarCadena($_POST["tipo_documento"]) : "";
 $num_documento = isset($_POST["num_documento"]) ? limpiarCadena($_POST["num_documento"]) : "";
@@ -50,7 +49,7 @@ switch ($_GET["op"]) {
 					} else if ($usuarioExiste) {
 						echo "El nombre del usuario que ha ingresado ya existe.";
 					} else {
-						$rspta = $usuario->insertar($idlocal, $nombre, $tipo_documento, $num_documento, $direccion, $telefono, $email, $cargo, $login, $clave, $imagen, $_POST['permiso']);
+						$rspta = $usuario->insertar($nombre, $tipo_documento, $num_documento, $direccion, $telefono, $email, $cargo, $login, $clave, $imagen, $_POST['permiso']);
 						echo $rspta ? "Usuario registrado" : "Usuario no se pudo registrar.";
 					}
 				} else {
@@ -58,7 +57,7 @@ switch ($_GET["op"]) {
 					if ($usuarioExiste) {
 						echo "El nombre del usuario que ha ingresado ya existe.";
 					} else {
-						$rspta = $usuario->editar($idusuario, $idlocal, $nombre, $tipo_documento, $num_documento, $direccion, $telefono, $email, $cargo, $login, $clave, $imagen, $_POST['permiso']);
+						$rspta = $usuario->editar($idusuario, $nombre, $tipo_documento, $num_documento, $direccion, $telefono, $email, $cargo, $login, $clave, $imagen, $_POST['permiso']);
 						echo $rspta ? "Usuario actualizado" : "Usuario no se pudo actualizar";
 					}
 				}
@@ -129,8 +128,8 @@ switch ($_GET["op"]) {
 						case 'admin':
 							$cargo = "Administrador";
 							break;
-						case 'cajero':
-							$cargo = "Cajero";
+						case 'usuario':
+							$cargo = "Usuario";
 							break;
 						default:
 							break;
@@ -154,10 +153,8 @@ switch ($_GET["op"]) {
 						"5" => $reg->num_documento,
 						"6" => $telefono,
 						"7" => $reg->email,
-						"8" => $reg->local,
-						"9" => $reg->local_ruc,
-						"10" => "<img src='../files/usuarios/" . $reg->imagen . "' height='50px' width='50px' >",
-						"11" => ($reg->estado) ? '<span class="label bg-green">Activado</span>' :
+						"8" => "<img src='../files/usuarios/" . $reg->imagen . "' height='50px' width='50px' >",
+						"9" => ($reg->estado) ? '<span class="label bg-green">Activado</span>' :
 							'<span class="label bg-red">Desactivado</span>'
 					);
 				}
@@ -186,8 +183,8 @@ switch ($_GET["op"]) {
 				case 'admin':
 					$cargo = "Administrador";
 					break;
-				case 'cajero':
-					$cargo = "Cajero";
+				case 'usuario':
+					$cargo = "Usuario";
 					break;
 				default:
 					break;
@@ -214,8 +211,8 @@ switch ($_GET["op"]) {
 				case 'admin':
 					$cargo = "Administrador";
 					break;
-				case 'cajero':
-					$cargo = "Cajero";
+				case 'usuario':
+					$cargo = "Usuario";
 					break;
 				default:
 					break;
@@ -246,7 +243,6 @@ switch ($_GET["op"]) {
 	case 'getSessionId':
 		$sessionIdData = array(
 			'idusuario' => $_SESSION['idusuario'],
-			'idlocal' => $_SESSION['idlocal']
 		);
 
 		echo json_encode($sessionIdData);
@@ -273,8 +269,6 @@ switch ($_GET["op"]) {
 
 			//Declaramos las variables de sesión
 			$_SESSION['idusuario'] = $fetch->idusuario;
-			$_SESSION['idlocal'] = $fetch->idlocal;
-			$_SESSION['local'] = $fetch->local;
 			$_SESSION['nombre'] = $fetch->nombre;
 			$_SESSION['imagen'] = $fetch->imagen;
 			$_SESSION['login'] = $fetch->login;
@@ -288,8 +282,8 @@ switch ($_GET["op"]) {
 				case 'admin':
 					$_SESSION['cargo_detalle'] = "Administrador";
 					break;
-				case 'cajero':
-					$_SESSION['cargo_detalle'] = "Cajero";
+				case 'usuario':
+					$_SESSION['cargo_detalle'] = "Usuario";
 					break;
 				default:
 					break;
@@ -306,11 +300,8 @@ switch ($_GET["op"]) {
 			in_array(2, $valores) ? $_SESSION['acceso'] = 1 : $_SESSION['acceso'] = 0;
 			in_array(3, $valores) ? $_SESSION['perfilu'] = 1 : $_SESSION['perfilu'] = 0;
 			in_array(4, $valores) ? $_SESSION['almacen'] = 1 : $_SESSION['almacen'] = 0;
-			in_array(5, $valores) ? $_SESSION['personas'] = 1 : $_SESSION['personas'] = 0;
-			in_array(6, $valores) ? $_SESSION['ventas'] = 1 : $_SESSION['ventas'] = 0;
-			in_array(7, $valores) ? $_SESSION['cajas'] = 1 : $_SESSION['cajas'] = 0;
-			in_array(8, $valores) ? $_SESSION['pagos'] = 1 : $_SESSION['pagos'] = 0;
-			in_array(9, $valores) ? $_SESSION['servicios'] = 1 : $_SESSION['servicios'] = 0;
+			in_array(5, $valores) ? $_SESSION['entradas'] = 1 : $_SESSION['entradas'] = 0;
+			in_array(6, $valores) ? $_SESSION['salidas'] = 1 : $_SESSION['salidas'] = 0;
 		}
 		echo json_encode($fetch);
 		break;
