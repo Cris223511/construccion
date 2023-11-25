@@ -262,7 +262,7 @@ $cargo_login = $_SESSION['cargo_detalle'];
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li id="lSalidas"><a href="#"><i class="fa fa-circle-o"></i> Salidas</a></li>
+                <li id="lSalidas"><a href="salidas.php"><i class="fa fa-circle-o"></i> Salidas</a></li>
                 <li id="lPersonales"><a href="personales.php"><i class="fa fa-circle-o"></i> Personales</a></li>
                 <li id="lMaquinarias"><a href="maquinarias.php"><i class="fa fa-circle-o"></i> Maquinarias</a></li>
               </ul>

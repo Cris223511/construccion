@@ -195,11 +195,11 @@ if (!isset($_SESSION["nombre"])) {
                       <input type="number" class="form-control" id="local_ruc" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="11" placeholder="RUC del local" disabled>
                     </div>
                     <div class="form-group col-lg-6 col-md-12">
-                      <label>Medida(*):</label>
-                      <input type="number" class="form-control" name="peso" id="peso" step="any" onkeydown="evitarNegativo(event)" oninput="if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="6" min="0" placeholder="Ingrese la medida.">
+                      <label>Medida / peso(*):</label>
+                      <input type="number" class="form-control" name="peso" id="peso" step="any" onkeydown="evitarNegativo(event)" oninput="if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="6" min="0" placeholder="Ingrese la medida o peso.">
                     </div>
                     <div class="form-group col-lg-6 col-md-12">
-                      <label>Unidad de medida(*):</label>
+                      <label>Unidad de medida / peso(*):</label>
                       <select id="idmedida" name="idmedida" class="form-control selectpicker" data-live-search="true">
                         <option value="">- Seleccione -</option>
                       </select>

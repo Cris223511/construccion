@@ -8,7 +8,7 @@ if (!isset($_SESSION["nombre"])) {
 } else {
   require 'header.php';
 
-  if ($_SESSION['entradas'] == 1) {
+  if ($_SESSION['salidas'] == 1) {
 ?>
     <style>
       .botonArt {
@@ -29,11 +29,11 @@ if (!isset($_SESSION["nombre"])) {
           <div class="col-md-12">
             <div class="box">
               <div class="box-header with-border">
-                <h1 class="box-title">Entradas
+                <h1 class="box-title">Salidas
                   <button class="btn btn-bcp" id="btnagregar" onclick="mostrarform(true)">
                     <i class="fa fa-plus-circle"></i> Agregar
                   </button>
-                  <a href="../reportes/rptentradas.php" target="_blank">
+                  <a href="../reportes/rptsalidas.php" target="_blank">
                     <button class="btn btn-secondary" style="color: black !important;">
                       <i class="fa fa-clipboard"></i> Reporte
                     </button>
@@ -69,7 +69,6 @@ if (!isset($_SESSION["nombre"])) {
                       <th>Categoría</th>
                       <th>Marca</th>
                       <th>Tipo</th>
-                      <th>Proveedor</th>
                       <th style="white-space: nowrap;">Código</th>
                       <th style="white-space: nowrap;">Fecha y hora</th>
                       <th>Estado</th>
@@ -83,7 +82,6 @@ if (!isset($_SESSION["nombre"])) {
                       <th>Categoría</th>
                       <th>Marca</th>
                       <th>Tipo</th>
-                      <th>Proveedor</th>
                       <th>Código</th>
                       <th>Fecha y hora</th>
                       <th>Estado</th>
@@ -122,19 +120,33 @@ if (!isset($_SESSION["nombre"])) {
                         <option value="">- Seleccione -</option>
                       </select>
                     </div>
-                    <div class="form-group col-lg-12 col-md-12 col-md-12">
+                    <div class="form-group col-lg-6 col-md-6 col-md-12">
                       <label>Ubicación(*):</label>
                       <input type="text" class="form-control" name="ubicacion" id="ubicacion" maxlength="50" placeholder="Ingrese la ubicación." autocomplete="off">
                     </div>
                     <div class="form-group col-lg-6 col-md-6 col-md-12">
-                      <label>Proveedor(*):</label>
-                      <select id="idproveedor" name="idproveedor" class="form-control selectpicker" data-live-search="true" required>
+                      <label>Código(*):</label>
+                      <input type="text" class="form-control" name="codigo" id="codigo" maxlength="10" placeholder="Ingrese el código de la salida." required>
+                    </div>
+                    <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                      <label>Tipo de movimiento(*):</label>
+                      <select id="tipo_movimiento" class="form-control selectpicker" onchange="evaluarMetodo()" required>
+                        <option value="">- Seleccione -</option>
+                        <option value="personal">Personal</option>
+                        <option value="maquinaria">Maquinaria</option>
+                      </select>
+                    </div>
+                    <div class="form-group col-lg-6 col-md-6 col-md-12" id="selectPersonal">
+                      <label>Personal(*):</label>
+                      <select id="idpersonal" name="idpersonal" class="form-control selectpicker" data-live-search="true" required>
                         <option value="">- Seleccione -</option>
                       </select>
                     </div>
-                    <div class="form-group col-lg-6 col-md-6 col-md-12">
-                      <label>Código(*):</label>
-                      <input type="text" class="form-control" name="codigo" id="codigo" maxlength="10" placeholder="Ingrese el código de la entrada." required>
+                    <div class="form-group col-lg-6 col-md-6 col-md-12" id="selectMaquinaria">
+                      <label>Maquinaria(*):</label>
+                      <select id="idmaquinaria" name="idmaquinaria" class="form-control selectpicker" data-live-search="true" required>
+                        <option value="">- Seleccione -</option>
+                      </select>
                     </div>
                     <div class="form-group col-lg-12 col-md-12 col-md-12">
                       <label>Descripción:</label>
@@ -237,7 +249,7 @@ if (!isset($_SESSION["nombre"])) {
 
   require 'footer.php';
   ?>
-  <script type="text/javascript" src="scripts/entradas11.js"></script>
+  <script type="text/javascript" src="scripts/salidas6.js"></script>
 <?php
 }
 ob_end_flush();

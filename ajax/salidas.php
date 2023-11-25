@@ -12,21 +12,22 @@ if (empty($_SESSION['idusuario']) || empty($_SESSION['cargo'])) {
 if (!isset($_SESSION["nombre"])) {
 	header("Location: ../vistas/login.html");
 } else {
-	if ($_SESSION['entradas'] == 1) {
-		require_once "../modelos/Entradas.php";
+	if ($_SESSION['salidas'] == 1) {
+		require_once "../modelos/Salidas.php";
 
-		$entradas = new Entrada();
+		$salidas = new Salida();
 
 		// Variables de sesión a utilizar.
 		$idusuario = $_SESSION["idusuario"];
 		$cargo = $_SESSION["cargo"];
 
-		$identrada = isset($_POST["identrada"]) ? limpiarCadena($_POST["identrada"]) : "";
+		$idsalida = isset($_POST["idsalida"]) ? limpiarCadena($_POST["idsalida"]) : "";
 		$idcategoria = isset($_POST["idcategoria"]) ? limpiarCadena($_POST["idcategoria"]) : "";
 		$idmarca = isset($_POST["idmarca"]) ? limpiarCadena($_POST["idmarca"]) : "";
 		$idmedida = isset($_POST["idmedida"]) ? limpiarCadena($_POST["idmedida"]) : "";
-		$idproveedor = isset($_POST["idproveedor"]) ? limpiarCadena($_POST["idproveedor"]) : "";
 		$idtipo = isset($_POST["idtipo"]) ? limpiarCadena($_POST["idtipo"]) : "";
+		$idmaquinaria = isset($_POST["idmaquinaria"]) ? limpiarCadena($_POST["idmaquinaria"]) : "";
+		$idpersonal = isset($_POST["idpersonal"]) ? limpiarCadena($_POST["idpersonal"]) : "";
 		$codigo = isset($_POST["codigo"]) ? limpiarCadena($_POST["codigo"]) : "";
 		$ubicacion = isset($_POST["ubicacion"]) ? limpiarCadena($_POST["ubicacion"]) : "";
 		$peso = isset($_POST["peso"]) ? limpiarCadena($_POST["peso"]) : "";
@@ -34,34 +35,39 @@ if (!isset($_SESSION["nombre"])) {
 
 		switch ($_GET["op"]) {
 			case 'guardaryeditar':
-				$rspta = $entradas->agregar($idusuario, $idcategoria, $idmarca, $idmedida, $idproveedor, $idtipo, $codigo, $ubicacion, $peso, $descripcion,  $_POST["idarticulo"], $_POST["cantidad"]);
-				echo $rspta ? "Entrada registrada" : "Una de las cantidades superan al stock normal del artículo.";
+				$codigoExiste = $salidas->verificarCodigo($codigo);
+				if ($codigoExiste) {
+					echo "El código de la salida ya existe.";
+				} else {
+					$rspta = $salidas->agregar($idusuario, $idcategoria, $idmarca, $idmedida, $idtipo, $idmaquinaria, $idpersonal, $codigo, $ubicacion, $peso, $descripcion,  $_POST["idarticulo"], $_POST["cantidad"]);
+				echo $rspta ? "Salida registrada" : "Una de las cantidades superan al stock normal del artículo.";
+				}
 				break;
 
 			case 'desactivar':
-				$rspta = $entradas->desactivar($identrada);
-				echo $rspta ? "Entrada desactivada" : "La entrada no se pudo desactivar";
+				$rspta = $salidas->desactivar($idsalida);
+				echo $rspta ? "Salida desactivada" : "La salida no se pudo desactivar";
 				break;
 
 			case 'activar':
-				$rspta = $entradas->activar($identrada);
-				echo $rspta ? "Entrada activada" : "La entrada no se pudo activar";
+				$rspta = $salidas->activar($idsalida);
+				echo $rspta ? "Salida activada" : "La salida no se pudo activar";
 				break;
 
 			case 'eliminar':
-				$rspta = $entradas->eliminar($identrada);
-				echo $rspta ? "Entrada eliminada" : "La entrada no se pudo eliminar";
+				$rspta = $salidas->eliminar($idsalida);
+				echo $rspta ? "Salida eliminada" : "La salida no se pudo eliminar";
 				break;
 
 			case 'mostrar':
-				$rspta = $entradas->mostrar($identrada);
+				$rspta = $salidas->mostrar($idsalida);
 				echo json_encode($rspta);
 				break;
 
 			case 'listarDetalle':
 				$id = $_GET['id'];
 
-				$rspta = $entradas->listarDetalle($id);
+				$rspta = $salidas->listarDetalle($id);
 
 				$total = 0;
 				echo '<thead style="background-color:#A9D0F5">
@@ -82,15 +88,15 @@ if (!isset($_SESSION["nombre"])) {
 
 				if ($cargo == "superadmin") {
 					if ($fecha_inicio == "" && $fecha_fin == "") {
-						$rspta = $entradas->listar();
+						$rspta = $salidas->listar();
 					} else {
-						$rspta = $entradas->listarPorFecha($fecha_inicio, $fecha_fin);
+						$rspta = $salidas->listarPorFecha($fecha_inicio, $fecha_fin);
 					}
 				} else {
 					if ($fecha_inicio == "" && $fecha_fin == "") {
-						$rspta = $entradas->listarPorUsuario($idusuario);
+						$rspta = $salidas->listarPorUsuario($idusuario);
 					} else {
-						$rspta = $entradas->listarPorUsuarioFecha($idusuario, $fecha_inicio, $fecha_fin);
+						$rspta = $salidas->listarPorUsuarioFecha($idusuario, $fecha_inicio, $fecha_fin);
 					}
 				}
 
@@ -127,22 +133,21 @@ if (!isset($_SESSION["nombre"])) {
 
 					$data[] = array(
 						"0" => '<div style="display: flex; flex-wrap: nowrap; gap: 3px">' .
-							mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-bcp" style="margin-right: 3px; height: 35px;" onclick="mostrar(' . $reg->identrada . ')"><i class="fa fa-eye"></i></button>') .
+							mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-bcp" style="margin-right: 3px; height: 35px;" onclick="mostrar(' . $reg->idsalida . ')"><i class="fa fa-eye"></i></button>') .
 							(($reg->estado == 'activado') ?
-								(mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-danger" style="margin-right: 3px; height: 35px;" onclick="desactivar(' . $reg->identrada . ')"><i class="fa fa-close"></i></button>')) .
-								(mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<a target="_blank" href="../reportes/exEntrada.php?id=' . $reg->identrada . '"><button class="btn btn-success" style="margin-right: 3px; height: 35px;"><i class="fa fa-file"></i></button></a>')) :
-								(mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-success" style="margin-right: 3px; width: 35px; height: 35px;" onclick="activar(' . $reg->identrada . ')"><i style="margin-left: -2px" class="fa fa-check"></i></button>'))) .
-							mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-danger" style="height: 35px;" onclick="eliminar(' . $reg->identrada . ')"><i class="fa fa-trash"></i></button>') .
+								(mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-danger" style="margin-right: 3px; height: 35px;" onclick="desactivar(' . $reg->idsalida . ')"><i class="fa fa-close"></i></button>')) .
+								(mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<a target="_blank" href="../reportes/exSalida.php?id=' . $reg->idsalida . '"><button class="btn btn-success" style="margin-right: 3px; height: 35px;"><i class="fa fa-file"></i></button></a>')) :
+								(mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-success" style="margin-right: 3px; width: 35px; height: 35px;" onclick="activar(' . $reg->idsalida . ')"><i style="margin-left: -2px" class="fa fa-check"></i></button>'))) .
+							mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-danger" style="height: 35px;" onclick="eliminar(' . $reg->idsalida . ')"><i class="fa fa-trash"></i></button>') .
 							'</div>',
 						"1" => $reg->usuario,
 						"2" => $cargo_detalle,
 						"3" => $reg->categoria,
 						"4" => $reg->marca,
 						"5" => $reg->tipo,
-						"6" => $reg->proveedor,
-						"7" => $reg->codigo,
-						"8" => $reg->fecha,
-						"9" => ($reg->estado == 'activado') ? '<span class="label bg-green">Activado</span>' :
+						"6" => $reg->codigo,
+						"7" => $reg->fecha,
+						"8" => ($reg->estado == 'activado') ? '<span class="label bg-green">Activado</span>' :
 							'<span class="label bg-red">Desactivado</span>'
 					);
 				}
@@ -186,8 +191,7 @@ if (!isset($_SESSION["nombre"])) {
 					}
 
 					$data[] = array(
-						// "0" => ($reg->stock != '0') ? '<div style="display: flex; justify-content: center;"><button class="btn btn-warning" data-idarticulo="' . $reg->idarticulo . '" onclick="agregarDetalle(' . $reg->idarticulo . ',\'' . $reg->nombre . '\',\'' . $reg->codigo . '\'); disableButton(this);"><span class="fa fa-plus"></span></button></div>' : '',
-						"0" => '<div style="display: flex; justify-content: center;"><button class="btn btn-warning" data-idarticulo="' . $reg->idarticulo . '" onclick="agregarDetalle(' . $reg->idarticulo . ',\'' . $reg->nombre . '\',\'' . $reg->codigo . '\'); disableButton(this);"><span class="fa fa-plus"></span></button></div>',
+						"0" => ($reg->stock != '0') ? '<div style="display: flex; justify-content: center;"><button class="btn btn-warning" data-idarticulo="' . $reg->idarticulo . '" onclick="agregarDetalle(' . $reg->idarticulo . ',\'' . $reg->nombre . '\',\'' . $reg->codigo . '\'); disableButton(this);"><span class="fa fa-plus"></span></button></div>' : '',
 						"1" => $reg->usuario,
 						"2" => $cargo_detalle,
 						"3" => $reg->nombre,
@@ -255,9 +259,9 @@ if (!isset($_SESSION["nombre"])) {
 
 			case 'listarTodosActivos':
 				if ($cargo == "superadmin") {
-					$rspta = $entradas->listarTodosActivos();
+					$rspta = $salidas->listarTodosActivos();
 				} else {
-					$rspta = $entradas->listarTodosActivosPorUsuario($idusuario);
+					$rspta = $salidas->listarTodosActivosPorUsuario($idusuario);
 				}
 
 				$result = mysqli_fetch_all($rspta, MYSQLI_ASSOC);

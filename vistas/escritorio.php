@@ -9,6 +9,44 @@ if (!isset($_SESSION["nombre"])) {
   require 'header.php';
 
   if ($_SESSION['escritorio'] == 1) {
+    require_once "../modelos/Consultas.php";
+    $consulta = new Consultas();
+
+    $rsptaE = $consulta->totalentradahoy();
+    $regE = $rsptaE->fetch_object();
+    $totalE = $regE->cantidad;
+
+    $rsptaS = $consulta->totalsalidahoy();
+    $regS = $rsptaS->fetch_object();
+    $totalS = $regS->cantidad;
+
+    //Datos para mostrar el gráfico de barras de las entradas
+    $entrada10 = $consulta->entradasultimos_10dias();
+
+    $fechasE = '';
+    $totalesE = '';
+
+    while ($regfechaE = $entrada10->fetch_object()) {
+      $fechasE = $fechasE . '"' . $regfechaE->fecha . '",';
+      $totalesE = $totalesE . $regfechaE->total . ',';
+    }
+
+    $fechasE = substr($fechasE, 0, -1);
+    $totalesE = substr($totalesE, 0, -1);
+
+    //Datos para mostrar el gráfico de barras de las salidas
+    $salidas12 = $consulta->salidasultimos_12meses();
+
+    $fechasS = '';
+    $totalesS = '';
+
+    while ($regfechaS = $salidas12->fetch_object()) {
+      $fechasS = $fechasS . '"' . $regfechaS->fecha . '",';
+      $totalesS = $totalesS . $regfechaS->total . ',';
+    }
+
+    $fechasS = substr($fechasS, 0, -1);
+    $totalesS = substr($totalesS, 0, -1);
 ?>
     <div class="content-wrapper">
       <section class="content">
@@ -21,6 +59,56 @@ if (!isset($_SESSION["nombre"])) {
                 </div>
               </div>
               <div class="panel-body">
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                  <div class="small-box bg-aqua">
+                    <div class="inner">
+                      <h4 style="font-size:17px;">
+                        <strong>Total: <?php echo $totalE; ?></strong>
+                      </h4>
+                      <p>Entradas</p>
+                    </div>
+                    <div class="icon">
+                      <i class="ion ion-bag"></i>
+                    </div>
+                    <a href="entradas.php" class="small-box-footer">Entradas <i class="fa fa-arrow-circle-right"></i></a>
+                  </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                  <div class="small-box bg-green">
+                    <div class="inner">
+                      <h4 style="font-size:17px;">
+                        <strong>Total: <?php echo $totalS; ?></strong>
+                      </h4>
+                      <p>Salidas</p>
+                    </div>
+                    <div class="icon">
+                      <i class="ion ion-bag"></i>
+                    </div>
+                    <a href="salidas.php" class="small-box-footer">Salidas <i class="fa fa-arrow-circle-right"></i></a>
+                  </div>
+                </div>
+              </div>
+              <div class="panel-body">
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                  <div class="box box-primary">
+                    <div class="box-header with-border">
+                      Entradas en los últimos 10 días
+                    </div>
+                    <div class="box-body">
+                      <canvas id="entradas" width="400" height="300"></canvas>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                  <div class="box box-primary">
+                    <div class="box-header with-border">
+                      Salidas en los últimos 12 meses
+                    </div>
+                    <div class="box-body">
+                      <canvas id="salidas" width="400" height="300"></canvas>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -37,7 +125,99 @@ if (!isset($_SESSION["nombre"])) {
 
   <script src="../public/js/chart.min.js"></script>
   <script src="../public/js/Chart.bundle.min.js"></script>
+  <script type="text/javascript">
+    var ctx = document.getElementById("entradas").getContext('2d');
+    var entradas = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: [<?php echo $fechasE; ?>],
+        datasets: [{
+          label: 'Entradas en los últimos 10 días',
+          data: [<?php echo $totalesE; ?>],
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(255, 206, 86, 0.2)',
+            'rgba(75, 192, 192, 0.2)',
+            'rgba(153, 102, 255, 0.2)',
+            'rgba(255, 159, 64, 0.2)',
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(255, 206, 86, 0.2)',
+            'rgba(75, 192, 192, 0.2)'
+          ],
+          borderColor: [
+            'rgba(255,99,132,1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(153, 102, 255, 1)',
+            'rgba(255, 159, 64, 1)',
+            'rgba(255,99,132,1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)'
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true
+            }
+          }]
+        }
+      }
+    });
 
+    var ctx = document.getElementById("salidas").getContext('2d');
+    var salidas = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: [<?php echo $fechasS; ?>],
+        datasets: [{
+          label: 'Salidas en los últimos 12 meses',
+          data: [<?php echo $totalesS; ?>],
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(255, 206, 86, 0.2)',
+            'rgba(75, 192, 192, 0.2)',
+            'rgba(153, 102, 255, 0.2)',
+            'rgba(255, 159, 64, 0.2)',
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(255, 206, 86, 0.2)',
+            'rgba(75, 192, 192, 0.2)'
+          ],
+          borderColor: [
+            'rgba(255,99,132,1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(153, 102, 255, 1)',
+            'rgba(255, 159, 64, 1)',
+            'rgba(255,99,132,1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)'
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true
+            }
+          }]
+        }
+      }
+    });
+  </script>
 <?php
 }
 ob_end_flush();

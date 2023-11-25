@@ -7,18 +7,44 @@ class Entrada
 	{
 	}
 
-	public function agregar($idusuario, $titulo, $descripcion)
+	public function agregar($idusuario, $idcategoria, $idmarca, $idmedida, $idproveedor, $idtipo, $codigo, $ubicacion, $peso, $descripcion, $idarticulo, $cantidad)
 	{
+		// // Primero, debemos verificar si hay suficiente stock para cada artículo
+		// $error = $this->validarStock($idarticulo, $cantidad);
+		// if ($error) {
+		// 	// Si hay un error, no se puede insertar
+		// 	return false;
+		// }
+
 		date_default_timezone_set("America/Lima");
-		$sql = "INSERT INTO entradas (idusuario, titulo, descripcion, fecha_hora, estado, eliminado)
-            VALUES ('$idusuario','$titulo', '$descripcion', SYSDATE(), 'activado','0')";
-		return ejecutarConsulta($sql);
+		// Si no hay errores, continuamos con el registro de la entrada
+		$sql = "INSERT INTO entradas (idusuario,idcategoria,idmarca,idmedida,idproveedor,idtipo,codigo,ubicacion,peso,descripcion,fecha_hora,estado)
+            VALUES ('$idusuario','$idcategoria','$idmarca','$idmedida','$idproveedor','$idtipo','$codigo','$ubicacion','$peso','$descripcion', SYSDATE(), 'activado')";
+		$identradanew = ejecutarConsulta_retornarID($sql);
+
+		$num_elementos = 0;
+		$sw = true;
+
+		while ($num_elementos < count($idarticulo)) {
+			$sql_detalle = "INSERT INTO detalle_entrada(identrada,idarticulo,cantidad) VALUES ('$identradanew', '$idarticulo[$num_elementos]','$cantidad[$num_elementos]')";
+			ejecutarConsulta($sql_detalle) or $sw = false;
+			$num_elementos = $num_elementos + 1;
+		}
+
+		return $sw;
 	}
 
-	public function editar($identrada, $titulo, $descripcion)
+	public function validarStock($idarticulo, $cantidad)
 	{
-		$sql = "UPDATE entradas SET titulo='$titulo',descripcion='$descripcion' WHERE identrada='$identrada'";
-		return ejecutarConsulta($sql);
+		for ($i = 0; $i < count($idarticulo); $i++) {
+			$sql = "SELECT stock FROM articulo WHERE idarticulo = '$idarticulo[$i]'";
+			$res = ejecutarConsultaSimpleFila($sql);
+			$stockActual = $res['stock'];
+			if ($cantidad[$i] > $stockActual) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public function desactivar($identrada)
@@ -35,7 +61,7 @@ class Entrada
 
 	public function eliminar($identrada)
 	{
-		$sql = "UPDATE entradas SET eliminado = '1' WHERE identrada='$identrada'";
+		$sql = "DELETE FROM entradas WHERE identrada='$identrada'";
 		return ejecutarConsulta($sql);
 	}
 
@@ -47,39 +73,43 @@ class Entrada
 
 	public function listar()
 	{
-		$sql = "SELECT e.identrada,e.idusuario,u.nombre as usuario,u.cargo as cargo,u.cargo,c.titulo as categoria,m.titulo as marca,t.titulo as tipo,p.nombre as proveedor,e.cantidad,e.codigo,e.ubicacion,e.tipo_documento,e.num_documento,e.descripcion,e.descripcion,DATE_FORMAT(e.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,e.estado FROM entradas e LEFT JOIN categoria c ON e.idcategoria=c.idcategoria LEFT JOIN tipos t ON e.idtipo=t.idtipo LEFT JOIN proveedores p ON e.idproveedor=p.idproveedor LEFT JOIN usuario u ON e.idusuario=u.idusuario LEFT JOIN marcas m ON e.idmarca=e.idmarca WHERE e.eliminado = '0' ORDER BY e.identrada DESC";
+		$sql = "SELECT e.identrada,e.idusuario,u.nombre as usuario,u.cargo as cargo,u.cargo,c.titulo as categoria,m.titulo as marca,t.titulo as tipo,p.nombre as proveedor,e.codigo,e.ubicacion,e.peso,e.descripcion,e.descripcion,DATE_FORMAT(e.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,e.estado FROM entradas e LEFT JOIN categoria c ON e.idcategoria=c.idcategoria LEFT JOIN tipos t ON e.idtipo=t.idtipo LEFT JOIN proveedores p ON e.idproveedor=p.idproveedor LEFT JOIN usuario u ON e.idusuario=u.idusuario LEFT JOIN marcas m ON e.idmarca=m.idmarca ORDER BY e.identrada DESC";
 		return ejecutarConsulta($sql);
 	}
 
 	public function listarPorFecha($fecha_inicio, $fecha_fin)
 	{
-		$sql = "SELECT e.identrada,e.idusuario,u.nombre as usuario,u.cargo as cargo,u.cargo,c.titulo as categoria,m.titulo as marca,t.titulo as tipo,p.nombre as proveedor,e.cantidad,e.codigo,e.ubicacion,e.tipo_documento,e.num_documento,e.descripcion,e.descripcion,DATE_FORMAT(e.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,e.estado FROM entradas e LEFT JOIN categoria c ON e.idcategoria=c.idcategoria LEFT JOIN tipos t ON e.idtipo=t.idtipo LEFT JOIN proveedores p ON e.idproveedor=p.idproveedor LEFT JOIN usuario u ON e.idusuario=u.idusuario LEFT JOIN marcas m ON e.idmarca=e.idmarca WHERE e.eliminado = '0' AND DATE(e.fecha_hora) >= '$fecha_inicio' AND DATE(e.fecha_hora) <= '$fecha_fin' ORDER BY e.identrada DESC";
+		$sql = "SELECT e.identrada,e.idusuario,u.nombre as usuario,u.cargo as cargo,u.cargo,c.titulo as categoria,m.titulo as marca,t.titulo as tipo,p.nombre as proveedor,e.codigo,e.ubicacion,e.peso,e.descripcion,e.descripcion,DATE_FORMAT(e.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,e.estado FROM entradas e LEFT JOIN categoria c ON e.idcategoria=c.idcategoria LEFT JOIN tipos t ON e.idtipo=t.idtipo LEFT JOIN proveedores p ON e.idproveedor=p.idproveedor LEFT JOIN usuario u ON e.idusuario=u.idusuario LEFT JOIN marcas m ON e.idmarca=m.idmarca AND DATE(e.fecha_hora) >= '$fecha_inicio' AND DATE(e.fecha_hora) <= '$fecha_fin' ORDER BY e.identrada DESC";
 		return ejecutarConsulta($sql);
 	}
 
 	public function listarPorUsuario($idusuario)
 	{
-		$sql = "SELECT e.identrada,e.idusuario,u.nombre as usuario,u.cargo as cargo,u.cargo,c.titulo as categoria,m.titulo as marca,t.titulo as tipo,p.nombre as proveedor,e.cantidad,e.codigo,e.ubicacion,e.tipo_documento,e.num_documento,e.descripcion,e.descripcion,DATE_FORMAT(e.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,e.estado FROM entradas e LEFT JOIN categoria c ON e.idcategoria=c.idcategoria LEFT JOIN tipos t ON e.idtipo=t.idtipo LEFT JOIN proveedores p ON e.idproveedor=p.idproveedor LEFT JOIN usuario u ON e.idusuario=u.idusuario LEFT JOIN marcas m ON e.idmarca=e.idmarca WHERE e.idusuario = '$idusuario' AND e.eliminado = '0' ORDER BY e.identrada DESC";
+		$sql = "SELECT e.identrada,e.idusuario,u.nombre as usuario,u.cargo as cargo,u.cargo,c.titulo as categoria,m.titulo as marca,t.titulo as tipo,p.nombre as proveedor,e.codigo,e.ubicacion,e.peso,e.descripcion,e.descripcion,DATE_FORMAT(e.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,e.estado FROM entradas e LEFT JOIN categoria c ON e.idcategoria=c.idcategoria LEFT JOIN tipos t ON e.idtipo=t.idtipo LEFT JOIN proveedores p ON e.idproveedor=p.idproveedor LEFT JOIN usuario u ON e.idusuario=u.idusuario LEFT JOIN marcas m ON e.idmarca=m.idmarca WHERE e.idusuario = '$idusuario' ORDER BY e.identrada DESC";
 		return ejecutarConsulta($sql);
 	}
 
 	public function listarPorUsuarioFecha($idusuario, $fecha_inicio, $fecha_fin)
 	{
-		$sql = "SELECT e.identrada,e.idusuario,u.nombre as usuario,u.cargo as cargo,u.cargo,c.titulo as categoria,m.titulo as marca,t.titulo as tipo,p.nombre as proveedor,e.cantidad,e.codigo,e.ubicacion,e.tipo_documento,e.num_documento,e.descripcion,e.descripcion,DATE_FORMAT(e.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,e.estado FROM entradas e LEFT JOIN categoria c ON e.idcategoria=c.idcategoria LEFT JOIN tipos t ON e.idtipo=t.idtipo LEFT JOIN proveedores p ON e.idproveedor=p.idproveedor LEFT JOIN usuario u ON e.idusuario=u.idusuario LEFT JOIN marcas m ON e.idmarca=e.idmarca WHERE e.idusuario = '$idusuario' AND e.eliminado = '0' AND DATE(e.fecha_hora) >= '$fecha_inicio' AND DATE(e.fecha_hora) <= '$fecha_fin' ORDER BY e.identrada DESC";
+		$sql = "SELECT e.identrada,e.idusuario,u.nombre as usuario,u.cargo as cargo,u.cargo,c.titulo as categoria,m.titulo as marca,t.titulo as tipo,p.nombre as proveedor,e.codigo,e.ubicacion,e.peso,e.descripcion,e.descripcion,DATE_FORMAT(e.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,e.estado FROM entradas e LEFT JOIN categoria c ON e.idcategoria=c.idcategoria LEFT JOIN tipos t ON e.idtipo=t.idtipo LEFT JOIN proveedores p ON e.idproveedor=p.idproveedor LEFT JOIN usuario u ON e.idusuario=u.idusuario LEFT JOIN marcas m ON e.idmarca=m.idmarca WHERE e.idusuario = '$idusuario' AND DATE(e.fecha_hora) >= '$fecha_inicio' AND DATE(e.fecha_hora) <= '$fecha_fin' ORDER BY e.identrada DESC";
 		return ejecutarConsulta($sql);
 	}
 
-	public function listarActivos()
+	public function listarCabecera($identrada)
 	{
-		$sql = "SELECT identrada, titulo FROM entradas WHERE estado='activado' AND eliminado = '0' ORDER BY identrada DESC";
+		$sql = "SELECT e.identrada,p.nombre, p.tipo_documento, p.num_documento, p.direccion, p.email, p.direccion, p.telefono, e.codigo,DATE_FORMAT(e.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha FROM entradas e LEFT JOIN proveedores p ON e.idproveedor=p.idproveedor WHERE e.identrada = '$identrada' ORDER BY e.identrada DESC";
 		return ejecutarConsulta($sql);
 	}
 
 	public function listarDetalle($identrada)
 	{
-		$sql = "SELECT de.identrada,de.idarticulo,a.nombre,a.codigo,de.cantidad FROM detalle_entrada de LEFT JOIN articulo a on de.idarticulo=a.idarticulo where de.identrada='$identrada'";
+		$sql = "SELECT de.identrada, de.idarticulo, a.nombre AS articulo, a.codigo, a.codigo_producto, de.cantidad
+				FROM detalle_entrada de
+				LEFT JOIN articulo a ON de.idarticulo = a.idarticulo
+				WHERE de.identrada = '$identrada'";
 		return ejecutarConsulta($sql);
 	}
+
 
 	/* ======================= SELECTS ======================= */
 

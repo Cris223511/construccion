@@ -1,4 +1,13 @@
 var tabla;
+var tabla2;
+
+function bloquearCampos() {
+	$("input, select, textarea").prop("disabled", true);
+}
+
+function desbloquearCampos() {
+	$("input, select, textarea").prop("disabled", false);
+}
 
 function init() {
 	mostrarform(false);
@@ -52,12 +61,13 @@ function init() {
 }
 
 function limpiar() {
+	desbloquearCampos();
+
 	$("#codigo").val("");
 	$("#codigo_producto").val("");
 	$("#nombre").val("");
 	$("#descripcion").val("");
 	$("#peso").val("");
-	$("#cantidad").val("");
 	$("#ubicacion").val("");
 	$("#print").hide();
 	$("#identrada").val("");
@@ -76,6 +86,8 @@ function limpiar() {
 	$(".filas").remove();
 	$('#myModal').modal('hide');
 	$("#btnAgregarArt").show();
+	$("#btnGuardar").hide();
+	$("#botonArt").show();
 	$("#form_codigo_barra").show();
 	$('#tblarticulos button').removeAttr('disabled');
 }
@@ -139,7 +151,7 @@ function listar() {
 			"iDisplayLength": 5,
 			"order": [],
 			"createdRow": function (row, data, dataIndex) {
-				$(row).find('td:eq(0), td:eq(1), td:eq(3), td:eq(4), td:eq(5), td:eq(6)').addClass('nowrap-cell');
+				$(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(3), td:eq(4), td:eq(5), td:eq(6), td:eq(7), td:eq(8), td:eq(9)').addClass('nowrap-cell');
 			}
 		}).DataTable();
 }
@@ -191,7 +203,7 @@ function buscar() {
 			"iDisplayLength": 5,
 			"order": [],
 			"createdRow": function (row, data, dataIndex) {
-				$(row).find('td:eq(0), td:eq(1), td:eq(3), td:eq(4), td:eq(5), td:eq(6)').addClass('nowrap-cell');
+				$(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(3), td:eq(4), td:eq(5), td:eq(6), td:eq(7), td:eq(8), td:eq(9)').addClass('nowrap-cell');
 			}
 		}).DataTable();
 }
@@ -213,11 +225,12 @@ function guardaryeditar(e) {
 		processData: false,
 
 		success: function (datos) {
-			if (datos == "El nombre de la entrada ya existe.") {
+			if (datos == "Una de las cantidades superan al stock normal del artículo.") {
 				bootbox.alert(datos);
 				$("#btnGuardar").prop("disabled", false);
 				return;
 			}
+
 			limpiar();
 			bootbox.alert(datos);
 			mostrarform(false);
@@ -227,13 +240,10 @@ function guardaryeditar(e) {
 }
 
 function mostrar(identrada) {
-	$("#form_codigo_barra").hide();
-	$("#btnAgregarArt").hide();
-
 	$.post("../ajax/entradas.php?op=mostrar", { identrada: identrada }, function (data, status) {
 		data = JSON.parse(data);
 		mostrarform(true);
-
+		bloquearCampos();
 		console.log(data);
 
 		$("#idcategoria").val(data.idcategoria);
@@ -251,11 +261,19 @@ function mostrar(identrada) {
 		$("#nombre").val(data.nombre);
 		$("#descripcion").val(data.descripcion);
 		$("#peso").val(data.peso);
-		$("#cantidad").val(data.cantidad);
 		$("#ubicacion").val(data.ubicacion);
 		$("#print").hide();
 		$("#identrada").val(data.identrada);
+
+		$("#botonArt").hide();
+		$("#form_codigo_barra").hide();
+
+		$.post("../ajax/entradas.php?op=listarDetalle&id=" + identrada, function (r) {
+			// console.log(r);
+			$("#detalles").html(r);
+		})
 	})
+
 }
 
 function desactivar(identrada) {
@@ -293,7 +311,7 @@ function eliminar(identrada) {
 
 //Función ListarArticulos
 function listarArticulos() {
-	tabla = $('#tblarticulos').DataTable({
+	tabla2 = $('#tblarticulos').DataTable({
 		"aProcessing": true,
 		"aServerSide": true,
 		"dom": 'Bfrtip',
@@ -349,7 +367,6 @@ $("#btnGuardar").hide();
 
 function agregarDetalle(idarticulo, articulo, codigo) {
 	var cantidad = 1;
-	var descuento = 0;
 
 	if (idarticulo != "") {
 		var fila = '<tr class="filas" id="fila' + cont + '">' +
@@ -421,9 +438,13 @@ function llenarTabla() {
 function evaluar() {
 	if (detalles > 0) {
 		$("#btnGuardar").show();
+		$("#btnGuardar").prop("disabled", false);
+
 	}
 	else {
 		$("#btnGuardar").hide();
+		$("#btnGuardar").prop("disabled", false);
+
 		cont = 0;
 	}
 }

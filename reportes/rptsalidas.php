@@ -7,7 +7,7 @@ if (strlen(session_id()) < 1)
 if (!isset($_SESSION["nombre"])) {
   echo 'Debe ingresar al sistema correctamente para visualizar el reporte';
 } else {
-  if ($_SESSION['entradas'] == 1) {
+  if ($_SESSION['salidas'] == 1) {
 
     require('PDF_MC_Table.php');
 
@@ -20,17 +20,16 @@ if (!isset($_SESSION["nombre"])) {
     $pdf->SetFont('Arial', 'B', 12);
 
     $pdf->Cell(40, 6, '', 0, 0, 'C');
-    $pdf->Cell(200, 6, 'LISTA DE ENTRADAS', 1, 0, 'C');
+    $pdf->Cell(200, 6, 'LISTA DE SALIDAS', 1, 0, 'C');
     $pdf->Ln(10);
 
     $pdf->SetFillColor(232, 232, 232);
     $pdf->SetFont('Arial', 'B', 10);
-    $pdf->Cell(46, 6, utf8_decode('Categoría'), 1, 0, 'C', 1);
-    $pdf->Cell(46, 6, utf8_decode('Marca'), 1, 0, 'C', 1);
-    $pdf->Cell(46, 6, utf8_decode('Tipo'), 1, 0, 'C', 1);
-    $pdf->Cell(60, 6, utf8_decode('Proveedor'), 1, 0, 'C', 1);
-    $pdf->Cell(46, 6, utf8_decode('Código'), 1, 0, 'C', 1);
-    $pdf->Cell(30, 6, utf8_decode('Estado'), 1, 0, 'C', 1);
+    $pdf->Cell(58, 6, utf8_decode('Categoría'), 1, 0, 'C', 1);
+    $pdf->Cell(58, 6, utf8_decode('Marca'), 1, 0, 'C', 1);
+    $pdf->Cell(58, 6, utf8_decode('Tipo'), 1, 0, 'C', 1);
+    $pdf->Cell(58, 6, utf8_decode('Código'), 1, 0, 'C', 1);
+    $pdf->Cell(42, 6, utf8_decode('Estado'), 1, 0, 'C', 1);
 
     $pdf->Ln(10);
     require_once "../modelos/Entradas.php";
@@ -45,18 +44,17 @@ if (!isset($_SESSION["nombre"])) {
       $rspta = $entrada->listarPorUsuario($idusuario);
     }
 
-    $pdf->SetWidths(array(46, 46, 46, 60, 46, 30));
+    $pdf->SetWidths(array(58, 58, 58, 58, 42));
 
     while ($reg = $rspta->fetch_object()) {
       $categoria = $reg->categoria;
       $marca = $reg->marca;
       $tipo = $reg->tipo;
-      $proveedor = $reg->proveedor;
       $codigo = $reg->codigo;
       $estado = $reg->estado;
 
       $pdf->SetFont('Arial', '', 10);
-      $pdf->Row(array(utf8_decode($categoria), utf8_decode($marca), utf8_decode($tipo), utf8_decode($proveedor), $codigo, $estado));
+      $pdf->Row(array(utf8_decode($categoria), utf8_decode($marca), utf8_decode($tipo), $codigo, $estado));
     }
 
     $pdf->Output();
