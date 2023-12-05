@@ -1,12 +1,64 @@
 var tabla;
 var tabla2;
+var letraCorrelativo = "";
+var siguienteCorrelativo = "";
+
+function nowrapCell() {
+	var detallesTable = document.getElementById("detalles");
+	var tdList = detallesTable.querySelectorAll("td");
+
+	tdList.forEach(function (td) {
+		td.classList.add("nowrap-cell");
+	});
+}
 
 function bloquearCampos() {
-	$("input, select, textarea").prop("disabled", true);
+	$("input, select, textarea").not("#fecha_hora").prop("disabled", true);
 }
 
 function desbloquearCampos() {
-	$("input, select, textarea").prop("disabled", false);
+	$("input, select, textarea").not("#fecha_hora").prop("disabled", false);
+}
+
+function convertirMayus() {
+	var inputCodigo = document.getElementById("cod_1");
+	inputCodigo.value = inputCodigo.value.toUpperCase();
+}
+
+function onlyLetters() {
+	var inputCodigo = document.getElementById("cod_1");
+	inputCodigo.value = inputCodigo.value.replace(/[^A-Za-z]/g, '');
+}
+
+function actualizarCorrelativo() {
+	$.post("../ajax/salidas.php?op=getLastNumCodigo", function (num) {
+		console.log(num);
+		const { letras, numeros } = separarLetrasYNumeros(num);
+		letraCorrelativo = letras;
+		siguienteCorrelativo = generarSiguienteCorrelativo(numeros);
+		$("#cod_1").val(letraCorrelativo);
+		$("#cod_2").val(siguienteCorrelativo);
+	});
+}
+
+function separarLetrasYNumeros(correlativoActual) {
+	const matches = correlativoActual.match(/([A-Za-z]+)([0-9]+)/);
+
+	if (matches && matches.length === 3) {
+		const letras = matches[1];  // Grupo 1: Letras
+		const numeros = matches[2]; // Grupo 2: Números
+		return { letras, numeros };
+	} else {
+		console.error("Formato de correlativo no válido");
+		return { letras: "", numeros: "" };
+	}
+}
+
+function generarSiguienteCorrelativo(numeros) {
+	const siguienteNumero = parseInt(numeros, 10) + 1;
+	const longitud = numeros.length;
+	const siguienteCorrelativo = String(siguienteNumero).padStart(longitud, '0');
+	return siguienteCorrelativo;
 }
 
 function init() {
@@ -14,6 +66,7 @@ function init() {
 	limpiar();
 	listar();
 	listarArticulos();
+	actualizarFecha();
 
 	$("#formulario").on("submit", function (e) {
 		guardaryeditar(e);
@@ -25,20 +78,33 @@ function init() {
 	$('[data-toggle="popover"]').popover();
 
 	$.post("../ajax/salidas.php?op=listarTodosActivos", function (data) {
-		// console.log(data)
+		// console.log(data);
 		const obj = JSON.parse(data);
 		console.log(obj);
 
 		const selects = {
-			"idmarca": $("#idmarca"),
-			"idcategoria": $("#idcategoria"),
-			"idmedida": $("#idmedida"),
 			"idtipo": $("#idtipo"),
 			"idpersonal": $("#idpersonal"),
+			"idautorizado": $("#idautorizado"),
+			"identregado": $("#identregado"),
+			"idrecibido": $("#idrecibido"),
 			"idmaquinaria": $("#idmaquinaria"),
 		};
 
 		for (const selectId in selects) {
+			if (obj.hasOwnProperty('correlativo') && obj.correlativo.length > 0) {
+				const correlativoActual = obj.correlativo[0].titulo || "PRO00000";
+				const { letras, numeros } = separarLetrasYNumeros(correlativoActual);
+
+				letraCorrelativo = letras;
+				siguienteCorrelativo = generarSiguienteCorrelativo(numeros);
+
+				$("#cod_1").val(letraCorrelativo);
+				$("#cod_2").val(siguienteCorrelativo);
+			} else {
+				console.error("No se encontró el correlativo en el objeto");
+			}
+
 			if (selects.hasOwnProperty(selectId)) {
 				const select = selects[selectId];
 				const atributo = selectId.replace('id', '');
@@ -63,31 +129,32 @@ function init() {
 
 function limpiar() {
 	desbloquearCampos();
+	actualizarFecha();
 
-	$("#codigo").val("");
+	$("#cod_1").val(letraCorrelativo);
+	$("#cod_2").val(siguienteCorrelativo);
 	$("#codigo_producto").val("");
 	$("#nombre").val("");
 	$("#descripcion").val("");
-	$("#peso").val("");
 	$("#ubicacion").val("");
 	$("#print").hide();
 	$("#idsalida").val("");
 
-	$("#selectPersonal").hide();
+	$(".selectPersonal").hide();
 	$("#selectMaquinaria").hide();
 
-	$("#idcategoria").val($("#idcategoria option:first").val());
-	$("#idcategoria").selectpicker('refresh');
-	$("#idmarca").val($("#idmarca option:first").val());
-	$("#idmarca").selectpicker('refresh');
-	$("#idmedida").val($("#idmedida option:first").val());
-	$("#idmedida").selectpicker('refresh');
 	$("#idtipo").val($("#idtipo option:first").val());
 	$("#idtipo").selectpicker('refresh');
 	$("#tipo_movimiento").val($("#tipo_movimiento option:first").val());
 	$("#tipo_movimiento").selectpicker('refresh');
 	$("#idpersonal").val($("#idpersonal option:first").val());
 	$("#idpersonal").selectpicker('refresh');
+	$("#idautorizado").val($("#idautorizado option:first").val());
+	$("#idautorizado").selectpicker('refresh');
+	$("#identregado").val($("#identregado option:first").val());
+	$("#identregado").selectpicker('refresh');
+	$("#idrecibido").val($("#idrecibido option:first").val());
+	$("#idrecibido").selectpicker('refresh');
 	$("#idmaquinaria").val($("#idmaquinaria option:first").val());
 	$("#idmaquinaria").selectpicker('refresh');
 
@@ -105,10 +172,13 @@ function mostrarform(flag) {
 	if (flag) {
 		$(".listadoregistros").hide();
 		$("#formularioregistros").show();
+		$("#btnGuardar").prop("disabled", false);
+		$("#btnagregar").hide();
 	}
 	else {
 		$(".listadoregistros").show();
 		$("#formularioregistros").hide();
+		$("#btnagregar").show();
 	}
 }
 
@@ -159,7 +229,7 @@ function listar() {
 			"iDisplayLength": 5,
 			"order": [],
 			"createdRow": function (row, data, dataIndex) {
-				$(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(3), td:eq(4), td:eq(5), td:eq(6), td:eq(7), td:eq(8), td:eq(9)').addClass('nowrap-cell');
+				$(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(3), td:eq(4), td:eq(5), td:eq(6), td:eq(7), td:eq(8), td:eq(9), td:eq(10), td:eq(11), td:eq(12)').addClass('nowrap-cell');
 			}
 		}).DataTable();
 }
@@ -211,7 +281,7 @@ function buscar() {
 			"iDisplayLength": 5,
 			"order": [],
 			"createdRow": function (row, data, dataIndex) {
-				$(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(3), td:eq(4), td:eq(5), td:eq(6), td:eq(7), td:eq(8), td:eq(9)').addClass('nowrap-cell');
+				$(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(3), td:eq(4), td:eq(5), td:eq(6), td:eq(7), td:eq(8), td:eq(9), td:eq(10), td:eq(11), td:eq(12)').addClass('nowrap-cell');
 			}
 		}).DataTable();
 }
@@ -223,7 +293,14 @@ function disableButton(button) {
 function guardaryeditar(e) {
 	e.preventDefault();
 	$("#btnGuardar").prop("disabled", true);
+
+	var letras = $("#cod_1").val();
+	var numeros = $("#cod_2").val();
+	var codigo = letras + numeros;
+
 	var formData = new FormData($("#formulario")[0]);
+
+	formData.append('codigo', codigo);
 
 	$.ajax({
 		url: "../ajax/salidas.php?op=guardaryeditar",
@@ -233,7 +310,7 @@ function guardaryeditar(e) {
 		processData: false,
 
 		success: function (datos) {
-			if (datos == "Una de las cantidades superan al stock normal del artículo." || datos == "El código de la salida ya existe.") {
+			if (datos == "Una de las cantidades superan al stock normal del artículo." || datos == "El N° de documento de la salida ya existe.") {
 				bootbox.alert(datos);
 				$("#btnGuardar").prop("disabled", false);
 				return;
@@ -243,6 +320,7 @@ function guardaryeditar(e) {
 			bootbox.alert(datos);
 			mostrarform(false);
 			tabla.ajax.reload();
+			actualizarCorrelativo();
 		}
 	});
 }
@@ -254,12 +332,6 @@ function mostrar(idsalida) {
 		bloquearCampos();
 		console.log(data);
 
-		$("#idcategoria").val(data.idcategoria);
-		$('#idcategoria').selectpicker('refresh');
-		$("#idmarca").val(data.idmarca);
-		$('#idmarca').selectpicker('refresh');
-		$("#idmedida").val(data.idmedida);
-		$('#idmedida').selectpicker('refresh');
 		$("#idtipo").val(data.idtipo);
 		$('#idtipo').selectpicker('refresh');
 
@@ -275,15 +347,25 @@ function mostrar(idsalida) {
 
 		$("#idpersonal").val(data.idpersonal);
 		$('#idpersonal').selectpicker('refresh');
+		$("#idautorizado").val(data.idautorizado);
+		$('#idautorizado').selectpicker('refresh');
+		$("#identregado").val(data.identregado);
+		$('#identregado').selectpicker('refresh');
+		$("#idrecibido").val(data.idrecibido);
+		$('#idrecibido').selectpicker('refresh');
 		$("#idmaquinaria").val(data.idmaquinaria);
 		$('#idmaquinaria').selectpicker('refresh');
 
-		$("#codigo").val(data.codigo);
+		const { letras, numeros } = separarLetrasYNumeros(data.codigo);
+		// Establecer valores en los campos correspondientes
+		$("#cod_1").val(letras);
+		$("#cod_2").val(numeros);
+
 		$("#codigo_producto").val(data.codigo_producto);
 		$("#nombre").val(data.nombre);
 		$("#descripcion").val(data.descripcion);
-		$("#peso").val(data.peso);
 		$("#ubicacion").val(data.ubicacion);
+		$("#fecha_hora").val(data.fecha_hora);
 		$("#print").hide();
 		$("#idsalida").val(data.idsalida);
 
@@ -293,9 +375,9 @@ function mostrar(idsalida) {
 		$.post("../ajax/salidas.php?op=listarDetalle&id=" + idsalida, function (r) {
 			// console.log(r);
 			$("#detalles").html(r);
+			nowrapCell();
 		})
 	})
-
 }
 
 function desactivar(idsalida) {
@@ -326,6 +408,7 @@ function eliminar(idsalida) {
 			$.post("../ajax/salidas.php?op=eliminar", { idsalida: idsalida }, function (e) {
 				bootbox.alert(e);
 				tabla.ajax.reload();
+				actualizarCorrelativo();
 			});
 		}
 	})
@@ -387,15 +470,22 @@ var detalles = 0;
 //$("#guardar").hide();
 $("#btnGuardar").hide();
 
-function agregarDetalle(idarticulo, articulo, codigo) {
+function agregarDetalle(idarticulo, articulo, categoria, marca, medida, codigo_producto, codigo, stock, stock_minimo, imagen) {
 	var cantidad = 1;
 
 	if (idarticulo != "") {
 		var fila = '<tr class="filas" id="fila' + cont + '">' +
 			'<td><button type="button" class="btn btn-danger" onclick="eliminarDetalle(' + cont + ', ' + idarticulo + ')">X</button></td>' +
 			'<td><input type="hidden" name="idarticulo[]" value="' + idarticulo + '">' + articulo + '</td>' +
-			'<td><input type="number" name="cantidad[]" id="cantidad[]" value="' + cantidad + '"></td>' +
+			'<td>' + categoria + '</td>' +
+			'<td>' + marca + '</td>' +
+			'<td><input type="text" name="cantidad[]" id="cantidad[]" step="any" onkeydown="evitarNegativo(event)" oninput="validarNumeroDecimal(this, 6)" value="' + cantidad + '"></td>' +
+			'<td>' + medida + '</td>' +
+			'<td>' + codigo_producto + '</td>' +
 			'<td>' + codigo + '</td>' +
+			'<td>' + stock + '</td>' +
+			'<td>' + stock_minimo + '</td>' +
+			'<td><img src="../files/articulos/' + imagen + '" height="50px" width="50px"></td>' +
 			'</tr>';
 		cont++;
 		detalles = detalles + 1;
@@ -406,6 +496,8 @@ function agregarDetalle(idarticulo, articulo, codigo) {
 	else {
 		alert("Error al ingresar el detalle, revisar los datos del artículo");
 	}
+
+	nowrapCell();
 }
 
 function llenarTabla() {
@@ -439,13 +531,13 @@ function llenarTabla() {
 			success: function (e) {
 				console.log(e);
 				$('#idproducto').prop("disabled", false);
-				console.log("Envío esto al servidor =>", e[0].idarticulo, e[0].articulo, e[0].codigo);
+				console.log("Envío esto al servidor =>", e[0].idarticulo, e[0].articulo, e[0].categoria, e[0].marca, e[0].medida, e[0].codigo_producto, e[0].codigo, e[0].stock, e[0].stock_minimo, e[0].imagen);
 
 				// Resetear el valor del select
 				$('#idproducto').val($("#idproducto option:first").val());
 				$("#idproducto").selectpicker('refresh');
 
-				agregarDetalle(e[0].idarticulo, e[0].articulo, e[0].codigo);
+				agregarDetalle(e[0].idarticulo, e[0].articulo, e[0].categoria, e[0].marca, e[0].medida, e[0].codigo_producto, e[0].codigo, e[0].stock, e[0].stock_minimo, e[0].imagen);
 
 				$('#tblarticulos button[data-idarticulo="' + idarticulo + '"]').attr('disabled', 'disabled');
 				console.log("Deshabilito a: " + idarticulo + " =)");
@@ -473,28 +565,43 @@ function evaluar() {
 
 function evaluarMetodo() {
 	var tipoMovimiento = $("#tipo_movimiento").val();
-	$("#selectPersonal").hide();
+	$(".selectPersonal").hide();
 	$("#selectMaquinaria").hide();
 
 	$("#idpersonal").val($("#idpersonal option:first").val());
 	$("#idpersonal").selectpicker('refresh');
+	$("#idautorizado").val($("#idautorizado option:first").val());
+	$("#idautorizado").selectpicker('refresh');
+	$("#identregado").val($("#identregado option:first").val());
+	$("#identregado").selectpicker('refresh');
+	$("#idrecibido").val($("#idrecibido option:first").val());
+	$("#idrecibido").selectpicker('refresh');
 	$("#idmaquinaria").val($("#idmaquinaria option:first").val());
 	$("#idmaquinaria").selectpicker('refresh');
 
 	$("#idmaquinaria").attr("required", "required");
 	$("#idpersonal").attr("required", "required");
+	$("#idautorizado").attr("required", "required");
+	$("#identregado").attr("required", "required");
+	$("#idrecibido").attr("required", "required");
 
 	if (tipoMovimiento === "personal") {
-		$("#selectPersonal").show();
+		$(".selectPersonal").show();
 		$("#idmaquinaria").removeAttr("required");
 	} else if (tipoMovimiento === "maquinaria") {
 		$("#selectMaquinaria").show();
 		$("#idpersonal").removeAttr("required");
+		$("#idautorizado").removeAttr("required");
+		$("#identregado").removeAttr("required");
+		$("#idrecibido").removeAttr("required");
 	}
 	else {
 		$("#idmaquinaria").attr("required", "required");
 		$("#idpersonal").attr("required", "required");
-		$("#selectPersonal").hide();
+		$("#idautorizado").attr("required", "required");
+		$("#identregado").attr("required", "required");
+		$("#idrecibido").attr("required", "required");
+		$(".selectPersonal").hide();
 		$("#selectMaquinaria").hide();
 	}
 }

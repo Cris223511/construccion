@@ -1,12 +1,27 @@
 var tabla;
 var tabla2;
 
+
+function nowrapCell() {
+	var detallesTable = document.getElementById("detalles");
+	var tdList = detallesTable.querySelectorAll("td");
+
+	tdList.forEach(function (td) {
+		td.classList.add("nowrap-cell");
+	});
+}
+
 function bloquearCampos() {
-	$("input, select, textarea").prop("disabled", true);
+	$("input, select, textarea").not("#fecha_hora").prop("disabled", true);
 }
 
 function desbloquearCampos() {
-	$("input, select, textarea").prop("disabled", false);
+	$("input, select, textarea").not("#fecha_hora").prop("disabled", false);
+}
+
+function convertirMayus() {
+	var inputCodigo = document.getElementById("codigo");
+	inputCodigo.value = inputCodigo.value.toUpperCase();
 }
 
 function init() {
@@ -14,6 +29,7 @@ function init() {
 	limpiar();
 	listar();
 	listarArticulos();
+	actualizarFecha();
 
 	$("#formulario").on("submit", function (e) {
 		guardaryeditar(e);
@@ -30,9 +46,6 @@ function init() {
 		console.log(obj);
 
 		const selects = {
-			"idmarca": $("#idmarca"),
-			"idcategoria": $("#idcategoria"),
-			"idmedida": $("#idmedida"),
 			"idtipo": $("#idtipo"),
 			"idproveedor": $("#idproveedor"),
 		};
@@ -62,22 +75,16 @@ function init() {
 
 function limpiar() {
 	desbloquearCampos();
+	actualizarFecha();
 
 	$("#codigo").val("");
 	$("#codigo_producto").val("");
 	$("#nombre").val("");
 	$("#descripcion").val("");
-	$("#peso").val("");
 	$("#ubicacion").val("");
 	$("#print").hide();
 	$("#identrada").val("");
 
-	$("#idcategoria").val($("#idcategoria option:first").val());
-	$("#idcategoria").selectpicker('refresh');
-	$("#idmarca").val($("#idmarca option:first").val());
-	$("#idmarca").selectpicker('refresh');
-	$("#idmedida").val($("#idmedida option:first").val());
-	$("#idmedida").selectpicker('refresh');
 	$("#idtipo").val($("#idtipo option:first").val());
 	$("#idtipo").selectpicker('refresh');
 	$("#idproveedor").val($("#idproveedor option:first").val());
@@ -97,10 +104,13 @@ function mostrarform(flag) {
 	if (flag) {
 		$(".listadoregistros").hide();
 		$("#formularioregistros").show();
+		$("#btnGuardar").prop("disabled", false);
+		$("#btnagregar").hide();
 	}
 	else {
 		$(".listadoregistros").show();
 		$("#formularioregistros").hide();
+		$("#btnagregar").show();
 	}
 }
 
@@ -246,12 +256,6 @@ function mostrar(identrada) {
 		bloquearCampos();
 		console.log(data);
 
-		$("#idcategoria").val(data.idcategoria);
-		$('#idcategoria').selectpicker('refresh');
-		$("#idmarca").val(data.idmarca);
-		$('#idmarca').selectpicker('refresh');
-		$("#idmedida").val(data.idmedida);
-		$('#idmedida').selectpicker('refresh');
 		$("#idtipo").val(data.idtipo);
 		$('#idtipo').selectpicker('refresh');
 		$("#idproveedor").val(data.idproveedor);
@@ -260,8 +264,8 @@ function mostrar(identrada) {
 		$("#codigo_producto").val(data.codigo_producto);
 		$("#nombre").val(data.nombre);
 		$("#descripcion").val(data.descripcion);
-		$("#peso").val(data.peso);
 		$("#ubicacion").val(data.ubicacion);
+		$("#fecha_hora").val(data.fecha_hora);
 		$("#print").hide();
 		$("#identrada").val(data.identrada);
 
@@ -271,6 +275,7 @@ function mostrar(identrada) {
 		$.post("../ajax/entradas.php?op=listarDetalle&id=" + identrada, function (r) {
 			// console.log(r);
 			$("#detalles").html(r);
+			nowrapCell();
 		})
 	})
 
@@ -365,15 +370,22 @@ var detalles = 0;
 //$("#guardar").hide();
 $("#btnGuardar").hide();
 
-function agregarDetalle(idarticulo, articulo, codigo) {
+function agregarDetalle(idarticulo, articulo, categoria, marca, medida, codigo_producto, codigo, stock, stock_minimo, imagen) {
 	var cantidad = 1;
 
 	if (idarticulo != "") {
 		var fila = '<tr class="filas" id="fila' + cont + '">' +
 			'<td><button type="button" class="btn btn-danger" onclick="eliminarDetalle(' + cont + ', ' + idarticulo + ')">X</button></td>' +
 			'<td><input type="hidden" name="idarticulo[]" value="' + idarticulo + '">' + articulo + '</td>' +
-			'<td><input type="number" name="cantidad[]" id="cantidad[]" value="' + cantidad + '"></td>' +
+			'<td>' + categoria + '</td>' +
+			'<td>' + marca + '</td>' +
+			'<td><input type="text" name="cantidad[]" id="cantidad[]" step="any" onkeydown="evitarNegativo(event)" oninput="validarNumeroDecimal(this, 6)" value="' + cantidad + '"></td>' +
+			'<td>' + medida + '</td>' +
+			'<td>' + codigo_producto + '</td>' +
 			'<td>' + codigo + '</td>' +
+			'<td>' + stock + '</td>' +
+			'<td>' + stock_minimo + '</td>' +
+			'<td><img src="../files/articulos/' + imagen + '" height="50px" width="50px"></td>' +
 			'</tr>';
 		cont++;
 		detalles = detalles + 1;
@@ -384,6 +396,8 @@ function agregarDetalle(idarticulo, articulo, codigo) {
 	else {
 		alert("Error al ingresar el detalle, revisar los datos del artículo");
 	}
+
+	nowrapCell();
 }
 
 function llenarTabla() {
@@ -417,13 +431,13 @@ function llenarTabla() {
 			success: function (e) {
 				console.log(e);
 				$('#idproducto').prop("disabled", false);
-				console.log("Envío esto al servidor =>", e[0].idarticulo, e[0].articulo, e[0].codigo);
+				console.log("Envío esto al servidor =>", e[0].idarticulo, e[0].articulo, e[0].categoria, e[0].marca, e[0].medida, e[0].codigo_producto, e[0].codigo, e[0].stock, e[0].stock_minimo, e[0].imagen);
 
 				// Resetear el valor del select
 				$('#idproducto').val($("#idproducto option:first").val());
 				$("#idproducto").selectpicker('refresh');
 
-				agregarDetalle(e[0].idarticulo, e[0].articulo, e[0].codigo);
+				agregarDetalle(e[0].idarticulo, e[0].articulo, e[0].categoria, e[0].marca, e[0].medida, e[0].codigo_producto, e[0].codigo, e[0].stock, e[0].stock_minimo, e[0].imagen);
 
 				$('#tblarticulos button[data-idarticulo="' + idarticulo + '"]').attr('disabled', 'disabled');
 				console.log("Deshabilito a: " + idarticulo + " =)");

@@ -7,7 +7,7 @@ class Entrada
 	{
 	}
 
-	public function agregar($idusuario, $idcategoria, $idmarca, $idmedida, $idproveedor, $idtipo, $codigo, $ubicacion, $peso, $descripcion, $idarticulo, $cantidad)
+	public function agregar($idusuario, $idproveedor, $idtipo, $codigo, $ubicacion, $descripcion, $idarticulo, $cantidad)
 	{
 		// // Primero, debemos verificar si hay suficiente stock para cada artículo
 		// $error = $this->validarStock($idarticulo, $cantidad);
@@ -18,8 +18,8 @@ class Entrada
 
 		date_default_timezone_set("America/Lima");
 		// Si no hay errores, continuamos con el registro de la entrada
-		$sql = "INSERT INTO entradas (idusuario,idcategoria,idmarca,idmedida,idproveedor,idtipo,codigo,ubicacion,peso,descripcion,fecha_hora,estado)
-            VALUES ('$idusuario','$idcategoria','$idmarca','$idmedida','$idproveedor','$idtipo','$codigo','$ubicacion','$peso','$descripcion', SYSDATE(), 'activado')";
+		$sql = "INSERT INTO entradas (idusuario,idproveedor,idtipo,codigo,ubicacion,descripcion,fecha_hora,estado)
+            VALUES ('$idusuario','$idproveedor','$idtipo','$codigo','$ubicacion','$descripcion', SYSDATE(), 'activado')";
 		$identradanew = ejecutarConsulta_retornarID($sql);
 
 		$num_elementos = 0;
@@ -73,25 +73,25 @@ class Entrada
 
 	public function listar()
 	{
-		$sql = "SELECT e.identrada,e.idusuario,u.nombre as usuario,u.cargo as cargo,u.cargo,c.titulo as categoria,m.titulo as marca,t.titulo as tipo,p.nombre as proveedor,e.codigo,e.ubicacion,e.peso,e.descripcion,e.descripcion,DATE_FORMAT(e.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,e.estado FROM entradas e LEFT JOIN categoria c ON e.idcategoria=c.idcategoria LEFT JOIN tipos t ON e.idtipo=t.idtipo LEFT JOIN proveedores p ON e.idproveedor=p.idproveedor LEFT JOIN usuario u ON e.idusuario=u.idusuario LEFT JOIN marcas m ON e.idmarca=m.idmarca ORDER BY e.identrada DESC";
+		$sql = "SELECT e.identrada,e.idusuario,u.nombre as usuario,u.cargo as cargo,u.cargo,t.titulo as tipo,p.nombre as proveedor,e.codigo,e.ubicacion,e.descripcion,e.descripcion,DATE_FORMAT(e.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,e.estado FROM entradas e LEFT JOIN tipos t ON e.idtipo=t.idtipo LEFT JOIN proveedores p ON e.idproveedor=p.idproveedor LEFT JOIN usuario u ON e.idusuario=u.idusuario ORDER BY e.identrada DESC";
 		return ejecutarConsulta($sql);
 	}
 
 	public function listarPorFecha($fecha_inicio, $fecha_fin)
 	{
-		$sql = "SELECT e.identrada,e.idusuario,u.nombre as usuario,u.cargo as cargo,u.cargo,c.titulo as categoria,m.titulo as marca,t.titulo as tipo,p.nombre as proveedor,e.codigo,e.ubicacion,e.peso,e.descripcion,e.descripcion,DATE_FORMAT(e.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,e.estado FROM entradas e LEFT JOIN categoria c ON e.idcategoria=c.idcategoria LEFT JOIN tipos t ON e.idtipo=t.idtipo LEFT JOIN proveedores p ON e.idproveedor=p.idproveedor LEFT JOIN usuario u ON e.idusuario=u.idusuario LEFT JOIN marcas m ON e.idmarca=m.idmarca AND DATE(e.fecha_hora) >= '$fecha_inicio' AND DATE(e.fecha_hora) <= '$fecha_fin' ORDER BY e.identrada DESC";
+		$sql = "SELECT e.identrada,e.idusuario,u.nombre as usuario,u.cargo as cargo,u.cargo,t.titulo as tipo,p.nombre as proveedor,e.codigo,e.ubicacion,e.descripcion,e.descripcion,DATE_FORMAT(e.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,e.estado FROM entradas e LEFT JOIN tipos t ON e.idtipo=t.idtipo LEFT JOIN proveedores p ON e.idproveedor=p.idproveedor LEFT JOIN usuario u ON e.idusuario=u.idusuario WHERE DATE(e.fecha_hora) >= '$fecha_inicio' AND DATE(e.fecha_hora) <= '$fecha_fin' ORDER BY e.identrada DESC";
 		return ejecutarConsulta($sql);
 	}
 
 	public function listarPorUsuario($idusuario)
 	{
-		$sql = "SELECT e.identrada,e.idusuario,u.nombre as usuario,u.cargo as cargo,u.cargo,c.titulo as categoria,m.titulo as marca,t.titulo as tipo,p.nombre as proveedor,e.codigo,e.ubicacion,e.peso,e.descripcion,e.descripcion,DATE_FORMAT(e.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,e.estado FROM entradas e LEFT JOIN categoria c ON e.idcategoria=c.idcategoria LEFT JOIN tipos t ON e.idtipo=t.idtipo LEFT JOIN proveedores p ON e.idproveedor=p.idproveedor LEFT JOIN usuario u ON e.idusuario=u.idusuario LEFT JOIN marcas m ON e.idmarca=m.idmarca WHERE e.idusuario = '$idusuario' ORDER BY e.identrada DESC";
+		$sql = "SELECT e.identrada,e.idusuario,u.nombre as usuario,u.cargo as cargo,u.cargo,t.titulo as tipo,p.nombre as proveedor,e.codigo,e.ubicacion,e.descripcion,e.descripcion,DATE_FORMAT(e.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,e.estado FROM entradas e LEFT JOIN tipos t ON e.idtipo=t.idtipo LEFT JOIN proveedores p ON e.idproveedor=p.idproveedor LEFT JOIN usuario u ON e.idusuario=u.idusuario WHERE e.idusuario = '$idusuario' ORDER BY e.identrada DESC";
 		return ejecutarConsulta($sql);
 	}
 
 	public function listarPorUsuarioFecha($idusuario, $fecha_inicio, $fecha_fin)
 	{
-		$sql = "SELECT e.identrada,e.idusuario,u.nombre as usuario,u.cargo as cargo,u.cargo,c.titulo as categoria,m.titulo as marca,t.titulo as tipo,p.nombre as proveedor,e.codigo,e.ubicacion,e.peso,e.descripcion,e.descripcion,DATE_FORMAT(e.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,e.estado FROM entradas e LEFT JOIN categoria c ON e.idcategoria=c.idcategoria LEFT JOIN tipos t ON e.idtipo=t.idtipo LEFT JOIN proveedores p ON e.idproveedor=p.idproveedor LEFT JOIN usuario u ON e.idusuario=u.idusuario LEFT JOIN marcas m ON e.idmarca=m.idmarca WHERE e.idusuario = '$idusuario' AND DATE(e.fecha_hora) >= '$fecha_inicio' AND DATE(e.fecha_hora) <= '$fecha_fin' ORDER BY e.identrada DESC";
+		$sql = "SELECT e.identrada,e.idusuario,u.nombre as usuario,u.cargo as cargo,u.cargo,t.titulo as tipo,p.nombre as proveedor,e.codigo,e.ubicacion,e.descripcion,e.descripcion,DATE_FORMAT(e.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,e.estado FROM entradas e LEFT JOIN tipos t ON e.idtipo=t.idtipo LEFT JOIN proveedores p ON e.idproveedor=p.idproveedor LEFT JOIN usuario u ON e.idusuario=u.idusuario WHERE e.idusuario = '$idusuario' AND DATE(e.fecha_hora) >= '$fecha_inicio' AND DATE(e.fecha_hora) <= '$fecha_fin' ORDER BY e.identrada DESC";
 		return ejecutarConsulta($sql);
 	}
 
@@ -103,9 +103,12 @@ class Entrada
 
 	public function listarDetalle($identrada)
 	{
-		$sql = "SELECT de.identrada, de.idarticulo, a.nombre AS articulo, a.codigo, a.codigo_producto, de.cantidad
+		$sql = "SELECT de.identrada, de.idarticulo, a.nombre AS articulo, c.titulo AS categoria, ma.titulo AS marca, me.titulo AS medida, a.codigo, a.codigo_producto, a.stock, a.stock_minimo, a.imagen, de.cantidad
 				FROM detalle_entrada de
 				LEFT JOIN articulo a ON de.idarticulo = a.idarticulo
+				LEFT JOIN categoria c ON a.idcategoria = c.idcategoria
+				LEFT JOIN marcas ma ON a.idmarca = ma.idmarca
+				LEFT JOIN medidas me ON a.idmedida = me.idmedida
 				WHERE de.identrada = '$identrada'";
 		return ejecutarConsulta($sql);
 	}

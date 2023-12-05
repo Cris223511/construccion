@@ -60,7 +60,7 @@ if (!isset($_SESSION["nombre"])) {
               </div>
               <div class="panel-body">
                 <div class="col-lg-6 col-md-6 col-sm-12">
-                  <div class="small-box bg-aqua">
+                  <div class="small-box bg-green">
                     <div class="inner">
                       <h4 style="font-size:17px;">
                         <strong>Total: <?php echo $totalE; ?></strong>
@@ -74,7 +74,7 @@ if (!isset($_SESSION["nombre"])) {
                   </div>
                 </div>
                 <div class="col-lg-6 col-md-6 col-sm-12">
-                  <div class="small-box bg-green">
+                  <div class="small-box bg-red">
                     <div class="inner">
                       <h4 style="font-size:17px;">
                         <strong>Total: <?php echo $totalS; ?></strong>

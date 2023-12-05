@@ -357,7 +357,7 @@ class PDF_Invoice extends FPDF
 		$colX = $r1;
 		$colonnes = $tab;
 		foreach ($tab as $lib => $pos) {
-			$this->SetXY($colX, $y1 + 2);
+			$this->SetXY($colX, $y1 + 2.5);
 			$this->Cell($pos, 1, $lib, 0, 0, "C");
 			$colX += $pos;
 			$this->Line($colX, $y1, $colX, $y1 + $y2);

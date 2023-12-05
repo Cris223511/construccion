@@ -38,7 +38,6 @@ if (!isset($_SESSION["nombre"])) {
 		$stock = isset($_POST["stock"]) ? limpiarCadena($_POST["stock"]) : "";
 		$stock_minimo = isset($_POST["stock_minimo"]) ? limpiarCadena($_POST["stock_minimo"]) : "";
 		$descripcion = isset($_POST["descripcion"]) ? limpiarCadena($_POST["descripcion"]) : "";
-		$peso = isset($_POST["peso"]) ? limpiarCadena($_POST["peso"]) : "";
 		$casillero = isset($_POST["casillero"]) ? limpiarCadena($_POST["casillero"]) : "";
 		$imagen = isset($_POST["imagen"]) ? limpiarCadena($_POST["imagen"]) : "";
 		$barra = isset($_POST["barra"]) ? limpiarCadena($_POST["barra"]) : "";
@@ -63,7 +62,7 @@ if (!isset($_SESSION["nombre"])) {
 					} else if ($codigoExiste && $codigo != "") {
 						echo "El código de barra del producto que ha ingresado ya existe.";
 					} else {
-						$rspta = $articulo->insertar($idusuario, $idcategoria, $idlocal, $idmarca, $idmedida, $codigo, $codigo_producto, $nombre, $stock, $stock_minimo, $descripcion, $peso, $casillero, $imagen);
+						$rspta = $articulo->insertar($idusuario, $idcategoria, $idlocal, $idmarca, $idmedida, $codigo, $codigo_producto, $nombre, $stock, $stock_minimo, $descripcion, $casillero, $imagen);
 						echo $rspta ? "Producto registrado" : "El producto no se pudo registrar";
 					}
 				} else {
@@ -71,7 +70,7 @@ if (!isset($_SESSION["nombre"])) {
 					if ($nombreExiste) {
 						echo "El código del producto que ha ingresado ya existe.";
 					} else {
-						$rspta = $articulo->editar($idarticulo, $idcategoria, $idlocal, $idmarca, $idmedida, $codigo, $codigo_producto, $nombre, $stock, $stock_minimo, $descripcion, $peso, $casillero, $imagen);
+						$rspta = $articulo->editar($idarticulo, $idcategoria, $idlocal, $idmarca, $idmedida, $codigo, $codigo_producto, $nombre, $stock, $stock_minimo, $descripcion, $casillero, $imagen);
 						echo $rspta ? "Producto actualizado" : "El producto no se pudo actualizar";
 					}
 				}
@@ -269,17 +268,17 @@ if (!isset($_SESSION["nombre"])) {
 							mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-warning" style="margin-right: 3px; height: 35px;" onclick="mostrar(' . $reg->idarticulo . ')"><i class="fa fa-pencil"></i></button>') .
 							mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-danger "style="height: 35px;" onclick="eliminar(' . $reg->idarticulo . ')"><i class="fa fa-trash"></i></button>') .
 							'</div>',
-						"1" => $reg->usuario,
-						"2" => $cargo_detalle,
-						"3" => $reg->nombre,
-						"4" => $reg->categoria,
-						"5" => $reg->local,
-						"6" => $reg->marca,
-						"7" => $reg->codigo_producto,
-						"8" => $reg->codigo,
-						"9" => ($reg->stock > 0 && $reg->stock < $reg->stock_minimo) ? '<span style="color: #Ea9900; font-weight: bold">' . $reg->stock . '</span>' : (($reg->stock != '0') ? '<span>' . $reg->stock . '</span>' : '<span style="color: red; font-weight: bold">' . $reg->stock . '</span>'),
-						"10" => $reg->stock_minimo,
-						"11" => "<img src='../files/articulos/" . $reg->imagen . "' height='50px' width='50px' >",
+						"1" => $reg->nombre,
+						"2" => $reg->categoria,
+						"3" => $reg->local,
+						"4" => $reg->marca,
+						"5" => $reg->codigo_producto,
+						"6" => $reg->codigo,
+						"7" => ($reg->stock > 0 && $reg->stock < $reg->stock_minimo) ? '<span style="color: #Ea9900; font-weight: bold">' . $reg->stock . '</span>' : (($reg->stock != '0') ? '<span>' . $reg->stock . '</span>' : '<span style="color: red; font-weight: bold">' . $reg->stock . '</span>'),
+						"8" => $reg->stock_minimo,
+						"9" => "<img src='../files/articulos/" . $reg->imagen . "' height='50px' width='50px' >",
+						"10" => $reg->usuario,
+						"11" => $cargo_detalle,
 						"12" => $reg->fecha,
 						"13" => ($reg->stock > 0 && $reg->stock < $reg->stock_minimo) ? '<span class="label bg-orange">agotandose</span>' : (($reg->stock != '0') ? '<span class="label bg-green">Disponible</span>' : '<span class="label bg-red">agotado</span>')
 					);

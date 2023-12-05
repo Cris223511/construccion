@@ -10,7 +10,7 @@ if (!isset($_SESSION["nombre"])) {
   if ($_SESSION['entradas'] == 1) {
     require('Entrada.php');
 
-    $logo = "logo.jpg";
+    $logo = "logo.jpeg";
     $ext_logo = "jpg";
     $empresa = "Arena San Andrés Perú S.A.C.";
     $documento = "20477157772";
@@ -47,8 +47,9 @@ if (!isset($_SESSION["nombre"])) {
     );
 
     $cols = array(
-      "CODIGO" => 50,
-      "NOMBRE" => 110,
+      "CODIGO" => 30,
+      "NOMBRE" => 70,
+      "U. MEDIDA" => 60,
       "CANTIDAD" => 30
     );
 
@@ -57,6 +58,7 @@ if (!isset($_SESSION["nombre"])) {
     $cols = array(
       "CODIGO" => "L",
       "NOMBRE" => "L",
+      "U. MEDIDA" => "C",
       "CANTIDAD" => "C",
     );
     $pdf->addLineFormat($cols);
@@ -69,6 +71,7 @@ if (!isset($_SESSION["nombre"])) {
       $line = array(
         "CODIGO" => "$regd->codigo_producto",
         "NOMBRE" => utf8_decode("$regd->articulo"),
+        "U. MEDIDA" => utf8_decode("$regd->medida"),
         "CANTIDAD" => "$regd->cantidad"
       );
       $size = $pdf->addLine($y, $line);

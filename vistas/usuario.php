@@ -84,6 +84,16 @@ if (!isset($_SESSION["nombre"])) {
                     <label>Número(*):</label>
                     <input type="number" class="form-control" name="num_documento" id="num_documento" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="8" placeholder="Documento" required>
                   </div>
+                  <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12 local">
+                    <label id="locales">Locales disponibles(*):</label>
+                    <select id="idlocal" name="idlocal" class="form-control selectpicker" data-live-search="true" required onchange="actualizarRUC()">
+                      <option value="">- Seleccione -</option>
+                    </select>
+                  </div>
+                  <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12 local">
+                    <label>RUC local(*):</label>
+                    <input type="number" class="form-control" id="local_ruc" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="11" placeholder="RUC del local" disabled>
+                  </div>
                   <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
                     <label>Dirección:</label>
                     <input type="text" class="form-control" name="direccion" id="direccion" placeholder="Dirección" maxlength="40">
@@ -144,7 +154,7 @@ if (!isset($_SESSION["nombre"])) {
   require 'footer.php';
   ?>
 
-  <script type="text/javascript" src="scripts/usuario26.js"></script>
+  <script type="text/javascript" src="scripts/usuario27.js"></script>
 <?php
 }
 ob_end_flush();

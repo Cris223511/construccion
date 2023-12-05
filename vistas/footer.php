@@ -2,7 +2,7 @@
       <div class="pull-right hidden-xs">
         <b>Version</b> 3.0.0
       </div>
-      <strong>Copyright &copy; 2023 <a href="www.SistemaDeConstrucciones.com" style="color: #002a8e;">Sistema de construcciones</a>.</strong> Todos los derechos reservados.
+      <strong>Copyright &copy; 2023 <a href="#" style="color: #002a8e;">Sistema de construcciones</a>.</strong> Todos los derechos reservados.
     </footer>
     <!-- jQuery -->
     <script src="../public/js/jquery-3.1.1.min.js"></script>
@@ -86,12 +86,31 @@
         if (e.key === "-")
           e.preventDefault();
       }
+
+      function validarNumeroDecimal(input, maxLength) {
+        input.value = input.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+
+        if (input.value.length > maxLength) {
+          input.value = input.value.slice(0, maxLength);
+        }
+      }
     </script>
 
     <script>
       $('.selectpicker').selectpicker({
         noneResultsText: 'No se encontraron resultados.'
       });
+    </script>
+
+    <script>
+      function actualizarFecha() {
+        var hoy = new Date();
+        var fecha = hoy.getFullYear() + '-' + ('0' + (hoy.getMonth() + 1)).slice(-2) + '-' + ('0' + hoy.getDate()).slice(-2);
+        var hora = ('0' + hoy.getHours()).slice(-2) + ':' + ('0' + hoy.getMinutes()).slice(-2);
+
+        var fecha_hora = fecha + 'T' + hora;
+        document.getElementById('fecha_hora').value = fecha_hora;
+      }
     </script>
 
     </body>

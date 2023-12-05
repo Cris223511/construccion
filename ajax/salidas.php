@@ -22,25 +22,24 @@ if (!isset($_SESSION["nombre"])) {
 		$cargo = $_SESSION["cargo"];
 
 		$idsalida = isset($_POST["idsalida"]) ? limpiarCadena($_POST["idsalida"]) : "";
-		$idcategoria = isset($_POST["idcategoria"]) ? limpiarCadena($_POST["idcategoria"]) : "";
-		$idmarca = isset($_POST["idmarca"]) ? limpiarCadena($_POST["idmarca"]) : "";
-		$idmedida = isset($_POST["idmedida"]) ? limpiarCadena($_POST["idmedida"]) : "";
 		$idtipo = isset($_POST["idtipo"]) ? limpiarCadena($_POST["idtipo"]) : "";
 		$idmaquinaria = isset($_POST["idmaquinaria"]) ? limpiarCadena($_POST["idmaquinaria"]) : "";
 		$idpersonal = isset($_POST["idpersonal"]) ? limpiarCadena($_POST["idpersonal"]) : "";
+		$idautorizado = isset($_POST["idautorizado"]) ? limpiarCadena($_POST["idautorizado"]) : "";
+		$identregado = isset($_POST["identregado"]) ? limpiarCadena($_POST["identregado"]) : "";
+		$idrecibido = isset($_POST["idrecibido"]) ? limpiarCadena($_POST["idrecibido"]) : "";
 		$codigo = isset($_POST["codigo"]) ? limpiarCadena($_POST["codigo"]) : "";
 		$ubicacion = isset($_POST["ubicacion"]) ? limpiarCadena($_POST["ubicacion"]) : "";
-		$peso = isset($_POST["peso"]) ? limpiarCadena($_POST["peso"]) : "";
 		$descripcion = isset($_POST["descripcion"]) ? limpiarCadena($_POST["descripcion"]) : "";
 
 		switch ($_GET["op"]) {
 			case 'guardaryeditar':
 				$codigoExiste = $salidas->verificarCodigo($codigo);
 				if ($codigoExiste) {
-					echo "El código de la salida ya existe.";
+					echo "El N° de documento de la salida ya existe.";
 				} else {
-					$rspta = $salidas->agregar($idusuario, $idcategoria, $idmarca, $idmedida, $idtipo, $idmaquinaria, $idpersonal, $codigo, $ubicacion, $peso, $descripcion,  $_POST["idarticulo"], $_POST["cantidad"]);
-				echo $rspta ? "Salida registrada" : "Una de las cantidades superan al stock normal del artículo.";
+					$rspta = $salidas->agregar($idusuario, $idtipo, $idmaquinaria, $idpersonal, $idautorizado, $identregado, $idrecibido, $codigo, $ubicacion, $descripcion,  $_POST["idarticulo"], $_POST["cantidad"]);
+					echo $rspta ? "Salida registrada" : "Una de las cantidades superan al stock normal del artículo.";
 				}
 				break;
 
@@ -73,12 +72,19 @@ if (!isset($_SESSION["nombre"])) {
 				echo '<thead style="background-color:#A9D0F5">
 									<th>Opciones</th>
 									<th>Artículo</th>
+									<th>Categoría</th>
+									<th>Marca</th>
 									<th>Cantidad</th>
-									<th>Código de barra</th>
+									<th style="white-space: nowrap;">Unidad de medida</th>
+									<th style="white-space: nowrap;">Código de producto</th>
+									<th style="white-space: nowrap;">Código de barra</th>
+									<th>Stock</th>
+									<th style="white-space: nowrap;">Stock Mínimo</th>
+									<th>Imagen</th>
 								</thead>';
 
 				while ($reg = $rspta->fetch_object()) {
-					echo '<tr class="filas"><td></td><td>' . $reg->articulo . '</td><td>' . $reg->cantidad . '</td><td>' . $reg->codigo . '</td></tr>';
+					echo '<tr class="filas"><td></td><td>' . $reg->articulo . '</td><td>' . $reg->categoria . '</td><td>' . $reg->marca . '</td><td>' . $reg->cantidad . '</td><td>' . $reg->medida . '</td><td>' . $reg->codigo_producto . '</td><td>' . $reg->codigo . '</td><td>' . $reg->stock . '</td><td>' . $reg->stock_minimo . '</td><td><img src="../files/articulos/' . $reg->imagen . '" height="50px" width="50px"></td></tr>';
 				}
 				break;
 
@@ -136,18 +142,18 @@ if (!isset($_SESSION["nombre"])) {
 							mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-bcp" style="margin-right: 3px; height: 35px;" onclick="mostrar(' . $reg->idsalida . ')"><i class="fa fa-eye"></i></button>') .
 							(($reg->estado == 'activado') ?
 								(mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-danger" style="margin-right: 3px; height: 35px;" onclick="desactivar(' . $reg->idsalida . ')"><i class="fa fa-close"></i></button>')) .
-								(mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<a target="_blank" href="../reportes/exSalida.php?id=' . $reg->idsalida . '"><button class="btn btn-success" style="margin-right: 3px; height: 35px;"><i class="fa fa-file"></i></button></a>')) :
-								(mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-success" style="margin-right: 3px; width: 35px; height: 35px;" onclick="activar(' . $reg->idsalida . ')"><i style="margin-left: -2px" class="fa fa-check"></i></button>'))) .
+								(mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<a target="_blank" href="../reportes/exSalida.php?id=' . $reg->idsalida . '"><button class="btn btn-success" style="margin-right: 3px; height: 35px;"><i class="fa fa-file"></i></button></a>')) : (mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-success" style="margin-right: 3px; width: 35px; height: 35px;" onclick="activar(' . $reg->idsalida . ')"><i style="margin-left: -2px" class="fa fa-check"></i></button>'))) .
 							mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-danger" style="height: 35px;" onclick="eliminar(' . $reg->idsalida . ')"><i class="fa fa-trash"></i></button>') .
 							'</div>',
-						"1" => $reg->usuario,
-						"2" => $cargo_detalle,
-						"3" => $reg->categoria,
-						"4" => $reg->marca,
-						"5" => $reg->tipo,
-						"6" => $reg->codigo,
-						"7" => $reg->fecha,
-						"8" => ($reg->estado == 'activado') ? '<span class="label bg-green">Activado</span>' :
+						"1" => $reg->fecha,
+						"2" => $reg->tipo,
+						"3" => 'N° ' . $reg->codigo,
+						"4" => ($reg->autorizado == '' ? 'Sin registrar' : $reg->autorizado),
+						"5" => ($reg->entregado == '' ? 'Sin registrar' : $reg->entregado),
+						"6" => ($reg->recibido == '' ? 'Sin registrar' : $reg->recibido),
+						"7" => $reg->usuario,
+						"8" => $cargo_detalle,
+						"9" => ($reg->estado == 'activado') ? '<span class="label bg-green">Activado</span>' :
 							'<span class="label bg-red">Desactivado</span>'
 					);
 				}
@@ -165,7 +171,7 @@ if (!isset($_SESSION["nombre"])) {
 				require_once "../modelos/Articulo.php";
 				$articulo = new Articulo();
 
-				if ($cargo == "superadmin" || $cargo == "admin") {
+				if ($cargo == "superadmin") {
 					$rspta = $articulo->listar();
 				} else {
 					$rspta = $articulo->listarPorUsuario($idusuario);
@@ -191,18 +197,18 @@ if (!isset($_SESSION["nombre"])) {
 					}
 
 					$data[] = array(
-						"0" => ($reg->stock != '0') ? '<div style="display: flex; justify-content: center;"><button class="btn btn-warning" data-idarticulo="' . $reg->idarticulo . '" onclick="agregarDetalle(' . $reg->idarticulo . ',\'' . $reg->nombre . '\',\'' . $reg->codigo . '\'); disableButton(this);"><span class="fa fa-plus"></span></button></div>' : '',
-						"1" => $reg->usuario,
-						"2" => $cargo_detalle,
-						"3" => $reg->nombre,
-						"4" => $reg->categoria,
-						"5" => $reg->local,
-						"6" => $reg->marca,
-						"7" => $reg->codigo_producto,
-						"8" => $reg->codigo,
-						"9" => ($reg->stock > 0 && $reg->stock < $reg->stock_minimo) ? '<span style="color: #Ea9900; font-weight: bold">' . $reg->stock . '</span>' : (($reg->stock != '0') ? '<span>' . $reg->stock . '</span>' : '<span style="color: red; font-weight: bold">' . $reg->stock . '</span>'),
-						"10" => $reg->stock_minimo,
-						"11" => "<img src='../files/articulos/" . $reg->imagen . "' height='50px' width='50px' >",
+						"0" => '<div style="display: flex; justify-content: center;"><button class="btn btn-warning" style="height: 35px;" data-idarticulo="' . $reg->idarticulo . '" onclick="agregarDetalle(' . $reg->idarticulo . ',\'' . $reg->nombre . '\',\'' . $reg->categoria . '\',\'' . $reg->marca . '\',\'' . $reg->medida . '\',\'' . $reg->codigo_producto . '\',\'' . $reg->codigo . '\',\'' . $reg->stock . '\',\'' . $reg->stock_minimo . '\',\'' . $reg->imagen . '\'); disableButton(this);"><span class="fa fa-plus"></span></button></div>',
+						"1" => $reg->nombre,
+						"2" => $reg->categoria,
+						"3" => $reg->local,
+						"4" => $reg->marca,
+						"5" => $reg->codigo_producto,
+						"6" => $reg->codigo,
+						"7" => ($reg->stock > 0 && $reg->stock < $reg->stock_minimo) ? '<span style="color: #Ea9900; font-weight: bold">' . $reg->stock . '</span>' : (($reg->stock != '0') ? '<span>' . $reg->stock . '</span>' : '<span style="color: red; font-weight: bold">' . $reg->stock . '</span>'),
+						"8" => $reg->stock_minimo,
+						"9" => "<img src='../files/articulos/" . $reg->imagen . "' height='50px' width='50px' >",
+						"10" => $reg->usuario,
+						"11" => $cargo_detalle,
 						"12" => $reg->fecha,
 						"13" => ($reg->stock > 0 && $reg->stock < $reg->stock_minimo) ? '<span class="label bg-orange">agotandose</span>' : (($reg->stock != '0') ? '<span class="label bg-green">Disponible</span>' : '<span class="label bg-red">agotado</span>')
 					);
@@ -230,7 +236,7 @@ if (!isset($_SESSION["nombre"])) {
 				echo '<option value="">Busca un producto.</option>';
 				while ($reg = $rspta->fetch_object()) {
 					if (!empty($reg->codigo) && $reg->stock != '0') {
-						echo '<option value="' . $reg->idarticulo . '">' . $reg->codigo . ' - ' . $reg->nombre . '</option>';
+						echo '<option value="' . $reg->idarticulo . '">' . str_replace(' ', '', $reg->codigo) . ' - ' . $reg->nombre . '</option>';
 					}
 				}
 				break;
@@ -248,11 +254,29 @@ if (!isset($_SESSION["nombre"])) {
 					$producto = array(
 						'idarticulo' => $reg->idarticulo,
 						'articulo' => $reg->nombre,
-						'codigo' => $reg->codigo
+						'categoria' => $reg->categoria,
+						'marca' => $reg->marca,
+						'medida' => $reg->medida,
+						'codigo_producto' => $reg->codigo_producto,
+						'codigo' => $reg->codigo,
+						'stock' => $reg->stock,
+						'stock_minimo' => $reg->stock_minimo,
+						'imagen' => $reg->imagen,
 					);
 					array_push($productos, $producto);
 				}
 				echo json_encode($productos);
+				break;
+
+			case 'getLastNumCodigo':
+				$result = $salidas->getLastNumCodigo();
+				if (mysqli_num_rows($result) > 0) {
+					$row = mysqli_fetch_assoc($result);
+					$last_codigo = $row["last_codigo"];
+				} else {
+					$last_codigo = 0;
+				}
+				echo $last_codigo;
 				break;
 
 				/* ======================= SELECTS ======================= */

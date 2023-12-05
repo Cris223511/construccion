@@ -2,7 +2,7 @@ var tabla;
 
 //Función que se ejecuta al inicio
 function init() {
-	mostrarform(false);
+	mostrarform(true);
 	listar();
 
 	$("#formulario").on("submit", function (e) {
@@ -10,8 +10,8 @@ function init() {
 	})
 
 	$("#imagenmuestra").hide();
-	$('#mAlmacen').addClass("treeview active");
-	$('#lArticulos').addClass("active");
+	$('#mSalidas').addClass("treeview active");
+	$('#lSalidas').addClass("active");
 
 	$.post("../ajax/articulo.php?op=listarTodosActivos", function (data) {
 		// console.log(data)
@@ -66,12 +66,13 @@ function actualizarRUC() {
 
 //Función limpiar
 function limpiar() {
+	$("#nombre").focus();
+
 	$("#codigo").val("");
 	$("#codigo_producto").val("");
 	$("#nombre").val("");
 	$("#local_ruc").val("");
 	$("#descripcion").val("");
-	$("#peso").val("");
 	$("#casillero").val("");
 	$("#stock").val("");
 	$("#stock_minimo").val("");
@@ -130,7 +131,7 @@ function frmDetalles(bool) {
 //Función cancelarform
 function cancelarform() {
 	limpiar();
-	mostrarform(false);
+	mostrarform(true);
 }
 
 //Función Listar
@@ -179,7 +180,7 @@ function listar() {
 			"iDisplayLength": 5,//Paginación
 			"order": [],
 			"createdRow": function (row, data, dataIndex) {
-				$(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(3), td:eq(4), td:eq(6), td:eq(7), td:eq(8), td:eq(9), td:eq(10), td:eq(11, td:eq(12), td:eq(13)').addClass('nowrap-cell');
+				$(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(4), td:eq(5), td:eq(6), td:eq(7), td:eq(8), td:eq(9), td:eq(10), td:eq(11, td:eq(12), td:eq(13)').addClass('nowrap-cell');
 			}
 		}).DataTable();
 }
@@ -216,7 +217,7 @@ function guardaryeditar(e) {
 			}
 			limpiar();
 			bootbox.alert(datos);
-			mostrarform(false);
+			mostrarform(true);
 			tabla.ajax.reload();
 		}
 	});
@@ -247,7 +248,6 @@ function mostrar(idarticulo) {
 		$("#stock").val(data.stock);
 		$("#stock_minimo").val(data.stock_minimo);
 		$("#descripcion").val(data.descripcion);
-		$("#peso").val(data.peso);
 		$("#casillero").val(data.casillero);
 		$("#imagenmuestra").show();
 		$("#imagenmuestra").attr("src", "../files/articulos/" + data.imagen);
@@ -336,9 +336,20 @@ function generarbarcode(param) {
 	$("#print").show();
 }
 
+function convertirMayus() {
+	var inputCodigo = document.getElementById("codigo_producto");
+	inputCodigo.value = inputCodigo.value.toUpperCase();
+}
+
 //Función para imprimir el código de barras
 function imprimir() {
 	$("#print").printArea();
+}
+
+function borrar() {
+	$("#codigo").val("");
+	$("#codigo").focus();
+	$("#print").hide();
 }
 
 function resetear() {
@@ -376,9 +387,6 @@ function buscar(param) {
 		const selectMarca = document.getElementById("idmarcaBuscar");
 		const selectCategoria = document.getElementById("idcategoriaBuscar");
 		const selectEstado = document.getElementById("estadoBuscar");
-
-		$("#fecha_inicio").val("");
-		$("#fecha_fin").val("");
 
 		if (selectMarca.value == "" && selectCategoria.value == "" && selectEstado.value == "") {
 			bootbox.alert("Debe seleccionar al menos un campo para realizar la búsqueda.");
@@ -425,7 +433,7 @@ function buscar(param) {
 			"iDisplayLength": 5,//Paginación
 			"order": [],
 			"createdRow": function (row, data, dataIndex) {
-				$(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(3), td:eq(4), td:eq(6), td:eq(7), td:eq(8), td:eq(9), td:eq(10), td:eq(11, td:eq(12), td:eq(13)').addClass('nowrap-cell');
+				$(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(4), td:eq(5), td:eq(6), td:eq(7), td:eq(8), td:eq(9), td:eq(10), td:eq(11, td:eq(12), td:eq(13)').addClass('nowrap-cell');
 			}
 		}).DataTable();
 }

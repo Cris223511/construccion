@@ -57,10 +57,10 @@ if (!isset($_SESSION["nombre"])) {
           <div class="col-md-12">
             <div class="box">
               <div class="box-header with-border">
-                <h1 class="box-title">Productos
-                  <a href="../reportes/rptarticulos.php" target="_blank">
-                    <button class="btn btn-secondary" style="color: black !important;">
-                      <i class="fa fa-clipboard"></i> Reporte
+                <h1 class="box-title">Agregar productos
+                  <a href="salidas.php">
+                    <button class="btn btn-danger" id="btnInsertarArt">
+                      <i class="fa fa-arrow-circle-left"></i> Volver
                     </button>
                   </a>
                 </h1>
@@ -243,7 +243,6 @@ if (!isset($_SESSION["nombre"])) {
                   </div>
                   <div class="form-group col-lg-10 col-md-8 col-sm-12 botones" style="background-color: white !important; padding: 10px !important; float: right;">
                     <div style="float: left;">
-                      <button class="btn btn-warning" onclick="cancelarform()" type="button"><i class="fa fa-arrow-circle-left"></i> Cancelar</button>
                       <button class="btn btn-bcp" type="submit" id="btnGuardar"><i class="fa fa-save"></i> Guardar</button>
                     </div>
                   </div>
@@ -262,7 +261,7 @@ if (!isset($_SESSION["nombre"])) {
   ?>
   <script type="text/javascript" src="../public/js/JsBarcode.all.min.js"></script>
   <script type="text/javascript" src="../public/js/jquery.PrintArea.js"></script>
-  <script type="text/javascript" src="scripts/articulo26.js"></script>
+  <script type="text/javascript" src="scripts/agregarArt2.js"></script>
 <?php
 }
 ob_end_flush();

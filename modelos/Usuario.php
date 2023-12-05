@@ -9,7 +9,7 @@ class Usuario
 	}
 
 	//Implementamos un método para insertar registros
-	public function insertar($nombre, $tipo_documento, $num_documento, $direccion, $telefono, $email, $cargo, $login, $clave, $imagen, $permisos)
+	public function insertar($idlocal, $nombre, $tipo_documento, $num_documento, $direccion, $telefono, $email, $cargo, $login, $clave, $imagen, $permisos)
 	{
 		// Primero, verifique si el nombre de usuario ya existe en la tabla
 		$nombreExiste = $this->verificarNombreExiste($login);
@@ -34,6 +34,9 @@ class Usuario
 			ejecutarConsulta($sql_detalle) or $sw = false;
 			$num_elementos = $num_elementos + 1;
 		}
+
+		$sql2 = "UPDATE locales SET idusuario='$idusuarionew' WHERE idlocal='$idlocal'";
+		ejecutarConsulta($sql2);
 
 		return $sw;
 	}

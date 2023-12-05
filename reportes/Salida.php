@@ -264,17 +264,60 @@ class PDF_Invoice extends FPDF
 		$this->SetTextColor(0, 0, 0);
 		$this->SetFont("Arial", "B", 10);
 		$this->MultiCell(60, 4, "PERSONAL");
+		$this->SetXY($r1, $y1 + 6);
+		$this->SetFont("Arial", "", 10);
+		$this->MultiCell(150, 4, $cliente);
+		$this->SetXY($r1, $y1 + 12);
+		$this->MultiCell(150, 4, $domicilio);
+		$this->SetXY($r1, $y1 + 18);
+		$this->MultiCell(150, 4, $num_documento);
+		$this->SetXY($r1, $y1 + 24);
+		$this->MultiCell(150, 4, $email);
+		$this->SetXY($r1, $y1 + 30);
+		$this->MultiCell(150, 4, $telefono);
+	}
+
+	function addClientAdresse2($autorizado, $entregado, $recibido)
+	{
+		$r1     = $this->w - 320;
+		$r2     = $r1 + 68;
+		$y1     = 40;
+		$this->SetXY($r1, $y1);
+		$this->SetTextColor(0, 0, 0);
+		$this->SetFont("Arial", "B", 10);
+		$this->MultiCell(60, 4, "AUTORIZADOR:");
+		$this->SetXY($r1, $y1 + 5);
+		$this->SetFont("Arial", "", 10);
+		$this->MultiCell(150, 4, $autorizado);
+		$this->SetXY($r1, $y1 + 12);
+		$this->SetFont("Arial", "B", 10);
+		$this->MultiCell(60, 4, "ENTREGADO POR:");
+		$this->SetXY($r1, $y1 + 17);
+		$this->SetFont("Arial", "", 10);
+		$this->MultiCell(150, 4, $entregado);
+		$this->SetXY($r1, $y1 + 24);
+		$this->SetFont("Arial", "B", 10);
+		$this->MultiCell(60, 4, "RECIBIDO POR:");
+		$this->SetXY($r1, $y1 + 29);
+		$this->SetFont("Arial", "", 10);
+		$this->MultiCell(150, 4, $recibido);
+	}
+
+	// Client address
+	function addClientAdresse5($cliente, $num_documento)
+	{
+		$r1     = $this->w - 200;
+		$r2     = $r1 + 68;
+		$y1     = 40;
+		$this->SetXY($r1, $y1);
+		$this->SetTextColor(0, 0, 0);
+		$this->SetFont("Arial", "B", 10);
+		$this->MultiCell(60, 4, "MAQUINARIA");
 		$this->SetXY($r1, $y1 + 5);
 		$this->SetFont("Arial", "", 10);
 		$this->MultiCell(150, 4, $cliente);
 		$this->SetXY($r1, $y1 + 10);
-		$this->MultiCell(150, 4, $domicilio);
-		$this->SetXY($r1, $y1 + 15);
 		$this->MultiCell(150, 4, $num_documento);
-		$this->SetXY($r1, $y1 + 20);
-		$this->MultiCell(150, 4, $email);
-		$this->SetXY($r1, $y1 + 25);
-		$this->MultiCell(150, 4, $telefono);
 	}
 
 	// Mode of payment
@@ -357,7 +400,7 @@ class PDF_Invoice extends FPDF
 		$colX = $r1;
 		$colonnes = $tab;
 		foreach ($tab as $lib => $pos) {
-			$this->SetXY($colX, $y1 + 2);
+			$this->SetXY($colX, $y1 + 2.5);
 			$this->Cell($pos, 1, $lib, 0, 0, "C");
 			$colX += $pos;
 			$this->Line($colX, $y1, $colX, $y1 + $y2);

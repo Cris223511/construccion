@@ -10,7 +10,7 @@ if (!isset($_SESSION["nombre"])) {
   if ($_SESSION['salidas'] == 1) {
     require('Salida.php');
 
-    $logo = "logo.jpg";
+    $logo = "logo.jpeg";
     $ext_logo = "jpg";
     $empresa = "Arena San Andrés Perú S.A.C.";
     $documento = "20477157772";
@@ -33,22 +33,37 @@ if (!isset($_SESSION["nombre"])) {
       $logo,
       $ext_logo
     );
+
     $pdf->fact_dev(utf8_decode('Salida N° '), $regv->codigo);
     $pdf->temporaire("");
     $pdf->FancyTable("", "");
     $pdf->addDate($regv->fecha);
 
-    $pdf->addClientAdresse(
-      utf8_decode($regv->personal),
-      "Domicilio: " . utf8_decode($regv->direccion !== "" ? $regv->direccion : "Sin registrar."),
-      $regv->tipo_documento . ": " . ($regv->num_documento !== "" ? $regv->num_documento : "Sin registrar."),
-      "Email: " . ($regv->email !== "" ? $regv->email : "Sin registrar."),
-      "Telefono: " . ($regv->telefono !== "" ? $regv->telefono : "Sin registrar.")
-    );
+    if($regv->idpersonal != 0) {
+      $pdf->addClientAdresse(
+        utf8_decode($regv->personal),
+        "Domicilio: " . utf8_decode($regv->direccion !== "" ? $regv->direccion : "Sin registrar."),
+        $regv->tipo_documento . ": " . ($regv->num_documento !== "" ? $regv->num_documento : "Sin registrar."),
+        "Email: " . utf8_decode($regv->email !== "" ? $regv->email : "Sin registrar."),
+        "Telefono: " . utf8_decode($regv->telefono !== "" ? $regv->telefono : "Sin registrar.")
+      );
+
+      $pdf->addClientAdresse2(
+        utf8_decode($regv->autorizado),
+        utf8_decode($regv->entregado),
+        utf8_decode($regv->recibido)
+      );
+    } else {
+      $pdf->addClientAdresse5(
+        "Nombre: " . utf8_decode($regv->maquinaria !== "" ? $regv->maquinaria : "Sin registrar."),
+        utf8_decode("Descripción: ") . utf8_decode($regv->descripcion !== "" ? $regv->descripcion : "Sin registrar."),
+      );
+    }
 
     $cols = array(
-      "CODIGO" => 50,
-      "NOMBRE" => 110,
+      "CODIGO" => 30,
+      "NOMBRE" => 70,
+      "U. MEDIDA" => 60,
       "CANTIDAD" => 30
     );
 
@@ -57,6 +72,7 @@ if (!isset($_SESSION["nombre"])) {
     $cols = array(
       "CODIGO" => "L",
       "NOMBRE" => "L",
+      "U. MEDIDA" => "C",
       "CANTIDAD" => "C",
     );
     $pdf->addLineFormat($cols);
@@ -69,6 +85,7 @@ if (!isset($_SESSION["nombre"])) {
       $line = array(
         "CODIGO" => "$regd->codigo_producto",
         "NOMBRE" => utf8_decode("$regd->articulo"),
+        "U. MEDIDA" => utf8_decode("$regd->medida"),
         "CANTIDAD" => "$regd->cantidad"
       );
       $size = $pdf->addLine($y, $line);

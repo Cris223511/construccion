@@ -14,6 +14,7 @@ require_once "../modelos/Usuario.php";
 $usuario = new Usuario();
 
 $idusuario = isset($_POST["idusuario"]) ? limpiarCadena($_POST["idusuario"]) : "";
+$idlocal = isset($_POST["idlocal"]) ? limpiarCadena($_POST["idlocal"]) : "";
 $nombre = isset($_POST["nombre"]) ? limpiarCadena($_POST["nombre"]) : "";
 $tipo_documento = isset($_POST["tipo_documento"]) ? limpiarCadena($_POST["tipo_documento"]) : "";
 $num_documento = isset($_POST["num_documento"]) ? limpiarCadena($_POST["num_documento"]) : "";
@@ -49,7 +50,7 @@ switch ($_GET["op"]) {
 					} else if ($usuarioExiste) {
 						echo "El nombre del usuario que ha ingresado ya existe.";
 					} else {
-						$rspta = $usuario->insertar($nombre, $tipo_documento, $num_documento, $direccion, $telefono, $email, $cargo, $login, $clave, $imagen, $_POST['permiso']);
+						$rspta = $usuario->insertar($idlocal, $nombre, $tipo_documento, $num_documento, $direccion, $telefono, $email, $cargo, $login, $clave, $imagen, $_POST['permiso']);
 						echo $rspta ? "Usuario registrado" : "Usuario no se pudo registrar.";
 					}
 				} else {
