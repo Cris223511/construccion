@@ -22,9 +22,9 @@ if (!isset($_SESSION["nombre"])) {
               <h4><strong>Soporte: </strong></h4>
               <p>Si necesitas ayuda o más información, contáctate con nosotros llamando al <strong>+51 937 075 845</strong></p>
               <h4><strong>Empresa: </strong></h4>
-              <p>Sistema de construcciones S.A.C.</p>
+              <p>ALMACENES S.A.C.</p>
               <h4><strong>Desarrollado por: </strong></h4>
-              <p>SistemaDeConstrucciones@gmail.com</p>
+              <p>AlmacenesSAC@gmail.com</p>
             </div>
           </div>
         </div>

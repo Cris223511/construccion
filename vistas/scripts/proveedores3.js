@@ -8,12 +8,12 @@ function init() {
 		guardaryeditar(e);
 	});
 
-	$('#mSalidas').addClass("treeview active");
-	$('#lPersonales').addClass("active");
+	$('#mEntradas').addClass("treeview active");
+	$('#lProveedores').addClass("active");
 }
 
 function limpiar() {
-	$("#idpersonal").val("");
+	$("#idproveedor").val("");
 	$("#nombre").val("");
 	$("#tipo_documento").val("");
 	$("#num_documento").val("");
@@ -63,7 +63,7 @@ function listar() {
 			],
 			"ajax":
 			{
-				url: '../ajax/personales.php?op=listar',
+				url: '../ajax/proveedores.php?op=listar',
 				data: { fecha_inicio: fecha_inicio, fecha_fin: fecha_fin },
 				type: "get",
 				dataType: "json",
@@ -85,7 +85,7 @@ function listar() {
 			"iDisplayLength": 5,
 			"order": [],
 			"createdRow": function (row, data, dataIndex) {
-				$(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(3), td:eq(5), td:eq(6), td:eq(7), td:eq(8)').addClass('nowrap-cell');
+				$(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(3), td:eq(4), td:eq(6), td:eq(7), td:eq(8), td:eq(9)').addClass('nowrap-cell');
 			}
 		}).DataTable();
 }
@@ -115,7 +115,7 @@ function buscar() {
 			],
 			"ajax":
 			{
-				url: '../ajax/personales.php?op=listar',
+				url: '../ajax/proveedores.php?op=listar',
 				data: { fecha_inicio: fecha_inicio, fecha_fin: fecha_fin },
 				type: "get",
 				dataType: "json",
@@ -137,7 +137,7 @@ function buscar() {
 			"iDisplayLength": 5,
 			"order": [],
 			"createdRow": function (row, data, dataIndex) {
-				$(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(3), td:eq(5), td:eq(6), td:eq(7), td:eq(8)').addClass('nowrap-cell');
+				$(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(3), td:eq(4), td:eq(6), td:eq(7), td:eq(8), td:eq(9)').addClass('nowrap-cell');
 			}
 		}).DataTable();
 }
@@ -148,7 +148,7 @@ function guardaryeditar(e) {
 	var formData = new FormData($("#formulario")[0]);
 
 	$.ajax({
-		url: "../ajax/personales.php?op=guardaryeditar",
+		url: "../ajax/proveedores.php?op=guardaryeditar",
 		type: "POST",
 		data: formData,
 		contentType: false,
@@ -168,8 +168,8 @@ function guardaryeditar(e) {
 	});
 }
 
-function mostrar(idpersonal) {
-	$.post("../ajax/personales.php?op=mostrar", { idpersonal: idpersonal }, function (data, status) {
+function mostrar(idproveedor) {
+	$.post("../ajax/proveedores.php?op=mostrar", { idproveedor: idproveedor }, function (data, status) {
 		data = JSON.parse(data);
 		mostrarform(true);
 
@@ -182,14 +182,14 @@ function mostrar(idpersonal) {
 		$("#telefono").val(data.telefono);
 		$("#email").val(data.email);
 		$("#fecha_nac").val(data.fecha_nac);
-		$("#idpersonal").val(data.idpersonal);
+		$("#idproveedor").val(data.idproveedor);
 	})
 }
 
-function desactivar(idpersonal) {
-	bootbox.confirm("¿Está seguro de desactivar al personal?", function (result) {
+function desactivar(idproveedor) {
+	bootbox.confirm("¿Está seguro de desactivar al proveedor?", function (result) {
 		if (result) {
-			$.post("../ajax/personales.php?op=desactivar", { idpersonal: idpersonal }, function (e) {
+			$.post("../ajax/proveedores.php?op=desactivar", { idproveedor: idproveedor }, function (e) {
 				bootbox.alert(e);
 				tabla.ajax.reload();
 			});
@@ -197,10 +197,10 @@ function desactivar(idpersonal) {
 	})
 }
 
-function activar(idpersonal) {
-	bootbox.confirm("¿Está seguro de activar al personal?", function (result) {
+function activar(idproveedor) {
+	bootbox.confirm("¿Está seguro de activar al proveedor?", function (result) {
 		if (result) {
-			$.post("../ajax/personales.php?op=activar", { idpersonal: idpersonal }, function (e) {
+			$.post("../ajax/proveedores.php?op=activar", { idproveedor: idproveedor }, function (e) {
 				bootbox.alert(e);
 				tabla.ajax.reload();
 			});
@@ -208,10 +208,10 @@ function activar(idpersonal) {
 	})
 }
 
-function eliminar(idpersonal) {
-	bootbox.confirm("¿Estás seguro de eliminar al personal?", function (result) {
+function eliminar(idproveedor) {
+	bootbox.confirm("¿Estás seguro de eliminar al proveedor?", function (result) {
 		if (result) {
-			$.post("../ajax/personales.php?op=eliminar", { idpersonal: idpersonal }, function (e) {
+			$.post("../ajax/proveedores.php?op=eliminar", { idproveedor: idproveedor }, function (e) {
 				bootbox.alert(e);
 				tabla.ajax.reload();
 			});

@@ -39,31 +39,31 @@ if (!isset($_SESSION["nombre"])) {
     $pdf->FancyTable("", "");
     $pdf->addDate($regv->fecha);
 
-    if($regv->idpersonal != 0) {
+    if ($regv->tipo_movimiento == "personal") {
       $pdf->addClientAdresse(
-        utf8_decode($regv->personal),
+        utf8_decode($regv->usuario),
         "Domicilio: " . utf8_decode($regv->direccion !== "" ? $regv->direccion : "Sin registrar."),
         $regv->tipo_documento . ": " . ($regv->num_documento !== "" ? $regv->num_documento : "Sin registrar."),
         "Email: " . utf8_decode($regv->email !== "" ? $regv->email : "Sin registrar."),
         "Telefono: " . utf8_decode($regv->telefono !== "" ? $regv->telefono : "Sin registrar.")
       );
-
-      $pdf->addClientAdresse2(
-        utf8_decode($regv->autorizado),
-        utf8_decode($regv->entregado),
-        utf8_decode($regv->recibido)
-      );
     } else {
       $pdf->addClientAdresse5(
         "Nombre: " . utf8_decode($regv->maquinaria !== "" ? $regv->maquinaria : "Sin registrar."),
-        utf8_decode("Descripción: ") . utf8_decode($regv->descripcion !== "" ? $regv->descripcion : "Sin registrar."),
       );
     }
 
+    $pdf->addClientAdresse2(
+      utf8_decode($regv->autorizado == '' ? 'Sin registrar' : $regv->autorizado),
+      utf8_decode($regv->entregado == '' ? 'Sin registrar' : $regv->entregado),
+      utf8_decode($regv->recibido == '' ? 'Sin registrar' : $regv->recibido),
+      utf8_decode($regv->final == '' ? 'Sin registrar' : $regv->final)
+    );
+
     $cols = array(
       "CODIGO" => 30,
-      "NOMBRE" => 70,
-      "U. MEDIDA" => 60,
+      "NOMBRE" => 90,
+      "U. MEDIDA" => 40,
       "CANTIDAD" => 30
     );
 

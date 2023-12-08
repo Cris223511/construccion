@@ -141,7 +141,7 @@ $cargo_login = $_SESSION['cargo_detalle'];
   <meta http-equiv="Last-Modified" content="0">
   <meta http-equiv="Cache-Control" content="no-cache, mustrevalidate">
   <meta http-equiv="Pragma" content="no-cache">
-  <title>Sistema de construcciones | www.SistemaDeConstrucciones.com</title>
+  <title>ALMACENES S.A.C</title>
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.5 -->
   <link rel="stylesheet" href="../public/css/bootstrap.min.css">
@@ -168,8 +168,8 @@ $cargo_login = $_SESSION['cargo_detalle'];
 
     <header class="main-header" style="box-shadow: 0px 0px 15px -7px; position: sticky !important; width: 100%">
       <a href="escritorio.php" class="logo" style="color: white !important; background-color: #002a8e !important;">
-        <span class="logo-mini"><b>S.I.</b></span>
-        <span class="logo-lg" style="font-size: 15px;"><b>Sistema de construcciones</b></span>
+        <span class="logo-mini"><b>A.</b></span>
+        <span class="logo-lg" style="font-size: 15px;"><b>ALMACENES S.A.C</b></span>
       </a>
       <nav class="navbar" role="navigation" style="background-color: #002a8e !important;">
         <div style="display: flex; align-items: center; float: left;">
@@ -188,7 +188,7 @@ $cargo_login = $_SESSION['cargo_detalle'];
                 <li class="user-header" style="background: #002a8e !important;">
                   <img src="../files/usuarios/<?php echo $_SESSION['imagen']; ?>" class="img-circle" alt="User Image">
                   <p style="color: white !important;">
-                    Sistema de construcciones
+                    ALMACENES S.A.C
                     <small>nuestro contacto: +51 937 075 845</small>
                   </p>
                 </li>
@@ -228,7 +228,7 @@ $cargo_login = $_SESSION['cargo_detalle'];
               <ul class="treeview-menu">
                 <li id="lArticulos"><a href="articulo.php"><i class="fa fa-circle-o"></i> Productos</a></li>
                 <li id="lCategorias"><a href="categoria.php"><i class="fa fa-circle-o"></i> Categorías</a></li>
-                <li id="lLocales"><a href="locales.php"><i class="fa fa-circle-o"></i> Locales</a></li>
+                <li id="lLocales"><a href="locales.php"><i class="fa fa-circle-o"></i> Mis locales</a></li>
                 <li id="lMarcas"><a href="marcas.php"><i class="fa fa-circle-o"></i> Marcas</a></li>
                 <li id="lMedidas"><a href="medidas.php"><i class="fa fa-circle-o"></i> Unidades de medidas</a></li>
               </ul>
@@ -296,9 +296,14 @@ $cargo_login = $_SESSION['cargo_detalle'];
             <ul class="treeview-menu">
               <li id="lConfUsuario"><a href="confUsuario.php"><i class="fa fa-circle-o"></i> Configuración de perfil</a></li>
               ';
+            if ($_SESSION['cargo'] == "superadmin") {
+              echo '
+                <li id="lLocalesExternos"><a href="localesExternos.php"><i class="fa fa-circle-o"></i> Locales externos</a></li>
+                ';
+            }
             if ($_SESSION['cargo'] == "superadmin" || $_SESSION['cargo'] == "admin") {
               echo '
-              <li id="lLocalesDisponibles"><a href="localesDisponibles.php"><i class="fa fa-circle-o"></i> Locales disponibles</a></li>
+              <li id="lLocalesDisponibles"><a href="localesDisponibles.php"><i class="fa fa-circle-o"></i> Crear locales disponibles</a></li>
               ';
             }
             echo '

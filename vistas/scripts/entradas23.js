@@ -333,7 +333,7 @@ function listarArticulos() {
 		"iDisplayLength": 5,//Paginación
 		"order": [],
 		"createdRow": function (row, data, dataIndex) {
-			$(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(3), td:eq(4), td:eq(6), td:eq(7), td:eq(8), td:eq(9), td:eq(10), td:eq(11, td:eq(12), td:eq(13)').addClass('nowrap-cell');
+			$(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(3), td:eq(4), td:eq(5), td:eq(7), td:eq(8), td:eq(9), td:eq(10), td:eq(11, td:eq(12), td:eq(13), td:eq(14)').addClass('nowrap-cell');
 		},
 		"drawCallback": function (settings) {
 			// Vuelve a habilitar los botones de los artículos
@@ -370,7 +370,7 @@ var detalles = 0;
 //$("#guardar").hide();
 $("#btnGuardar").hide();
 
-function agregarDetalle(idarticulo, articulo, categoria, marca, medida, codigo_producto, codigo, stock, stock_minimo, imagen) {
+function agregarDetalle(idarticulo, articulo, categoria, marca, medida, stock, stock_minimo, codigo_producto, codigo, imagen) {
 	var cantidad = 1;
 
 	if (idarticulo != "") {
@@ -381,10 +381,10 @@ function agregarDetalle(idarticulo, articulo, categoria, marca, medida, codigo_p
 			'<td>' + marca + '</td>' +
 			'<td><input type="text" name="cantidad[]" id="cantidad[]" step="any" onkeydown="evitarNegativo(event)" oninput="validarNumeroDecimal(this, 6)" value="' + cantidad + '"></td>' +
 			'<td>' + medida + '</td>' +
-			'<td>' + codigo_producto + '</td>' +
-			'<td>' + codigo + '</td>' +
 			'<td>' + stock + '</td>' +
 			'<td>' + stock_minimo + '</td>' +
+			'<td>' + codigo_producto + '</td>' +
+			'<td>' + codigo + '</td>' +
 			'<td><img src="../files/articulos/' + imagen + '" height="50px" width="50px"></td>' +
 			'</tr>';
 		cont++;
@@ -431,13 +431,13 @@ function llenarTabla() {
 			success: function (e) {
 				console.log(e);
 				$('#idproducto').prop("disabled", false);
-				console.log("Envío esto al servidor =>", e[0].idarticulo, e[0].articulo, e[0].categoria, e[0].marca, e[0].medida, e[0].codigo_producto, e[0].codigo, e[0].stock, e[0].stock_minimo, e[0].imagen);
+				console.log("Envío esto al servidor =>", e[0].idarticulo, e[0].articulo, e[0].categoria, e[0].marca, e[0].medida, e[0].stock, e[0].stock_minimo, e[0].codigo_producto, e[0].codigo, e[0].imagen);
 
 				// Resetear el valor del select
 				$('#idproducto').val($("#idproducto option:first").val());
 				$("#idproducto").selectpicker('refresh');
 
-				agregarDetalle(e[0].idarticulo, e[0].articulo, e[0].categoria, e[0].marca, e[0].medida, e[0].codigo_producto, e[0].codigo, e[0].stock, e[0].stock_minimo, e[0].imagen);
+				agregarDetalle(e[0].idarticulo, e[0].articulo, e[0].categoria, e[0].marca, e[0].medida, e[0].stock, e[0].stock_minimo, e[0].codigo_producto, e[0].codigo, e[0].imagen);
 
 				$('#tblarticulos button[data-idarticulo="' + idarticulo + '"]').attr('disabled', 'disabled');
 				console.log("Deshabilito a: " + idarticulo + " =)");

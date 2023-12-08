@@ -12,16 +12,26 @@ if (!isset($_SESSION["nombre"])) {
     require_once "../modelos/Consultas.php";
     $consulta = new Consultas();
 
-    $rsptaE = $consulta->totalentradahoy();
+    $idusuario = $_SESSION['idusuario'];
+    $cargo = $_SESSION["cargo"];
+
+    if ($cargo == "superadmin") {
+      $rsptaE = $consulta->totalentradahoy();
+      $rsptaS = $consulta->totalsalidahoy();
+      $entrada10 = $consulta->entradasultimos_10dias();
+      $salidas12 = $consulta->salidasultimos_12meses();
+    } else {
+      $rsptaE = $consulta->totalentradahoyUsuario($idusuario);
+      $rsptaS = $consulta->totalsalidahoyUsuario($idusuario);
+      $entrada10 = $consulta->entradasultimos_10diasUsuario($idusuario);
+      $salidas12 = $consulta->salidasultimos_12mesesUsuario($idusuario);
+    }
+
     $regE = $rsptaE->fetch_object();
     $totalE = $regE->cantidad;
 
-    $rsptaS = $consulta->totalsalidahoy();
     $regS = $rsptaS->fetch_object();
     $totalS = $regS->cantidad;
-
-    //Datos para mostrar el gráfico de barras de las entradas
-    $entrada10 = $consulta->entradasultimos_10dias();
 
     $fechasE = '';
     $totalesE = '';
@@ -33,9 +43,6 @@ if (!isset($_SESSION["nombre"])) {
 
     $fechasE = substr($fechasE, 0, -1);
     $totalesE = substr($totalesE, 0, -1);
-
-    //Datos para mostrar el gráfico de barras de las salidas
-    $salidas12 = $consulta->salidasultimos_12meses();
 
     $fechasS = '';
     $totalesS = '';

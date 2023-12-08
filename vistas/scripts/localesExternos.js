@@ -7,20 +7,15 @@ function init() {
 	$("#formulario").on("submit", function (e) {
 		guardaryeditar(e);
 	});
-
-	$('#mEntradas').addClass("treeview active");
-	$('#lProveedores').addClass("active");
+	$('#mAlmacen').addClass("treeview active");
+	$('#lLocales').addClass("active");
 }
 
 function limpiar() {
-	$("#idproveedor").val("");
-	$("#nombre").val("");
-	$("#tipo_documento").val("");
-	$("#num_documento").val("");
-	$("#direccion").val("");
-	$("#telefono").val("");
-	$("#email").val("");
-	$("#fecha_nac").val("");
+	$("#idlocal").val("");
+	$("#titulo").val("");
+	$("#local_ruc").val("");
+	$("#descripcion").val("");
 }
 
 function mostrarform(flag) {
@@ -63,7 +58,7 @@ function listar() {
 			],
 			"ajax":
 			{
-				url: '../ajax/proveedores.php?op=listar',
+				url: '../ajax/locales.php?op=listar',
 				data: { fecha_inicio: fecha_inicio, fecha_fin: fecha_fin },
 				type: "get",
 				dataType: "json",
@@ -85,7 +80,7 @@ function listar() {
 			"iDisplayLength": 5,
 			"order": [],
 			"createdRow": function (row, data, dataIndex) {
-				$(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(3), td:eq(5), td:eq(6), td:eq(7), td:eq(8)').addClass('nowrap-cell');
+				$(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(4), td:eq(5), td:eq(6), td:eq(7)').addClass('nowrap-cell');
 			}
 		}).DataTable();
 }
@@ -115,7 +110,7 @@ function buscar() {
 			],
 			"ajax":
 			{
-				url: '../ajax/proveedores.php?op=listar',
+				url: '../ajax/locales.php?op=listar',
 				data: { fecha_inicio: fecha_inicio, fecha_fin: fecha_fin },
 				type: "get",
 				dataType: "json",
@@ -137,7 +132,7 @@ function buscar() {
 			"iDisplayLength": 5,
 			"order": [],
 			"createdRow": function (row, data, dataIndex) {
-				$(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(3), td:eq(5), td:eq(6), td:eq(7), td:eq(8)').addClass('nowrap-cell');
+				$(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(4), td:eq(5), td:eq(6), td:eq(7)').addClass('nowrap-cell');
 			}
 		}).DataTable();
 }
@@ -147,15 +142,21 @@ function guardaryeditar(e) {
 	$("#btnGuardar").prop("disabled", true);
 	var formData = new FormData($("#formulario")[0]);
 
+	if (formData.get("local_ruc").length < 11) {
+		bootbox.alert("El RUC del local debe ser de 11 dígitos.");
+		$("#btnGuardar").prop("disabled", false);
+		return;
+	}
+
 	$.ajax({
-		url: "../ajax/proveedores.php?op=guardaryeditar",
+		url: "../ajax/locales.php?op=guardaryeditar",
 		type: "POST",
 		data: formData,
 		contentType: false,
 		processData: false,
 
 		success: function (datos) {
-			if (datos == "El número de documento que ha ingresado ya existe.") {
+			if (datos == "El nombre del local ya existe.") {
 				bootbox.alert(datos);
 				$("#btnGuardar").prop("disabled", false);
 				return;
@@ -168,28 +169,50 @@ function guardaryeditar(e) {
 	});
 }
 
-function mostrar(idproveedor) {
-	$.post("../ajax/proveedores.php?op=mostrar", { idproveedor: idproveedor }, function (data, status) {
+function mostrar(idlocal) {
+	$.post("../ajax/locales.php?op=mostrar", { idlocal: idlocal }, function (data, status) {
+		// console.log(data);
 		data = JSON.parse(data);
 		mostrarform(true);
 
 		console.log(data);
 
-		$("#nombre").val(data.nombre);
-		$("#tipo_documento").val(data.tipo_documento);
-		$("#num_documento").val(data.num_documento);
-		$("#direccion").val(data.direccion);
-		$("#telefono").val(data.telefono);
-		$("#email").val(data.email);
-		$("#fecha_nac").val(data.fecha_nac);
-		$("#idproveedor").val(data.idproveedor);
+		$("#titulo").val(data.titulo);
+		$("#local_ruc").val(data.local_ruc);
+		$("#descripcion").val(data.descripcion);
+		$("#idlocal").val(data.idlocal);
 	})
 }
 
-function desactivar(idproveedor) {
-	bootbox.confirm("¿Está seguro de desactivar al proveedor?", function (result) {
+function trabajadores(idlocal, titulo) {
+	$("#local").text(titulo);
+	tabla = $('#tbltrabajadores').DataTable({
+		"aProcessing": true,
+		"aServerSide": true,
+		"dom": 'Bfrtip',
+		"buttons": [],
+		"ajax": {
+			url: '../ajax/locales.php?op=listarTrabajadores&idlocal=' + idlocal,
+			type: "GET",
+			dataType: "json",
+			error: function (e) {
+				console.log(e.responseText);
+			}
+		},
+		"bDestroy": true,
+		"iDisplayLength": 5,
+		"order": [],
+		"createdRow": function (row, data, dataIndex) {
+			$(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(4), td:eq(5), td:eq(6), td:eq(7)').addClass('nowrap-cell');
+		}
+	});
+}
+
+
+function desactivar(idlocal) {
+	bootbox.confirm("¿Está seguro de desactivar el local?", function (result) {
 		if (result) {
-			$.post("../ajax/proveedores.php?op=desactivar", { idproveedor: idproveedor }, function (e) {
+			$.post("../ajax/locales.php?op=desactivar", { idlocal: idlocal }, function (e) {
 				bootbox.alert(e);
 				tabla.ajax.reload();
 			});
@@ -197,10 +220,10 @@ function desactivar(idproveedor) {
 	})
 }
 
-function activar(idproveedor) {
-	bootbox.confirm("¿Está seguro de activar al proveedor?", function (result) {
+function activar(idlocal) {
+	bootbox.confirm("¿Está seguro de activar el local?", function (result) {
 		if (result) {
-			$.post("../ajax/proveedores.php?op=activar", { idproveedor: idproveedor }, function (e) {
+			$.post("../ajax/locales.php?op=activar", { idlocal: idlocal }, function (e) {
 				bootbox.alert(e);
 				tabla.ajax.reload();
 			});
@@ -208,10 +231,10 @@ function activar(idproveedor) {
 	})
 }
 
-function eliminar(idproveedor) {
-	bootbox.confirm("¿Estás seguro de eliminar al proveedor?", function (result) {
+function eliminar(idlocal) {
+	bootbox.confirm("¿Estás seguro de eliminar el local?", function (result) {
 		if (result) {
-			$.post("../ajax/proveedores.php?op=eliminar", { idproveedor: idproveedor }, function (e) {
+			$.post("../ajax/locales.php?op=eliminar", { idlocal: idlocal }, function (e) {
 				bootbox.alert(e);
 				tabla.ajax.reload();
 			});

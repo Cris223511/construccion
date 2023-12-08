@@ -67,15 +67,15 @@ if (!isset($_SESSION["nombre"])) {
 									<th>Marca</th>
 									<th>Cantidad</th>
 									<th style="white-space: nowrap;">Unidad de medida</th>
-									<th style="white-space: nowrap;">Código de producto</th>
-									<th style="white-space: nowrap;">Código de barra</th>
 									<th>Stock</th>
 									<th style="white-space: nowrap;">Stock Mínimo</th>
+									<th style="white-space: nowrap;">Código de producto</th>
+									<th style="white-space: nowrap;">Código de barra</th>
 									<th>Imagen</th>
 								</thead>';
 
 				while ($reg = $rspta->fetch_object()) {
-					echo '<tr class="filas"><td></td><td>' . $reg->articulo . '</td><td>' . $reg->categoria . '</td><td>' . $reg->marca . '</td><td>' . $reg->cantidad . '</td><td>' . $reg->medida . '</td><td>' . $reg->codigo_producto . '</td><td>' . $reg->codigo . '</td><td>' . $reg->stock . '</td><td>' . $reg->stock_minimo . '</td><td><img src="../files/articulos/' . $reg->imagen . '" height="50px" width="50px"></td></tr>';
+					echo '<tr class="filas"><td></td><td>' . $reg->articulo . '</td><td>' . $reg->categoria . '</td><td>' . $reg->marca . '</td><td>' . $reg->cantidad . '</td><td>' . $reg->medida . '</td><td>' . $reg->stock . '</td><td>' . $reg->stock_minimo . '</td><td>' . $reg->codigo_producto . '</td><td>' . $reg->codigo . '</td><td><img src="../files/articulos/' . $reg->imagen . '" height="50px" width="50px"></td></tr>';
 				}
 				break;
 
@@ -187,20 +187,21 @@ if (!isset($_SESSION["nombre"])) {
 
 					$data[] = array(
 						// "0" => ($reg->stock != '0') ? '<div style="display: flex; justify-content: center;"><button class="btn btn-warning" data-idarticulo="' . $reg->idarticulo . '" onclick="agregarDetalle(' . $reg->idarticulo . ',\'' . $reg->nombre . '\',\'' . $reg->codigo . '\'); disableButton(this);"><span class="fa fa-plus"></span></button></div>' : '',
-						"0" => '<div style="display: flex; justify-content: center;"><button class="btn btn-warning" style="height: 35px;" data-idarticulo="' . $reg->idarticulo . '" onclick="agregarDetalle(' . $reg->idarticulo . ',\'' . $reg->nombre . '\',\'' . $reg->categoria . '\',\'' . $reg->marca . '\',\'' . $reg->medida . '\',\'' . $reg->codigo_producto . '\',\'' . $reg->codigo . '\',\'' . $reg->stock . '\',\'' . $reg->stock_minimo . '\',\'' . $reg->imagen . '\'); disableButton(this);"><span class="fa fa-plus"></span></button></div>',
-						"1" => $reg->nombre,
-						"2" => $reg->categoria,
-						"3" => $reg->local,
-						"4" => $reg->marca,
-						"5" => $reg->codigo_producto,
-						"6" => $reg->codigo,
-						"7" => ($reg->stock > 0 && $reg->stock < $reg->stock_minimo) ? '<span style="color: #Ea9900; font-weight: bold">' . $reg->stock . '</span>' : (($reg->stock != '0') ? '<span>' . $reg->stock . '</span>' : '<span style="color: red; font-weight: bold">' . $reg->stock . '</span>'),
-						"8" => $reg->stock_minimo,
-						"9" => "<img src='../files/articulos/" . $reg->imagen . "' height='50px' width='50px' >",
-						"10" => $reg->usuario,
-						"11" => $cargo_detalle,
-						"12" => $reg->fecha,
-						"13" => ($reg->stock > 0 && $reg->stock < $reg->stock_minimo) ? '<span class="label bg-orange">agotandose</span>' : (($reg->stock != '0') ? '<span class="label bg-green">Disponible</span>' : '<span class="label bg-red">agotado</span>')
+						"0" => '<div style="display: flex; justify-content: center;"><button class="btn btn-warning" style="height: 35px;" data-idarticulo="' . $reg->idarticulo . '" onclick="agregarDetalle(' . $reg->idarticulo . ',\'' . $reg->nombre . '\',\'' . $reg->categoria . '\',\'' . $reg->marca . '\',\'' . $reg->medida . '\',\'' . $reg->stock . '\',\'' . $reg->stock_minimo . '\',\'' . $reg->codigo_producto . '\',\'' . $reg->codigo . '\',\'' . $reg->imagen . '\'); disableButton(this);"><span class="fa fa-plus"></span></button></div>',
+						"1" => "<img src='../files/articulos/" . $reg->imagen . "' height='50px' width='50px' >",
+						"2" => $reg->nombre,
+						"3" => $reg->medida,
+						"4" => $reg->categoria,
+						"5" => $reg->local,
+						"6" => $reg->marca,
+						"7" => $reg->codigo_producto,
+						"8" => $reg->codigo,
+						"9" => ($reg->stock > 0 && $reg->stock < $reg->stock_minimo) ? '<span style="color: #Ea9900; font-weight: bold">' . $reg->stock . '</span>' : (($reg->stock != '0') ? '<span>' . $reg->stock . '</span>' : '<span style="color: red; font-weight: bold">' . $reg->stock . '</span>'),
+						"10" => $reg->stock_minimo,
+						"11" => $reg->usuario,
+						"12" => $cargo_detalle,
+						"13" => $reg->fecha,
+						"14" => ($reg->stock > 0 && $reg->stock < $reg->stock_minimo) ? '<span class="label bg-orange">agotandose</span>' : (($reg->stock != '0') ? '<span class="label bg-green">Disponible</span>' : '<span class="label bg-red">agotado</span>')
 					);
 				}
 				$results = array(
@@ -247,10 +248,10 @@ if (!isset($_SESSION["nombre"])) {
 						'categoria' => $reg->categoria,
 						'marca' => $reg->marca,
 						'medida' => $reg->medida,
-						'codigo_producto' => $reg->codigo_producto,
-						'codigo' => $reg->codigo,
 						'stock' => $reg->stock,
 						'stock_minimo' => $reg->stock_minimo,
+						'codigo_producto' => $reg->codigo_producto,
+						'codigo' => $reg->codigo,
 						'imagen' => $reg->imagen,
 					);
 					array_push($productos, $producto);

@@ -48,8 +48,8 @@ if (!isset($_SESSION["nombre"])) {
 
     $cols = array(
       "CODIGO" => 30,
-      "NOMBRE" => 70,
-      "U. MEDIDA" => 60,
+      "NOMBRE" => 90,
+      "U. MEDIDA" => 40,
       "CANTIDAD" => 30
     );
 

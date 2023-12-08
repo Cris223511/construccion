@@ -10,13 +10,17 @@ class Proveedor
 	public function agregar($idusuario, $nombre, $tipo_documento, $num_documento, $direccion, $telefono, $email, $fecha_nac)
 	{
 		date_default_timezone_set("America/Lima");
-		$sql = "INSERT INTO proveedores (idusuario, nombre, tipo_documento, num_documento, direccion, telefono, email, fecha_nac, estado, eliminado)
-            VALUES ('$idusuario','$nombre','$tipo_documento','$num_documento','$direccion','$telefono', '$email', '$fecha_nac', 'activado','0')";
+		$sql = "INSERT INTO proveedores (idusuario, nombre, tipo_documento, num_documento, direccion, telefono, email, fecha_nac, fecha_hora, estado, eliminado)
+            VALUES ('$idusuario','$nombre','$tipo_documento','$num_documento','$direccion','$telefono', '$email', '$fecha_nac', SYSDATE(), 'activado','0')";
 		return ejecutarConsulta($sql);
 	}
 
 	public function verificarDniExiste($num_documento)
 	{
+		if (empty($num_documento)) {
+			return false; // El número documento está vacío, consideramos que no existe
+		}
+
 		$sql = "SELECT * FROM proveedores WHERE num_documento = '$num_documento' AND eliminado = '0'";
 		$resultado = ejecutarConsulta($sql);
 		if (mysqli_num_rows($resultado) > 0) {
@@ -71,9 +75,9 @@ class Proveedor
 
 	public function listar()
 	{
-		$sql = "SELECT c.idproveedor, c.nombre, c.tipo_documento, c.num_documento, c.direccion, c.telefono, c.email, u.idusuario, u.cargo as cargo,
-				CONCAT(DAY(c.fecha_nac), ' de ', 
-				CASE MONTH(c.fecha_nac)
+		$sql = "SELECT p.idproveedor, p.nombre, p.tipo_documento, p.num_documento, p.direccion, p.telefono, p.email, u.idusuario, u.cargo as cargo,
+				CONCAT(DAY(p.fecha_nac), ' de ', 
+				CASE MONTH(p.fecha_nac)
 					WHEN 1 THEN 'Enero'
 					WHEN 2 THEN 'Febrero'
 					WHEN 3 THEN 'Marzo'
@@ -86,18 +90,18 @@ class Proveedor
 					WHEN 10 THEN 'Octubre'
 					WHEN 11 THEN 'Noviembre'
 					WHEN 12 THEN 'Diciembre'
-				END, ' del ', YEAR(c.fecha_nac)) as fecha, c.estado
-				FROM proveedores c
-				LEFT JOIN usuario u ON c.idusuario = u.idusuario
-				WHERE c.eliminado = '0' ORDER BY c.idproveedor DESC";
+				END, ' del ', YEAR(p.fecha_nac)) as fecha_nac, DATE_FORMAT(p.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, p.estado
+				FROM proveedores p
+				LEFT JOIN usuario u ON p.idusuario = u.idusuario
+				WHERE p.eliminado = '0' ORDER BY p.idproveedor DESC";
 		return ejecutarConsulta($sql);
 	}
 
 	public function listarPorFecha($fecha_inicio, $fecha_fin)
 	{
-		$sql = "SELECT c.idproveedor, c.nombre, c.tipo_documento, c.num_documento, c.direccion, c.telefono, c.email, u.idusuario, u.cargo as cargo,
-				CONCAT(DAY(c.fecha_nac), ' de ', 
-				CASE MONTH(c.fecha_nac)
+		$sql = "SELECT p.idproveedor, p.nombre, p.tipo_documento, p.num_documento, p.direccion, p.telefono, p.email, u.idusuario, u.cargo as cargo,
+				CONCAT(DAY(p.fecha_nac), ' de ', 
+				CASE MONTH(p.fecha_nac)
 					WHEN 1 THEN 'Enero'
 					WHEN 2 THEN 'Febrero'
 					WHEN 3 THEN 'Marzo'
@@ -110,27 +114,27 @@ class Proveedor
 					WHEN 10 THEN 'Octubre'
 					WHEN 11 THEN 'Noviembre'
 					WHEN 12 THEN 'Diciembre'
-				END, ' del ', YEAR(c.fecha_nac)) as fecha, c.estado
-				FROM proveedores c
-				LEFT JOIN usuario u ON c.idusuario = u.idusuario
-				WHERE c.eliminado = '0' AND DATE(c.fecha_nac) >= '$fecha_inicio' AND DATE(c.fecha_nac) <= '$fecha_fin' ORDER BY c.idproveedor DESC";
+				END, ' del ', YEAR(p.fecha_nac)) as fecha_nac, DATE_FORMAT(p.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, p.estado
+				FROM proveedores p
+				LEFT JOIN usuario u ON p.idusuario = u.idusuario
+				WHERE p.eliminado = '0' AND DATE(p.fecha_hora) >= '$fecha_inicio' AND DATE(p.fecha_hora) <= '$fecha_fin' ORDER BY p.idproveedor DESC";
 		return ejecutarConsulta($sql);
 	}
 
 	public function listarFechaNormal()
 	{
-		$sql = "SELECT c.idproveedor, c.nombre, c.tipo_documento, c.num_documento, c.direccion, c.telefono, c.email, u.idusuario, u.cargo as cargo, c.fecha_nac as fecha, c.estado
-				FROM proveedores c
-				LEFT JOIN usuario u ON c.idusuario = u.idusuario
-				WHERE c.eliminado = '0' ORDER BY c.idproveedor DESC";
+		$sql = "SELECT p.idproveedor, p.nombre, p.tipo_documento, p.num_documento, p.direccion, p.telefono, p.email, u.idusuario, u.cargo as cargo, p.fecha_nac as fecha_nac, DATE_FORMAT(p.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, p.estado
+				FROM proveedores p
+				LEFT JOIN usuario u ON p.idusuario = u.idusuario
+				WHERE p.eliminado = '0' ORDER BY p.idproveedor DESC";
 		return ejecutarConsulta($sql);
 	}
 
 	public function listarPorUsuario($idusuario)
 	{
-		$sql = "SELECT c.idproveedor, c.nombre, c.tipo_documento, c.num_documento, c.direccion, c.telefono, c.email, u.idusuario, u.cargo as cargo,
-				CONCAT(DAY(c.fecha_nac), ' de ', 
-				CASE MONTH(c.fecha_nac)
+		$sql = "SELECT p.idproveedor, p.nombre, p.tipo_documento, p.num_documento, p.direccion, p.telefono, p.email, u.idusuario, u.cargo as cargo,
+				CONCAT(DAY(p.fecha_nac), ' de ', 
+				CASE MONTH(p.fecha_nac)
 					WHEN 1 THEN 'Enero'
 					WHEN 2 THEN 'Febrero'
 					WHEN 3 THEN 'Marzo'
@@ -143,18 +147,18 @@ class Proveedor
 					WHEN 10 THEN 'Octubre'
 					WHEN 11 THEN 'Noviembre'
 					WHEN 12 THEN 'Diciembre'
-				END, ' del ', YEAR(c.fecha_nac)) as fecha, c.estado
-				FROM proveedores c
-				LEFT JOIN usuario u ON c.idusuario = u.idusuario
-				WHERE c.idusuario = '$idusuario' AND c.eliminado = '0' ORDER BY c.idproveedor DESC";
+				END, ' del ', YEAR(p.fecha_nac)) as fecha_nac, DATE_FORMAT(p.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, p.estado
+				FROM proveedores p
+				LEFT JOIN usuario u ON p.idusuario = u.idusuario
+				WHERE p.idusuario = '$idusuario' AND p.eliminado = '0' ORDER BY p.idproveedor DESC";
 		return ejecutarConsulta($sql);
 	}
 
 	public function listarPorUsuarioFecha($idusuario, $fecha_inicio, $fecha_fin)
 	{
-		$sql = "SELECT c.idproveedor, c.nombre, c.tipo_documento, c.num_documento, c.direccion, c.telefono, c.email, u.idusuario, u.cargo as cargo,
-				CONCAT(DAY(c.fecha_nac), ' de ', 
-				CASE MONTH(c.fecha_nac)
+		$sql = "SELECT p.idproveedor, p.nombre, p.tipo_documento, p.num_documento, p.direccion, p.telefono, p.email, u.idusuario, u.cargo as cargo,
+				CONCAT(DAY(p.fecha_nac), ' de ', 
+				CASE MONTH(p.fecha_nac)
 					WHEN 1 THEN 'Enero'
 					WHEN 2 THEN 'Febrero'
 					WHEN 3 THEN 'Marzo'
@@ -167,19 +171,19 @@ class Proveedor
 					WHEN 10 THEN 'Octubre'
 					WHEN 11 THEN 'Noviembre'
 					WHEN 12 THEN 'Diciembre'
-				END, ' del ', YEAR(c.fecha_nac)) as fecha, c.estado
-				FROM proveedores c
-				LEFT JOIN usuario u ON c.idusuario = u.idusuario
-				WHERE c.idusuario = '$idusuario' AND c.eliminado = '0' AND DATE(c.fecha_nac) >= '$fecha_inicio' AND DATE(c.fecha_nac) <= '$fecha_fin' ORDER BY c.idproveedor DESC";
+				END, ' del ', YEAR(p.fecha_nac)) as fecha_nac, DATE_FORMAT(p.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, p.estado
+				FROM proveedores p
+				LEFT JOIN usuario u ON p.idusuario = u.idusuario
+				WHERE p.idusuario = '$idusuario' AND p.eliminado = '0' AND DATE(p.fecha_hora) >= '$fecha_inicio' AND DATE(p.fecha_hora) <= '$fecha_fin' ORDER BY p.idproveedor DESC";
 		return ejecutarConsulta($sql);
 	}
 
 	public function listarFechaNormalPorUsuario($idusuario)
 	{
-		$sql = "SELECT c.idproveedor, c.nombre, c.tipo_documento, c.num_documento, c.direccion, c.telefono, c.email, u.idusuario, u.cargo as cargo, c.fecha_nac as fecha, c.estado
-				FROM proveedores c
-				LEFT JOIN usuario u ON c.idusuario = u.idusuario
-				WHERE c.idusuario = '$idusuario' AND c.eliminado = '0' ORDER BY c.idproveedor DESC";
+		$sql = "SELECT p.idproveedor, p.nombre, p.tipo_documento, p.num_documento, p.direccion, p.telefono, p.email, u.idusuario, u.cargo as cargo, p.fecha_nac as fecha_nac, DATE_FORMAT(p.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, p.estado
+				FROM proveedores p
+				LEFT JOIN usuario u ON p.idusuario = u.idusuario
+				WHERE p.idusuario = '$idusuario' AND p.eliminado = '0' ORDER BY p.idproveedor DESC";
 		return ejecutarConsulta($sql);
 	}
 }

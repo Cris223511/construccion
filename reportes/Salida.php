@@ -263,7 +263,7 @@ class PDF_Invoice extends FPDF
 		$this->SetXY($r1, $y1);
 		$this->SetTextColor(0, 0, 0);
 		$this->SetFont("Arial", "B", 10);
-		$this->MultiCell(60, 4, "PERSONAL");
+		$this->MultiCell(60, 4, "AGREGADO POR");
 		$this->SetXY($r1, $y1 + 6);
 		$this->SetFont("Arial", "", 10);
 		$this->MultiCell(150, 4, $cliente);
@@ -277,34 +277,40 @@ class PDF_Invoice extends FPDF
 		$this->MultiCell(150, 4, $telefono);
 	}
 
-	function addClientAdresse2($autorizado, $entregado, $recibido)
+	function addClientAdresse2($autorizado, $entregado, $recibido, $final)
 	{
 		$r1     = $this->w - 320;
 		$r2     = $r1 + 68;
 		$y1     = 40;
-		$this->SetXY($r1, $y1);
+		$this->SetXY($r1, $y1 + 5);
 		$this->SetTextColor(0, 0, 0);
 		$this->SetFont("Arial", "B", 10);
 		$this->MultiCell(60, 4, "AUTORIZADOR:");
-		$this->SetXY($r1, $y1 + 5);
+		$this->SetXY($r1, $y1 + 10);
 		$this->SetFont("Arial", "", 10);
 		$this->MultiCell(150, 4, $autorizado);
-		$this->SetXY($r1, $y1 + 12);
+		$this->SetXY($r1, $y1 + 20);
 		$this->SetFont("Arial", "B", 10);
 		$this->MultiCell(60, 4, "ENTREGADO POR:");
-		$this->SetXY($r1, $y1 + 17);
+		$this->SetXY($r1, $y1 + 25);
 		$this->SetFont("Arial", "", 10);
 		$this->MultiCell(150, 4, $entregado);
-		$this->SetXY($r1, $y1 + 24);
+		$this->SetXY($r1 + 50, $y1 + 5);
 		$this->SetFont("Arial", "B", 10);
 		$this->MultiCell(60, 4, "RECIBIDO POR:");
-		$this->SetXY($r1, $y1 + 29);
+		$this->SetXY($r1 + 50, $y1 + 10);
 		$this->SetFont("Arial", "", 10);
 		$this->MultiCell(150, 4, $recibido);
+		$this->SetXY($r1 + 50, $y1 + 20);
+		$this->SetFont("Arial", "B", 10);
+		$this->MultiCell(60, 4, "USUARIO FINAL:");
+		$this->SetXY($r1 + 50, $y1 + 25);
+		$this->SetFont("Arial", "", 10);
+		$this->MultiCell(150, 4, $final);
 	}
 
 	// Client address
-	function addClientAdresse5($cliente, $num_documento)
+	function addClientAdresse5($cliente)
 	{
 		$r1     = $this->w - 200;
 		$r2     = $r1 + 68;
@@ -316,8 +322,6 @@ class PDF_Invoice extends FPDF
 		$this->SetXY($r1, $y1 + 5);
 		$this->SetFont("Arial", "", 10);
 		$this->MultiCell(150, 4, $cliente);
-		$this->SetXY($r1, $y1 + 10);
-		$this->MultiCell(150, 4, $num_documento);
 	}
 
 	// Mode of payment

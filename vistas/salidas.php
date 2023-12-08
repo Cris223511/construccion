@@ -39,18 +39,23 @@ if (!isset($_SESSION["nombre"])) {
               <div class="box-header with-border">
                 <h1 class="box-title">Salidas
                   <button class="btn btn-bcp" id="btnagregar" onclick="mostrarform(true)">
-                    <i class="fa fa-plus-circle"></i> Agregar
+                    <i class="fa fa-plus-circle"></i> Nueva salida
                   </button>
                   <a href="../reportes/rptsalidas.php" target="_blank">
                     <button class="btn btn-secondary" style="color: black !important;">
                       <i class="fa fa-clipboard"></i> Reporte
                     </button>
                   </a>
-                  <a href="agregarArt2.php">
+                  <a href="articulo.php">
+                    <button class="btn btn-warning" id="btnInsertarArt">
+                      <i class="fa fa-sign-in"></i> Ver productos
+                    </button>
+                  </a>
+                  <!-- <a href="agregarArt2.php">
                     <button class="btn btn-success" id="btnInsertarArt">
                       <i class="fa fa-plus-circle"></i> Agregar Productos
                     </button>
-                  </a>
+                  </a> -->
                 </h1>
                 <div class="box-tools pull-right">
                 </div>
@@ -83,6 +88,7 @@ if (!isset($_SESSION["nombre"])) {
                       <th style="white-space: nowrap;">Autorizado por</th>
                       <th style="white-space: nowrap;">Entregado por</th>
                       <th style="white-space: nowrap;">Recibido por</th>
+                      <th style="white-space: nowrap;">Usuario final</th>
                       <th style="white-space: nowrap;">Agregado por</th>
                       <th>Cargo</th>
                       <th>Estado</th>
@@ -97,6 +103,7 @@ if (!isset($_SESSION["nombre"])) {
                       <th>Autorizado por</th>
                       <th>Entregado por</th>
                       <th>Recibido por</th>
+                      <th>Usuario final</th>
                       <th>Agregado por</th>
                       <th>Cargo</th>
                       <th>Estado</th>
@@ -131,40 +138,40 @@ if (!isset($_SESSION["nombre"])) {
                     </div>
                     <div class="form-group col-lg-6 col-md-6 col-md-12">
                       <label>Tipo de movimiento(*):</label>
-                      <select id="tipo_movimiento" class="form-control selectpicker" onchange="evaluarMetodo()" required>
+                      <select id="tipo_movimiento" name="tipo_movimiento" class="form-control selectpicker" onchange="evaluarMetodo()" required>
                         <option value="">- Seleccione -</option>
                         <option value="personal">Personal</option>
                         <option value="maquinaria">Maquinaria</option>
-                      </select>
-                    </div>
-                    <div class="form-group col-lg-6 col-md-6 col-md-12 selectPersonal">
-                      <label>Personal(*):</label>
-                      <select id="idpersonal" name="idpersonal" class="form-control selectpicker" data-live-search="true" required>
-                        <option value="">- Seleccione -</option>
-                      </select>
-                    </div>
-                    <div class="form-group col-lg-4 col-md-4 col-md-12 selectPersonal">
-                      <label>Autorizado por(*):</label>
-                      <select id="idautorizado" name="idautorizado" class="form-control selectpicker" data-live-search="true" required>
-                        <option value="">- Seleccione -</option>
-                      </select>
-                    </div>
-                    <div class="form-group col-lg-4 col-md-4 col-md-12 selectPersonal">
-                      <label>Entregado por(*):</label>
-                      <select id="identregado" name="identregado" class="form-control selectpicker" data-live-search="true" required>
-                        <option value="">- Seleccione -</option>
-                      </select>
-                    </div>
-                    <div class="form-group col-lg-4 col-md-4 col-md-12 selectPersonal">
-                      <label>Recibido por(*):</label>
-                      <select id="idrecibido" name="idrecibido" class="form-control selectpicker" data-live-search="true" required>
-                        <option value="">- Seleccione -</option>
                       </select>
                     </div>
                     <div class="form-group col-lg-6 col-md-6 col-md-12" id="selectMaquinaria">
                       <label>Maquinaria(*):</label>
                       <select id="idmaquinaria" name="idmaquinaria" class="form-control selectpicker" data-live-search="true" required>
                         <option value="">- Seleccione -</option>
+                      </select>
+                    </div>
+                    <div class="form-group col-lg-6 col-md-6 col-md-12 selectPersonal">
+                      <label>Autorizado por(*):</label>
+                      <select id="idautorizado" name="idautorizado" class="form-control selectpicker" data-live-search="true" required>
+                        <option value="0">- Seleccione -</option>
+                      </select>
+                    </div>
+                    <div class="form-group col-lg-6 col-md-6 col-md-12 selectPersonal">
+                      <label>Entregado por(*):</label>
+                      <select id="identregado" name="identregado" class="form-control selectpicker" data-live-search="true" required>
+                        <option value="0">- Seleccione -</option>
+                      </select>
+                    </div>
+                    <div class="form-group col-lg-6 col-md-6 col-md-12 selectPersonal">
+                      <label>Recibido por(*):</label>
+                      <select id="idrecibido" name="idrecibido" class="form-control selectpicker" data-live-search="true" required>
+                        <option value="0">- Seleccione -</option>
+                      </select>
+                    </div>
+                    <div class="form-group col-lg-6 col-md-6 col-md-12 selectPersonal">
+                      <label>Usuario final(*):</label>
+                      <select id="idfinal" name="idfinal" class="form-control selectpicker" data-live-search="true" required>
+                        <option value="0">- Seleccione -</option>
                       </select>
                     </div>
                     <div class="form-group col-lg-12 col-md-12 col-md-12">
@@ -193,10 +200,10 @@ if (!isset($_SESSION["nombre"])) {
                           <th>Marca</th>
                           <th>Cantidad</th>
                           <th style="white-space: nowrap;">Unidad de medida</th>
-                          <th style="white-space: nowrap;">Código de producto</th>
-                          <th style="white-space: nowrap;">Código de barra</th>
                           <th>Stock</th>
                           <th style="white-space: nowrap;">Stock mínimo</th>
+                          <th style="white-space: nowrap;">Código de producto</th>
+                          <th style="white-space: nowrap;">Código de barra</th>
                           <th>Imagen</th>
                         </thead>
                         <tbody>
@@ -227,7 +234,9 @@ if (!isset($_SESSION["nombre"])) {
             <table id="tblarticulos" class="table table-striped table-bordered table-condensed table-hover w-100" style="width: 100% !important">
               <thead>
                 <th>OPCIONES</th>
+                <th>IMAGEN</th>
                 <th>NOMBRE</th>
+                <th style="white-space: nowrap;">U. MEDIDA</th>
                 <th>CATEGORÍA</th>
                 <th style="width: 20%; min-width: 220px; white-space: nowrap;">UBICACIÓN DEL LOCAL</th>
                 <th>MARCA</th>
@@ -235,7 +244,6 @@ if (!isset($_SESSION["nombre"])) {
                 <th style="white-space: nowrap;">C. DE BARRA</th>
                 <th style="white-space: nowrap;">STOCK NORMAL</th>
                 <th style="white-space: nowrap;">STOCK MÍNIMO</th>
-                <th>IMAGEN</th>
                 <th style="white-space: nowrap;">AGREGADO POR</th>
                 <th>CARGO</th>
                 <th style="white-space: nowrap;">FECHA Y HORA</th>
@@ -245,7 +253,9 @@ if (!isset($_SESSION["nombre"])) {
               </tbody>
               <tfoot>
                 <TH>OPCIONES</TH>
+                <TH>IMAGEN</TH>
                 <TH>NOMBRE</TH>
+                <TH>U. MEDIDA</TH>
                 <TH>CATEGORÍA</TH>
                 <TH>UBICACIÓN DEL LOCAL</TH>
                 <TH>MARCA</TH>
@@ -253,7 +263,6 @@ if (!isset($_SESSION["nombre"])) {
                 <TH>C. DE BARRA</TH>
                 <TH>STOCK NORMAL</TH>
                 <TH>STOCK MÍNIMO</TH>
-                <TH>IMAGEN</TH>
                 <TH>AGREGADO POR</TH>
                 <TH>CARGO</TH>
                 <TH>FECHA Y HORA</TH>
@@ -275,7 +284,7 @@ if (!isset($_SESSION["nombre"])) {
 
   require 'footer.php';
   ?>
-  <script type="text/javascript" src="scripts/salidas18.js"></script>
+  <script type="text/javascript" src="scripts/salidas25.js"></script>
 <?php
 }
 ob_end_flush();

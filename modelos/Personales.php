@@ -10,13 +10,17 @@ class Personal
 	public function agregar($idusuario, $nombre, $tipo_documento, $num_documento, $direccion, $telefono, $email, $fecha_nac)
 	{
 		date_default_timezone_set("America/Lima");
-		$sql = "INSERT INTO personales (idusuario, nombre, tipo_documento, num_documento, direccion, telefono, email, fecha_nac, estado, eliminado)
-            VALUES ('$idusuario','$nombre','$tipo_documento','$num_documento','$direccion','$telefono', '$email', '$fecha_nac', 'activado','0')";
+		$sql = "INSERT INTO personales (idusuario, nombre, tipo_documento, num_documento, direccion, telefono, email, fecha_nac, fecha_hora, estado, eliminado)
+            VALUES ('$idusuario','$nombre','$tipo_documento','$num_documento','$direccion','$telefono', '$email', '$fecha_nac', SYSDATE(), 'activado','0')";
 		return ejecutarConsulta($sql);
 	}
 
 	public function verificarDniExiste($num_documento)
 	{
+		if (empty($num_documento)) {
+			return false; // El número documento está vacío, consideramos que no existe
+		}
+
 		$sql = "SELECT * FROM personales WHERE num_documento = '$num_documento' AND eliminado = '0'";
 		$resultado = ejecutarConsulta($sql);
 		if (mysqli_num_rows($resultado) > 0) {
@@ -86,7 +90,7 @@ class Personal
 					WHEN 10 THEN 'Octubre'
 					WHEN 11 THEN 'Noviembre'
 					WHEN 12 THEN 'Diciembre'
-				END, ' del ', YEAR(p.fecha_nac)) as fecha, p.estado
+				END, ' del ', YEAR(p.fecha_nac)) as fecha_nac, DATE_FORMAT(p.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, p.estado
 				FROM personales p
 				LEFT JOIN usuario u ON p.idusuario = u.idusuario
 				WHERE p.eliminado = '0' ORDER BY p.idpersonal DESC";
@@ -110,16 +114,16 @@ class Personal
 					WHEN 10 THEN 'Octubre'
 					WHEN 11 THEN 'Noviembre'
 					WHEN 12 THEN 'Diciembre'
-				END, ' del ', YEAR(p.fecha_nac)) as fecha, p.estado
+				END, ' del ', YEAR(p.fecha_nac)) as fecha_nac, DATE_FORMAT(p.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, p.estado
 				FROM personales p
 				LEFT JOIN usuario u ON p.idusuario = u.idusuario
-				WHERE p.eliminado = '0' AND DATE(p.fecha_nac) >= '$fecha_inicio' AND DATE(p.fecha_nac) <= '$fecha_fin' ORDER BY p.idpersonal DESC";
+				WHERE p.eliminado = '0' AND DATE(p.fecha_hora) >= '$fecha_inicio' AND DATE(p.fecha_hora) <= '$fecha_fin' ORDER BY p.idpersonal DESC";
 		return ejecutarConsulta($sql);
 	}
 
 	public function listarFechaNormal()
 	{
-		$sql = "SELECT p.idpersonal, p.nombre, p.tipo_documento, p.num_documento, p.direccion, p.telefono, p.email, u.idusuario, u.cargo as cargo, p.fecha_nac as fecha, p.estado
+		$sql = "SELECT p.idpersonal, p.nombre, p.tipo_documento, p.num_documento, p.direccion, p.telefono, p.email, u.idusuario, u.cargo as cargo, p.fecha_nac as fecha_nac, DATE_FORMAT(p.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, p.estado
 				FROM personales p
 				LEFT JOIN usuario u ON p.idusuario = u.idusuario
 				WHERE p.eliminado = '0' ORDER BY p.idpersonal DESC";
@@ -143,7 +147,7 @@ class Personal
 					WHEN 10 THEN 'Octubre'
 					WHEN 11 THEN 'Noviembre'
 					WHEN 12 THEN 'Diciembre'
-				END, ' del ', YEAR(p.fecha_nac)) as fecha, p.estado
+				END, ' del ', YEAR(p.fecha_nac)) as fecha_nac, DATE_FORMAT(p.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, p.estado
 				FROM personales p
 				LEFT JOIN usuario u ON p.idusuario = u.idusuario
 				WHERE p.idusuario = '$idusuario' AND p.eliminado = '0' ORDER BY p.idpersonal DESC";
@@ -167,16 +171,16 @@ class Personal
 					WHEN 10 THEN 'Octubre'
 					WHEN 11 THEN 'Noviembre'
 					WHEN 12 THEN 'Diciembre'
-				END, ' del ', YEAR(p.fecha_nac)) as fecha, p.estado
+				END, ' del ', YEAR(p.fecha_nac)) as fecha_nac, DATE_FORMAT(p.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, p.estado
 				FROM personales p
 				LEFT JOIN usuario u ON p.idusuario = u.idusuario
-				WHERE p.idusuario = '$idusuario' AND p.eliminado = '0' AND DATE(p.fecha_nac) >= '$fecha_inicio' AND DATE(p.fecha_nac) <= '$fecha_fin' ORDER BY p.idpersonal DESC";
+				WHERE p.idusuario = '$idusuario' AND p.eliminado = '0' AND DATE(p.fecha_hora) >= '$fecha_inicio' AND DATE(p.fecha_hora) <= '$fecha_fin' ORDER BY p.idpersonal DESC";
 		return ejecutarConsulta($sql);
 	}
 
 	public function listarFechaNormalPorUsuario($idusuario)
 	{
-		$sql = "SELECT p.idpersonal, p.nombre, p.tipo_documento, p.num_documento, p.direccion, p.telefono, p.email, u.idusuario, u.cargo as cargo, p.fecha_nac as fecha, p.estado
+		$sql = "SELECT p.idpersonal, p.nombre, p.tipo_documento, p.num_documento, p.direccion, p.telefono, p.email, u.idusuario, u.cargo as cargo, p.fecha_nac as fecha_nac, DATE_FORMAT(p.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, p.estado
 				FROM personales p
 				LEFT JOIN usuario u ON p.idusuario = u.idusuario
 				WHERE p.idusuario = '$idusuario' AND p.eliminado = '0' ORDER BY p.idpersonal DESC";

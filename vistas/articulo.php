@@ -120,7 +120,9 @@ if (!isset($_SESSION["nombre"])) {
                   <table id="tbllistado" class="table table-striped table-bordered table-condensed table-hover w-100" style="width: 100% !important">
                     <thead>
                       <th>Opciones</th>
+                      <th>Imagen</th>
                       <th>Nombre</th>
+                      <th style="white-space: nowrap;">U. medida</th>
                       <th>Categoría</th>
                       <th style="width: 20%; min-width: 220px; white-space: nowrap;">Ubicación del local</th>
                       <th>Marca</th>
@@ -128,7 +130,6 @@ if (!isset($_SESSION["nombre"])) {
                       <th style="white-space: nowrap;">C. de barra</th>
                       <th style="white-space: nowrap;">Stock normal</th>
                       <th style="white-space: nowrap;">Stock mínimo</th>
-                      <th>Imagen</th>
                       <th style="white-space: nowrap;">Agregado por</th>
                       <th>Cargo</th>
                       <th style="white-space: nowrap;">Fecha y hora</th>
@@ -138,7 +139,9 @@ if (!isset($_SESSION["nombre"])) {
                     </tbody>
                     <tfoot>
                       <th>Opciones</th>
+                      <th>Imagen</th>
                       <th>Nombre</th>
+                      <th>U. medida</th>
                       <th>Categoría</th>
                       <th>Ubicación del local</th>
                       <th>Marca</th>
@@ -146,7 +149,6 @@ if (!isset($_SESSION["nombre"])) {
                       <th>C. de barra</th>
                       <th>Stock normal</th>
                       <th>Stock mínimo</th>
-                      <th>Imagen</th>
                       <th>Agregado por</th>
                       <th>Cargo</th>
                       <th>Fecha y hora</th>
@@ -262,7 +264,7 @@ if (!isset($_SESSION["nombre"])) {
   ?>
   <script type="text/javascript" src="../public/js/JsBarcode.all.min.js"></script>
   <script type="text/javascript" src="../public/js/jquery.PrintArea.js"></script>
-  <script type="text/javascript" src="scripts/articulo26.js"></script>
+  <script type="text/javascript" src="scripts/articulo27.js"></script>
 <?php
 }
 ob_end_flush();

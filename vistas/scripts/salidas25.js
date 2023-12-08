@@ -84,10 +84,10 @@ function init() {
 
 		const selects = {
 			"idtipo": $("#idtipo"),
-			"idpersonal": $("#idpersonal"),
 			"idautorizado": $("#idautorizado"),
 			"identregado": $("#identregado"),
 			"idrecibido": $("#idrecibido"),
+			"idfinal": $("#idfinal"),
 			"idmaquinaria": $("#idmaquinaria"),
 		};
 
@@ -111,7 +111,11 @@ function init() {
 
 				if (obj.hasOwnProperty(atributo)) {
 					select.empty();
-					select.html('<option value="">- Seleccione -</option>');
+					if (atributo == "tipo" || atributo == "maquinaria") {
+						select.html('<option value="">- Seleccione -</option>');
+					} else {
+						select.html('<option value="0">- Seleccione -</option>');
+					}
 					obj[atributo].forEach(function (opcion) {
 						select.append('<option value="' + opcion.id + '">' + opcion.titulo + '</option>');
 					});
@@ -147,14 +151,14 @@ function limpiar() {
 	$("#idtipo").selectpicker('refresh');
 	$("#tipo_movimiento").val($("#tipo_movimiento option:first").val());
 	$("#tipo_movimiento").selectpicker('refresh');
-	$("#idpersonal").val($("#idpersonal option:first").val());
-	$("#idpersonal").selectpicker('refresh');
 	$("#idautorizado").val($("#idautorizado option:first").val());
 	$("#idautorizado").selectpicker('refresh');
 	$("#identregado").val($("#identregado option:first").val());
 	$("#identregado").selectpicker('refresh');
 	$("#idrecibido").val($("#idrecibido option:first").val());
 	$("#idrecibido").selectpicker('refresh');
+	$("#idfinal").val($("#idfinal option:first").val());
+	$("#idfinal").selectpicker('refresh');
 	$("#idmaquinaria").val($("#idmaquinaria option:first").val());
 	$("#idmaquinaria").selectpicker('refresh');
 
@@ -229,7 +233,7 @@ function listar() {
 			"iDisplayLength": 5,
 			"order": [],
 			"createdRow": function (row, data, dataIndex) {
-				$(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(3), td:eq(4), td:eq(5), td:eq(6), td:eq(7), td:eq(8), td:eq(9), td:eq(10), td:eq(11), td:eq(12)').addClass('nowrap-cell');
+				$(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(3), td:eq(4), td:eq(5), td:eq(6), td:eq(7), td:eq(8), td:eq(9), td:eq(10), td:eq(11), td:eq(12), td:eq(13)').addClass('nowrap-cell');
 			}
 		}).DataTable();
 }
@@ -281,7 +285,7 @@ function buscar() {
 			"iDisplayLength": 5,
 			"order": [],
 			"createdRow": function (row, data, dataIndex) {
-				$(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(3), td:eq(4), td:eq(5), td:eq(6), td:eq(7), td:eq(8), td:eq(9), td:eq(10), td:eq(11), td:eq(12)').addClass('nowrap-cell');
+				$(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(3), td:eq(4), td:eq(5), td:eq(6), td:eq(7), td:eq(8), td:eq(9), td:eq(10), td:eq(11), td:eq(12), td:eq(13)').addClass('nowrap-cell');
 			}
 		}).DataTable();
 }
@@ -335,7 +339,7 @@ function mostrar(idsalida) {
 		$("#idtipo").val(data.idtipo);
 		$('#idtipo').selectpicker('refresh');
 
-		if (data.idpersonal != 0) {
+		if (data.tipo_movimiento == "personal") {
 			$("#tipo_movimiento").val('personal');
 			$('#tipo_movimiento').selectpicker('refresh');
 			$('#tipo_movimiento').trigger('onchange');
@@ -345,14 +349,14 @@ function mostrar(idsalida) {
 			$('#tipo_movimiento').trigger('onchange');
 		}
 
-		$("#idpersonal").val(data.idpersonal);
-		$('#idpersonal').selectpicker('refresh');
 		$("#idautorizado").val(data.idautorizado);
 		$('#idautorizado').selectpicker('refresh');
 		$("#identregado").val(data.identregado);
 		$('#identregado').selectpicker('refresh');
 		$("#idrecibido").val(data.idrecibido);
 		$('#idrecibido').selectpicker('refresh');
+		$("#idfinal").val(data.idfinal);
+		$('#idfinal').selectpicker('refresh');
 		$("#idmaquinaria").val(data.idmaquinaria);
 		$('#idmaquinaria').selectpicker('refresh');
 
@@ -433,7 +437,7 @@ function listarArticulos() {
 		"iDisplayLength": 5,//Paginación
 		"order": [],
 		"createdRow": function (row, data, dataIndex) {
-			$(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(3), td:eq(4), td:eq(6), td:eq(7), td:eq(8), td:eq(9), td:eq(10), td:eq(11, td:eq(12), td:eq(13)').addClass('nowrap-cell');
+			$(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(3), td:eq(4), td:eq(5), td:eq(7), td:eq(8), td:eq(9), td:eq(10), td:eq(11, td:eq(12), td:eq(13), td:eq(14)').addClass('nowrap-cell');
 		},
 		"drawCallback": function (settings) {
 			// Vuelve a habilitar los botones de los artículos
@@ -470,7 +474,7 @@ var detalles = 0;
 //$("#guardar").hide();
 $("#btnGuardar").hide();
 
-function agregarDetalle(idarticulo, articulo, categoria, marca, medida, codigo_producto, codigo, stock, stock_minimo, imagen) {
+function agregarDetalle(idarticulo, articulo, categoria, marca, medida, stock, stock_minimo, codigo_producto, codigo, imagen) {
 	var cantidad = 1;
 
 	if (idarticulo != "") {
@@ -481,10 +485,10 @@ function agregarDetalle(idarticulo, articulo, categoria, marca, medida, codigo_p
 			'<td>' + marca + '</td>' +
 			'<td><input type="text" name="cantidad[]" id="cantidad[]" step="any" onkeydown="evitarNegativo(event)" oninput="validarNumeroDecimal(this, 6)" value="' + cantidad + '"></td>' +
 			'<td>' + medida + '</td>' +
-			'<td>' + codigo_producto + '</td>' +
-			'<td>' + codigo + '</td>' +
 			'<td>' + stock + '</td>' +
 			'<td>' + stock_minimo + '</td>' +
+			'<td>' + codigo_producto + '</td>' +
+			'<td>' + codigo + '</td>' +
 			'<td><img src="../files/articulos/' + imagen + '" height="50px" width="50px"></td>' +
 			'</tr>';
 		cont++;
@@ -531,13 +535,13 @@ function llenarTabla() {
 			success: function (e) {
 				console.log(e);
 				$('#idproducto').prop("disabled", false);
-				console.log("Envío esto al servidor =>", e[0].idarticulo, e[0].articulo, e[0].categoria, e[0].marca, e[0].medida, e[0].codigo_producto, e[0].codigo, e[0].stock, e[0].stock_minimo, e[0].imagen);
+				console.log("Envío esto al servidor =>", e[0].idarticulo, e[0].articulo, e[0].categoria, e[0].marca, e[0].medida, e[0].stock, e[0].stock_minimo, e[0].codigo_producto, e[0].codigo, e[0].imagen);
 
 				// Resetear el valor del select
 				$('#idproducto').val($("#idproducto option:first").val());
 				$("#idproducto").selectpicker('refresh');
 
-				agregarDetalle(e[0].idarticulo, e[0].articulo, e[0].categoria, e[0].marca, e[0].medida, e[0].codigo_producto, e[0].codigo, e[0].stock, e[0].stock_minimo, e[0].imagen);
+				agregarDetalle(e[0].idarticulo, e[0].articulo, e[0].categoria, e[0].marca, e[0].medida, e[0].stock, e[0].stock_minimo, e[0].codigo_producto, e[0].codigo, e[0].imagen);
 
 				$('#tblarticulos button[data-idarticulo="' + idarticulo + '"]').attr('disabled', 'disabled');
 				console.log("Deshabilito a: " + idarticulo + " =)");
@@ -568,39 +572,42 @@ function evaluarMetodo() {
 	$(".selectPersonal").hide();
 	$("#selectMaquinaria").hide();
 
-	$("#idpersonal").val($("#idpersonal option:first").val());
-	$("#idpersonal").selectpicker('refresh');
 	$("#idautorizado").val($("#idautorizado option:first").val());
 	$("#idautorizado").selectpicker('refresh');
 	$("#identregado").val($("#identregado option:first").val());
 	$("#identregado").selectpicker('refresh');
 	$("#idrecibido").val($("#idrecibido option:first").val());
 	$("#idrecibido").selectpicker('refresh');
+	$("#idfinal").val($("#idfinal option:first").val());
+	$("#idfinal").selectpicker('refresh');
 	$("#idmaquinaria").val($("#idmaquinaria option:first").val());
 	$("#idmaquinaria").selectpicker('refresh');
 
 	$("#idmaquinaria").attr("required", "required");
-	$("#idpersonal").attr("required", "required");
 	$("#idautorizado").attr("required", "required");
 	$("#identregado").attr("required", "required");
 	$("#idrecibido").attr("required", "required");
+	$("#idfinal").attr("required", "required");
 
 	if (tipoMovimiento === "personal") {
 		$(".selectPersonal").show();
 		$("#idmaquinaria").removeAttr("required");
+		$("#idautorizado").removeAttr("required");
+		$("#identregado").removeAttr("required");
 	} else if (tipoMovimiento === "maquinaria") {
+		$(".selectPersonal").show();
 		$("#selectMaquinaria").show();
-		$("#idpersonal").removeAttr("required");
 		$("#idautorizado").removeAttr("required");
 		$("#identregado").removeAttr("required");
 		$("#idrecibido").removeAttr("required");
+		$("#idfinal").removeAttr("required");
 	}
 	else {
 		$("#idmaquinaria").attr("required", "required");
-		$("#idpersonal").attr("required", "required");
 		$("#idautorizado").attr("required", "required");
 		$("#identregado").attr("required", "required");
 		$("#idrecibido").attr("required", "required");
+		$("#idfinal").attr("required", "required");
 		$(".selectPersonal").hide();
 		$("#selectMaquinaria").hide();
 	}

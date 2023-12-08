@@ -31,7 +31,7 @@ if (!isset($_SESSION["nombre"])) {
               <div class="box-header with-border">
                 <h1 class="box-title">Entradas
                   <button class="btn btn-bcp" id="btnagregar" onclick="mostrarform(true)">
-                    <i class="fa fa-plus-circle"></i> Agregar
+                    <i class="fa fa-plus-circle"></i> Nueva entrada
                   </button>
                   <a href="../reportes/rptentradas.php" target="_blank">
                     <button class="btn btn-secondary" style="color: black !important;">
@@ -40,7 +40,12 @@ if (!isset($_SESSION["nombre"])) {
                   </a>
                   <a href="agregarArt1.php">
                     <button class="btn btn-success" id="btnInsertarArt">
-                      <i class="fa fa-plus-circle"></i> Agregar Productos
+                      <i class="fa fa-plus-circle"></i> Nuevos productos
+                    </button>
+                  </a>
+                  <a href="articulo.php">
+                    <button class="btn btn-warning" id="btnInsertarArt">
+                      <i class="fa fa-sign-in"></i> Ver productos
                     </button>
                   </a>
                 </h1>
@@ -145,10 +150,10 @@ if (!isset($_SESSION["nombre"])) {
                           <th>Marca</th>
                           <th>Cantidad</th>
                           <th style="white-space: nowrap;">Unidad de medida</th>
-                          <th style="white-space: nowrap;">Código de producto</th>
-                          <th style="white-space: nowrap;">Código de barra</th>
                           <th>Stock</th>
                           <th style="white-space: nowrap;">Stock mínimo</th>
+                          <th style="white-space: nowrap;">Código de producto</th>
+                          <th style="white-space: nowrap;">Código de barra</th>
                           <th>Imagen</th>
                         </thead>
                         <tbody>
@@ -179,7 +184,9 @@ if (!isset($_SESSION["nombre"])) {
             <table id="tblarticulos" class="table table-striped table-bordered table-condensed table-hover w-100" style="width: 100% !important">
               <thead>
                 <th>OPCIONES</th>
+                <th>IMAGEN</th>
                 <th>NOMBRE</th>
+                <th style="white-space: nowrap;">U. MEDIDA</th>
                 <th>CATEGORÍA</th>
                 <th style="width: 20%; min-width: 220px; white-space: nowrap;">UBICACIÓN DEL LOCAL</th>
                 <th>MARCA</th>
@@ -187,7 +194,6 @@ if (!isset($_SESSION["nombre"])) {
                 <th style="white-space: nowrap;">C. DE BARRA</th>
                 <th style="white-space: nowrap;">STOCK NORMAL</th>
                 <th style="white-space: nowrap;">STOCK MÍNIMO</th>
-                <th>IMAGEN</th>
                 <th style="white-space: nowrap;">AGREGADO POR</th>
                 <th>CARGO</th>
                 <th style="white-space: nowrap;">FECHA Y HORA</th>
@@ -197,7 +203,9 @@ if (!isset($_SESSION["nombre"])) {
               </tbody>
               <tfoot>
                 <TH>OPCIONES</TH>
+                <TH>IMAGEN</TH>
                 <TH>NOMBRE</TH>
+                <TH>U. MEDIDA</TH>
                 <TH>CATEGORÍA</TH>
                 <TH>UBICACIÓN DEL LOCAL</TH>
                 <TH>MARCA</TH>
@@ -205,7 +213,6 @@ if (!isset($_SESSION["nombre"])) {
                 <TH>C. DE BARRA</TH>
                 <TH>STOCK NORMAL</TH>
                 <TH>STOCK MÍNIMO</TH>
-                <TH>IMAGEN</TH>
                 <TH>AGREGADO POR</TH>
                 <TH>CARGO</TH>
                 <TH>FECHA Y HORA</TH>
@@ -227,7 +234,7 @@ if (!isset($_SESSION["nombre"])) {
 
   require 'footer.php';
   ?>
-  <script type="text/javascript" src="scripts/entradas21.js"></script>
+  <script type="text/javascript" src="scripts/entradas23.js"></script>
 <?php
 }
 ob_end_flush();

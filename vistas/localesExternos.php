@@ -16,10 +16,10 @@ if (!isset($_SESSION["nombre"])) {
           <div class="col-md-12">
             <div class="box">
               <div class="box-header with-border">
-                <h1 class="box-title">Mis locales <!-- Configuración de locales -->
-                  <button class="btn btn-bcp" id="btnagregar" onclick="mostrarform(true)">
+                <h1 class="box-title">Locales externos <!-- Configuración de locales -->
+                  <!-- <button class="btn btn-bcp" id="btnagregar" onclick="mostrarform(true)">
                     <i class="fa fa-plus-circle"></i> Agregar
-                  </button>
+                  </button> -->
                   <a href="../reportes/rptlocales.php" target="_blank">
                     <button class="btn btn-secondary" style="color: black !important;">
                       <i class="fa fa-clipboard"></i> Reporte

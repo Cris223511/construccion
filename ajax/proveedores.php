@@ -103,7 +103,7 @@ if (!isset($_SESSION["nombre"])) {
 				}
 
 				while ($reg = $rspta->fetch_object()) {
-					$telefono = number_format($reg->telefono, 0, '', ' ');
+					$telefono = ($reg->telefono == "") ? 'Sin registrar' : number_format($reg->telefono, 0, '', ' ');
 					$data[] = array(
 						"0" => '<div style="display: flex; flex-wrap: nowrap; gap: 3px">' .
 							mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-warning" style="margin-right: 3px; height: 35px;" onclick="mostrar(' . $reg->idproveedor . ')"><i class="fa fa-pencil"></i></button>') .
@@ -112,14 +112,15 @@ if (!isset($_SESSION["nombre"])) {
 								(mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-success" style="margin-right: 3px; width: 35px; height: 35px;" onclick="activar(' . $reg->idproveedor . ')"><i style="margin-left: -2px" class="fa fa-check"></i></button>'))) .
 							mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-danger" style="height: 35px;" onclick="eliminar(' . $reg->idproveedor . ')"><i class="fa fa-trash"></i></button>') .
 							'</div>',
-						"1" => ucwords($reg->nombre),
-						"2" => $reg->tipo_documento,
-						"3" => $reg->num_documento,
-						"4" => $reg->direccion,
-						"5" => $telefono,
-						"6" => $reg->email,
-						"7" => $reg->fecha,
-						"8" => ($reg->estado == 'activado') ? '<span class="label bg-green">Activado</span>' :
+						"1" => $reg->fecha,
+						"2" => ucwords($reg->nombre),
+						"3" => ($reg->tipo_documento == '') ? 'Sin registrar' : $reg->tipo_documento,
+						"4" => ($reg->num_documento == '') ? 'Sin registrar' : $reg->num_documento,
+						"5" => ($reg->direccion == '') ? 'Sin registrar' : $reg->direccion,
+						"6" => $telefono,
+						"7" => ($reg->email == '') ? 'Sin registrar' : $reg->email,
+						"8" => ($reg->fecha_nac == '') ? 'Sin registrar' : $reg->fecha_nac,
+						"9" => ($reg->estado == 'activado') ? '<span class="label bg-green">Activado</span>' :
 							'<span class="label bg-red">Desactivado</span>'
 					);
 				}
