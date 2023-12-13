@@ -28,7 +28,6 @@ if (!isset($_SESSION["nombre"])) {
 		$direccion = isset($_POST["direccion"]) ? limpiarCadena($_POST["direccion"]) : "";
 		$telefono = isset($_POST["telefono"]) ? limpiarCadena($_POST["telefono"]) : "";
 		$email = isset($_POST["email"]) ? limpiarCadena($_POST["email"]) : "";
-		$fecha_nac = isset($_POST["fecha_nac"]) ? limpiarCadena($_POST["fecha_nac"]) : "";
 
 		switch ($_GET["op"]) {
 			case 'guardaryeditar':
@@ -37,7 +36,7 @@ if (!isset($_SESSION["nombre"])) {
 					if ($nombreExiste) {
 						echo "El número de documento que ha ingresado ya existe.";
 					} else {
-						$rspta = $personales->agregar($idusuario, $nombre, $tipo_documento, $num_documento, $direccion, $telefono, $email, $fecha_nac);
+						$rspta = $personales->agregar($idusuario, $nombre, $tipo_documento, $num_documento, $direccion, $telefono, $email);
 						echo $rspta ? "Personal registrado" : "El personal no se pudo registrar";
 					}
 				} else {
@@ -45,7 +44,7 @@ if (!isset($_SESSION["nombre"])) {
 					if ($nombreExiste) {
 						echo "El número de documento que ha ingresado ya existe.";
 					} else {
-						$rspta = $personales->editar($idpersonal, $nombre, $tipo_documento, $num_documento, $direccion, $telefono, $email, $fecha_nac);
+						$rspta = $personales->editar($idpersonal, $nombre, $tipo_documento, $num_documento, $direccion, $telefono, $email);
 						echo $rspta ? "Personal actualizado" : "El personal no se pudo actualizar";
 					}
 				}
@@ -119,8 +118,7 @@ if (!isset($_SESSION["nombre"])) {
 						"5" => ($reg->direccion == '') ? 'Sin registrar' : $reg->direccion,
 						"6" => $telefono,
 						"7" => ($reg->email == '') ? 'Sin registrar' : $reg->email,
-						"8" => ($reg->fecha_nac == '') ? 'Sin registrar' : $reg->fecha_nac,
-						"9" => ($reg->estado == 'activado') ? '<span class="label bg-green">Activado</span>' :
+						"8" => ($reg->estado == 'activado') ? '<span class="label bg-green">Activado</span>' :
 							'<span class="label bg-red">Desactivado</span>'
 					);
 				}

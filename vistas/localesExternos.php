@@ -20,7 +20,7 @@ if (!isset($_SESSION["nombre"])) {
                   <!-- <button class="btn btn-bcp" id="btnagregar" onclick="mostrarform(true)">
                     <i class="fa fa-plus-circle"></i> Agregar
                   </button> -->
-                  <a href="../reportes/rptlocales.php" target="_blank">
+                  <a href="../reportes/rptlocalesexternos.php" target="_blank">
                     <button class="btn btn-secondary" style="color: black !important;">
                       <i class="fa fa-clipboard"></i> Reporte
                     </button>
@@ -54,8 +54,6 @@ if (!isset($_SESSION["nombre"])) {
                       <th>Local</th>
                       <th style="white-space: nowrap;">N° RUC</th>
                       <th style="width: 40%; min-width: 280px; white-space: nowrap;">Descripción del local</th>
-                      <th style="white-space: nowrap;">Dueño</th>
-                      <th>Cargo</th>
                       <th style="white-space: nowrap;">Fecha y hora</th>
                       <th>Estado</th>
                     </thead>
@@ -66,15 +64,13 @@ if (!isset($_SESSION["nombre"])) {
                       <th>Local</th>
                       <th>N° RUC</th>
                       <th>Descripción del local</th>
-                      <th>Dueño</th>
-                      <th>Cargo</th>
                       <th>Fecha y hora</th>
                       <th>Estado</th>
                     </tfoot>
                   </table>
                 </div>
               </div>
-              <div class="panel-body" style="height: 400px;" id="formularioregistros">
+              <div class="panel-body" style="height: max-content;" id="formularioregistros">
                 <form name="formulario" id="formulario" method="POST">
                   <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
                     <label>Local(*):</label>
@@ -112,28 +108,31 @@ if (!isset($_SESSION["nombre"])) {
           <div class="modal-body table-responsive">
             <table id="tbltrabajadores" class="table table-striped table-bordered table-condensed table-hover w-100" style="width: 100% !important">
               <thead>
-                <th>Nombre</th>
-                <th style="white-space: nowrap;">Tipo Doc.</th>
-                <th style="white-space: nowrap;">Número Doc.</th>
-                <th style="width: 30%; min-width: 200px; white-space: nowrap;">Local</th>
-                <th>Teléfono</th>
-                <th>Email</th>
-                <th style="white-space: nowrap;">Fecha Nac.</th>
-                <th>Estado</th>
-              </thead>
-              <tbody>
-
-              </tbody>
-              <tfoot>
-                <th>Nombre</th>
-                <th>Tipo Doc.</th>
-                <th>Número Doc.</th>
-                <th>Local</th>
-                <th>Teléfono</th>
-                <th>Email</th>
-                <th>Fecha Nac.</th>
-                <th>Estado</th>
+                <TH>USUARIO</TH>
+                <TH>CARGO</TH>
+                <TH>NOMBRE</TH>
+                <TH>DOCUMENTO</TH>
+                <TH>NÚMERO</TH>
+                <TH>TELÉFONO</TH>
+                <TH>EMAIL</TH>
+                <TH>FOTO</TH>
+                <TH>ESTADO</TH>
+              </THEAD>
+              <TBODY>
+              </TBODY>
+              <TFOOT>
+                <TH>USUARIO</TH>
+                <TH>CARGO</TH>
+                <TH>NOMBRE</TH>
+                <TH>DOCUMENTO</TH>
+                <TH>NÚMERO</TH>
+                <TH>TELÉFONO</TH>
+                <TH>EMAIL</TH>
+                <TH>FOTO</TH>
+                <TH>ESTADO</TH>
               </tfoot>
+            </table>
+            </tfoot>
             </table>
           </div>
           <div class="modal-footer">
@@ -150,7 +149,7 @@ if (!isset($_SESSION["nombre"])) {
 
   require 'footer.php';
   ?>
-  <script type="text/javascript" src="scripts/locales19.js"></script>
+  <script type="text/javascript" src="scripts/localesExternos2.js"></script>
 <?php
 }
 ob_end_flush();

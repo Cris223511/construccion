@@ -25,12 +25,13 @@ if (!isset($_SESSION["nombre"])) {
 
     $pdf->SetFillColor(232, 232, 232);
     $pdf->SetFont('Arial', 'B', 10);
-    $pdf->Cell(45.7, 6, utf8_decode('Tipo'), 1, 0, 'C', 1);
-    $pdf->Cell(45.7, 6, utf8_decode('N° documento'), 1, 0, 'C', 1);
-    $pdf->Cell(45.7, 6, utf8_decode('Autorizado por'), 1, 0, 'C', 1);
-    $pdf->Cell(45.7, 6, utf8_decode('Entregado por'), 1, 0, 'C', 1);
-    $pdf->Cell(45.7, 6, utf8_decode('Recibido por'), 1, 0, 'C', 1);
-    $pdf->Cell(45.7, 6, utf8_decode('Estado'), 1, 0, 'C', 1);
+    $pdf->Cell(39.5, 6, utf8_decode('Tipo'), 1, 0, 'C', 1);
+    $pdf->Cell(39.5, 6, utf8_decode('N° documento'), 1, 0, 'C', 1);
+    $pdf->Cell(39.5, 6, utf8_decode('Autorizado por'), 1, 0, 'C', 1);
+    $pdf->Cell(39.5, 6, utf8_decode('Entregado por'), 1, 0, 'C', 1);
+    $pdf->Cell(39.5, 6, utf8_decode('Recibido por'), 1, 0, 'C', 1);
+    $pdf->Cell(39.5, 6, utf8_decode('Usuario final'), 1, 0, 'C', 1);
+    $pdf->Cell(39.5, 6, utf8_decode('Estado'), 1, 0, 'C', 1);
 
     $pdf->Ln(10);
     require_once "../modelos/Salidas.php";
@@ -45,18 +46,19 @@ if (!isset($_SESSION["nombre"])) {
       $rspta = $salida->listarPorUsuario($idusuario);
     }
 
-    $pdf->SetWidths(array(45.7, 45.7, 45.7, 45.7, 45.7, 45.7));
+    $pdf->SetWidths(array(39.5, 39.5, 39.5, 39.5, 39.5, 39.5, 39.5));
 
     while ($reg = $rspta->fetch_object()) {
       $tipo = $reg->tipo;
       $codigo = $reg->codigo;
       $autorizado = !empty($reg->autorizado) ? $reg->autorizado : "Sin registrar";
-      $entregado = !empty($reg->entregado) ? $reg->entregado : "Sin registrar";
+      $usuario = $reg->usuario;
       $recibido = !empty($reg->recibido) ? $reg->recibido : "Sin registrar";
+      $final = !empty($reg->final) ? $reg->final : "Sin registrar";
       $estado = $reg->estado;
 
       $pdf->SetFont('Arial', '', 10);
-      $pdf->Row(array(utf8_decode($tipo), utf8_decode($codigo), utf8_decode($autorizado), utf8_decode($entregado), utf8_decode($recibido), $estado));
+      $pdf->Row(array(utf8_decode($tipo), utf8_decode($codigo), utf8_decode($autorizado), utf8_decode($usuario), utf8_decode($recibido), utf8_decode($final), $estado));
     }
 
     $pdf->Output();

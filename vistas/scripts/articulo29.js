@@ -2,7 +2,7 @@ var tabla;
 
 //Función que se ejecuta al inicio
 function init() {
-	mostrarform(true);
+	mostrarform(false);
 	listar();
 
 	$("#formulario").on("submit", function (e) {
@@ -10,8 +10,8 @@ function init() {
 	})
 
 	$("#imagenmuestra").hide();
-	$('#mEntradas').addClass("treeview active");
-	$('#lEntradas').addClass("active");
+	$('#mAlmacen').addClass("treeview active");
+	$('#lArticulos').addClass("active");
 
 	$.post("../ajax/articulo.php?op=listarTodosActivos", function (data) {
 		// console.log(data)
@@ -66,8 +66,6 @@ function actualizarRUC() {
 
 //Función limpiar
 function limpiar() {
-	$("#nombre").focus();
-
 	$("#codigo").val("");
 	$("#codigo_producto").val("");
 	$("#nombre").val("");
@@ -135,7 +133,7 @@ function frmDetalles(bool) {
 //Función cancelarform
 function cancelarform() {
 	limpiar();
-	mostrarform(true);
+	mostrarform(false);
 }
 
 //Función Listar
@@ -184,7 +182,7 @@ function listar() {
 			"iDisplayLength": 5,//Paginación
 			"order": [],
 			"createdRow": function (row, data, dataIndex) {
-				$(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(4), td:eq(5), td:eq(6), td:eq(7), td:eq(8), td:eq(9), td:eq(10), td:eq(11, td:eq(12), td:eq(13)').addClass('nowrap-cell');
+				$(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(3), td:eq(4), td:eq(5), td:eq(6), td:eq(7), td:eq(9), td:eq(10), td:eq(11, td:eq(12), td:eq(13), td:eq(14)').addClass('nowrap-cell');
 			}
 		}).DataTable();
 }
@@ -221,7 +219,7 @@ function guardaryeditar(e) {
 			}
 			limpiar();
 			bootbox.alert(datos);
-			mostrarform(true);
+			mostrarform(false);
 			tabla.ajax.reload();
 		}
 	});
@@ -233,6 +231,9 @@ function mostrar(idarticulo) {
 	$(".caja1").show();
 	$(".caja2").removeClass("col-lg-12 col-md-12 col-sm-12").addClass("col-lg-10 col-md-8 col-sm-12");
 	$(".botones").removeClass("col-lg-12 col-md-12 col-sm-12").addClass("col-lg-10 col-md-8 col-sm-12");
+
+	$(".btn1").show();
+	$(".btn2").hide();
 
 	$.post("../ajax/articulo.php?op=mostrar", { idarticulo: idarticulo }, function (data, status) {
 		data = JSON.parse(data);
@@ -384,7 +385,7 @@ function buscar(param) {
 			"iDisplayLength": 5,//Paginación
 			"order": [],
 			"createdRow": function (row, data, dataIndex) {
-				$(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(4), td:eq(5), td:eq(6), td:eq(7), td:eq(8), td:eq(9), td:eq(10), td:eq(11, td:eq(12), td:eq(13)').addClass('nowrap-cell');
+				$(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(3), td:eq(4), td:eq(5), td:eq(6), td:eq(7), td:eq(9), td:eq(10), td:eq(11, td:eq(12), td:eq(13), td:eq(14)').addClass('nowrap-cell');
 			}
 		}).DataTable();
 }
@@ -504,11 +505,6 @@ function generarbarcode(param) {
 	JsBarcode("#barcode", codigo);
 	$("#codigo").val(codigo);
 	$("#print").show();
-}
-
-function convertirMayus() {
-	var inputCodigo = document.getElementById("codigo_producto");
-	inputCodigo.value = inputCodigo.value.toUpperCase();
 }
 
 //Función para imprimir el código de barras

@@ -21,15 +21,15 @@ function init() {
 }
 
 function cargarLocalDisponible() {
-	$("#locales").empty().append("Locales disponibles(*):");
 	select.empty();
 	// Cargamos los items al select "local principal"
-	$.post("../ajax/locales.php?op=selectLocalDisponible", function (data) {
-		console.log(data);
+	$.post("../ajax/locales.php?op=selectLocales", function (data) {
+		// console.log(data);
 		objSelects = JSON.parse(data);
 		console.log(objSelects);
-		select.html('<option value="">- Seleccione -</option>');
 		if (objSelects.length != 0) {
+			select.html('<option value="">- Seleccione -</option>');
+
 			objSelects.locales.forEach(function (opcion) {
 				select.append('<option value="' + opcion.idlocal + '" data-local-ruc="' + opcion.local_ruc + '">' + opcion.titulo + '</option>');
 			});
@@ -81,10 +81,6 @@ function mostrarform(flag) {
 	if (flag) {
 		$("#listadoregistros").hide();
 		$("#formularioregistros").show();
-
-		$(".local").show();
-		$("#idlocal").attr("required", "required");
-
 		$("#btnGuardar").prop("disabled", false);
 		$("#btnagregar").hide();
 	}
@@ -182,9 +178,6 @@ function mostrar(idusuario) {
 		console.log(data);
 		mostrarform(true);
 
-		$(".local").hide();
-		$("#idlocal").removeAttr("required");
-
 		$("#nombre").val(data.nombre);
 		$("#tipo_documento").val(data.tipo_documento);
 		$("#tipo_documento").trigger("change");
@@ -193,6 +186,9 @@ function mostrar(idusuario) {
 		$("#direccion").val(data.direccion);
 		$("#telefono").val(data.telefono);
 		$("#email").val(data.email);
+		$("#idlocal").val(data.idlocal);
+		$("#idlocal").selectpicker('refresh');
+		$("#local_ruc").val(data.local_ruc);
 		$("#cargo").val(data.cargo);
 		$("#cargo").selectpicker('refresh');
 		$("#login").val(data.login);

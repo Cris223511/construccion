@@ -2,7 +2,7 @@
 //Incluímos inicialmente la conexión a la base de datos
 require "../config/Conexion.php";
 
-class Articulo
+class ArticuloExterno
 {
 	//Implementamos nuestro constructor
 	public function __construct()
@@ -119,38 +119,38 @@ class Articulo
 	//Implementar un método para listar los registros
 	public function listar()
 	{
-		$sql = "SELECT a.idarticulo,a.idusuario,u.nombre as usuario,u.cargo as cargo,a.idcategoria,c.titulo as categoria,DATE_FORMAT(a.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,al.titulo as local,m.titulo as marca, me.titulo as medida,a.codigo,a.codigo_producto,a.nombre,a.stock,a.stock_minimo,a.descripcion,a.imagen,a.estado FROM articulo a LEFT JOIN categoria c ON a.idcategoria=c.idcategoria LEFT JOIN medidas me ON a.idmedida=me.idmedida LEFT JOIN locales al ON a.idlocal=al.idlocal LEFT JOIN usuario u ON a.idusuario=u.idusuario LEFT JOIN marcas m ON a.idmarca=m.idmarca WHERE a.eliminado = '0' ORDER BY a.idarticulo DESC";
+		$sql = "SELECT a.idarticulo,a.idusuario,u.nombre as usuario,u.cargo as cargo,u.cargo,a.idcategoria,c.titulo as categoria,DATE_FORMAT(a.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,al.titulo as local,m.titulo as marca, me.titulo as medida,a.codigo,a.codigo_producto,a.nombre,a.stock,a.stock_minimo,a.descripcion,a.imagen,a.estado FROM articulo a LEFT JOIN categoria c ON a.idcategoria=c.idcategoria LEFT JOIN medidas me ON a.idmedida=me.idmedida LEFT JOIN locales al ON a.idlocal=al.idlocal LEFT JOIN usuario u ON a.idusuario=u.idusuario LEFT JOIN marcas m ON a.idmarca=m.idmarca WHERE a.eliminado = '0' ORDER BY a.idarticulo DESC";
 		return ejecutarConsulta($sql);
 	}
 
 	public function listarPorFecha($fecha_inicio, $fecha_fin)
 	{
-		$sql = "SELECT a.idarticulo,a.idusuario,u.nombre as usuario,u.cargo as cargo,a.idcategoria,c.titulo as categoria,DATE_FORMAT(a.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,al.titulo as local,m.titulo as marca, me.titulo as medida,a.codigo,a.codigo_producto,a.nombre,a.stock,a.stock_minimo,a.descripcion,a.imagen,a.estado FROM articulo a LEFT JOIN categoria c ON a.idcategoria=c.idcategoria LEFT JOIN medidas me ON a.idmedida=me.idmedida LEFT JOIN locales al ON a.idlocal=al.idlocal LEFT JOIN usuario u ON a.idusuario=u.idusuario LEFT JOIN marcas m ON a.idmarca=m.idmarca WHERE a.eliminado = '0' AND DATE(a.fecha_hora) >= '$fecha_inicio' AND DATE(a.fecha_hora) <= '$fecha_fin' ORDER BY a.idarticulo DESC";
+		$sql = "SELECT a.idarticulo,a.idusuario,u.nombre as usuario,u.cargo as cargo,u.cargo,a.idcategoria,c.titulo as categoria,DATE_FORMAT(a.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,al.titulo as local,m.titulo as marca, me.titulo as medida,a.codigo,a.codigo_producto,a.nombre,a.stock,a.stock_minimo,a.descripcion,a.imagen,a.estado FROM articulo a LEFT JOIN categoria c ON a.idcategoria=c.idcategoria LEFT JOIN medidas me ON a.idmedida=me.idmedida LEFT JOIN locales al ON a.idlocal=al.idlocal LEFT JOIN usuario u ON a.idusuario=u.idusuario LEFT JOIN marcas m ON a.idmarca=m.idmarca WHERE a.eliminado = '0' AND DATE(a.fecha_hora) >= '$fecha_inicio' AND DATE(a.fecha_hora) <= '$fecha_fin' ORDER BY a.idarticulo DESC";
 		return ejecutarConsulta($sql);
 	}
 
 	public function listarPorParametro($param)
 	{
-		$sql = "SELECT a.idarticulo,a.idusuario,u.nombre as usuario,u.cargo as cargo,a.idcategoria,c.titulo as categoria,DATE_FORMAT(a.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,al.titulo as local,m.titulo as marca, me.titulo as medida,a.codigo,a.codigo_producto,a.nombre,a.stock,a.stock_minimo,a.descripcion,a.imagen,a.estado FROM articulo a LEFT JOIN categoria c ON a.idcategoria=c.idcategoria LEFT JOIN medidas me ON a.idmedida=me.idmedida LEFT JOIN locales al ON a.idlocal=al.idlocal LEFT JOIN usuario u ON a.idusuario=u.idusuario LEFT JOIN marcas m ON a.idmarca=m.idmarca WHERE $param AND a.eliminado = '0' ORDER BY a.idarticulo DESC";
+		$sql = "SELECT a.idarticulo,a.idusuario,u.nombre as usuario,u.cargo as cargo,u.cargo,a.idcategoria,c.titulo as categoria,DATE_FORMAT(a.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,al.titulo as local,m.titulo as marca, me.titulo as medida,a.codigo,a.codigo_producto,a.nombre,a.stock,a.stock_minimo,a.descripcion,a.imagen,a.estado FROM articulo a LEFT JOIN categoria c ON a.idcategoria=c.idcategoria LEFT JOIN medidas me ON a.idmedida=me.idmedida LEFT JOIN locales al ON a.idlocal=al.idlocal LEFT JOIN usuario u ON a.idusuario=u.idusuario LEFT JOIN marcas m ON a.idmarca=m.idmarca WHERE $param AND a.eliminado = '0' ORDER BY a.idarticulo DESC";
 		return ejecutarConsulta($sql);
 	}
 
 	//Implementar un método para listar los registros
-	public function listarPorUsuario($idlocalSession)
+	public function listarPorUsuario($idusuario)
 	{
-		$sql = "SELECT a.idarticulo,a.idusuario,u.nombre as usuario,u.cargo as cargo,a.idcategoria,c.titulo as categoria,DATE_FORMAT(a.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,al.titulo as local,m.titulo as marca, me.titulo as medida,a.codigo,a.codigo_producto,a.nombre,a.stock,a.stock_minimo,a.descripcion,a.imagen,a.estado FROM articulo a LEFT JOIN categoria c ON a.idcategoria=c.idcategoria LEFT JOIN medidas me ON a.idmedida=me.idmedida LEFT JOIN locales al ON a.idlocal=al.idlocal LEFT JOIN usuario u ON a.idusuario=u.idusuario LEFT JOIN marcas m ON a.idmarca=m.idmarca WHERE a.idlocal = '$idlocalSession' AND a.eliminado = '0' ORDER BY a.idarticulo DESC";
+		$sql = "SELECT a.idarticulo,a.idusuario,u.nombre as usuario,u.cargo as cargo,u.cargo,a.idcategoria,c.titulo as categoria,DATE_FORMAT(a.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,al.titulo as local,m.titulo as marca, me.titulo as medida,a.codigo,a.codigo_producto,a.nombre,a.stock,a.stock_minimo,a.descripcion,a.imagen,a.estado FROM articulo a LEFT JOIN categoria c ON a.idcategoria=c.idcategoria LEFT JOIN medidas me ON a.idmedida=me.idmedida LEFT JOIN locales al ON a.idlocal=al.idlocal LEFT JOIN usuario u ON a.idusuario=u.idusuario LEFT JOIN marcas m ON a.idmarca=m.idmarca WHERE a.idusuario = '$idusuario' AND a.eliminado = '0' ORDER BY a.idarticulo DESC";
 		return ejecutarConsulta($sql);
 	}
 
-	public function listarPorFechaUsuario($idlocalSession, $fecha_inicio, $fecha_fin)
+	public function listarPorFechaUsuario($idusuario, $fecha_inicio, $fecha_fin)
 	{
-		$sql = "SELECT a.idarticulo,a.idusuario,u.nombre as usuario,u.cargo as cargo,a.idcategoria,c.titulo as categoria,DATE_FORMAT(a.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,al.titulo as local,m.titulo as marca, me.titulo as medida,a.codigo,a.codigo_producto,a.nombre,a.stock,a.stock_minimo,a.descripcion,a.imagen,a.estado FROM articulo a LEFT JOIN categoria c ON a.idcategoria=c.idcategoria LEFT JOIN medidas me ON a.idmedida=me.idmedida LEFT JOIN locales al ON a.idlocal=al.idlocal LEFT JOIN usuario u ON a.idusuario=u.idusuario LEFT JOIN marcas m ON a.idmarca=m.idmarca WHERE a.idlocal = '$idlocalSession' AND a.eliminado = '0' AND DATE(a.fecha_hora) >= '$fecha_inicio' AND DATE(a.fecha_hora) <= '$fecha_fin' ORDER BY a.idarticulo DESC";
+		$sql = "SELECT a.idarticulo,a.idusuario,u.nombre as usuario,u.cargo as cargo,u.cargo,a.idcategoria,c.titulo as categoria,DATE_FORMAT(a.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,al.titulo as local,m.titulo as marca, me.titulo as medida,a.codigo,a.codigo_producto,a.nombre,a.stock,a.stock_minimo,a.descripcion,a.imagen,a.estado FROM articulo a LEFT JOIN categoria c ON a.idcategoria=c.idcategoria LEFT JOIN medidas me ON a.idmedida=me.idmedida LEFT JOIN locales al ON a.idlocal=al.idlocal LEFT JOIN usuario u ON a.idusuario=u.idusuario LEFT JOIN marcas m ON a.idmarca=m.idmarca WHERE a.idusuario = '$idusuario' AND a.eliminado = '0' AND DATE(a.fecha_hora) >= '$fecha_inicio' AND DATE(a.fecha_hora) <= '$fecha_fin' ORDER BY a.idarticulo DESC";
 		return ejecutarConsulta($sql);
 	}
 
-	public function listarPorUsuarioParametro($idlocalSession, $param)
+	public function listarPorUsuarioParametro($idusuario, $param)
 	{
-		$sql = "SELECT a.idarticulo,a.idusuario,u.nombre as usuario,u.cargo as cargo,a.idcategoria,c.titulo as categoria,DATE_FORMAT(a.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,al.titulo as local,m.titulo as marca, me.titulo as medida,a.codigo,a.codigo_producto,a.nombre,a.stock,a.stock_minimo,a.descripcion,a.imagen,a.estado FROM articulo a LEFT JOIN categoria c ON a.idcategoria=c.idcategoria LEFT JOIN medidas me ON a.idmedida=me.idmedida LEFT JOIN locales al ON a.idlocal=al.idlocal LEFT JOIN usuario u ON a.idusuario=u.idusuario LEFT JOIN marcas m ON a.idmarca=m.idmarca WHERE $param AND a.eliminado = '0' AND a.idlocal = '$idlocalSession' ORDER BY a.idarticulo DESC";
+		$sql = "SELECT a.idarticulo,a.idusuario,u.nombre as usuario,u.cargo as cargo,u.cargo,a.idcategoria,c.titulo as categoria,DATE_FORMAT(a.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,al.titulo as local,m.titulo  me.titulo as medida,as marca,a.codigo,a.codigo_producto,a.nombre,a.stock,a.stock_minimo,a.descripcion,a.imagen,a.estado FROM articulo a LEFT JOIN categoria c ON a.idcategoria=c.idcategoria LEFT JOIN medidas me ON a.idmedida=me.idmedida LEFT JOIN locales al ON a.idlocal=al.idlocal LEFT JOIN usuario u ON a.idusuario=u.idusuario LEFT JOIN marcas m ON a.idmarca=m.idmarca WHERE $param AND a.eliminado = '0' AND a.idusuario = '$idusuario' ORDER BY a.idarticulo DESC";
 		return ejecutarConsulta($sql);
 	}
 
@@ -185,7 +185,7 @@ class Articulo
 	//Implementar un método para listar los registros
 	public function listarActivosPorArticulo($idarticulo)
 	{
-		$sql = "SELECT a.idarticulo,a.idusuario,u.nombre as usuario,u.cargo as cargo,a.idcategoria,c.titulo as categoria,DATE_FORMAT(a.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,al.titulo as local,m.titulo as marca, me.titulo as medida,a.codigo,a.codigo_producto,a.nombre,a.stock,a.stock_minimo,a.descripcion,a.imagen,a.estado FROM articulo a LEFT JOIN categoria c ON a.idcategoria=c.idcategoria LEFT JOIN medidas me ON a.idmedida=me.idmedida LEFT JOIN locales al ON a.idlocal=al.idlocal LEFT JOIN usuario u ON a.idusuario=u.idusuario LEFT JOIN marcas m ON a.idmarca=m.idmarca WHERE a.eliminado = '0' AND a.idarticulo = $idarticulo ORDER BY a.idarticulo DESC";
+		$sql = "SELECT a.idarticulo,a.idusuario,u.nombre as usuario,u.cargo as cargo,u.cargo,a.idcategoria,c.titulo as categoria,DATE_FORMAT(a.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,al.titulo as local,m.titulo as marca, me.titulo as medida,a.codigo,a.codigo_producto,a.nombre,a.stock,a.stock_minimo,a.descripcion,a.imagen,a.estado FROM articulo a LEFT JOIN categoria c ON a.idcategoria=c.idcategoria LEFT JOIN medidas me ON a.idmedida=me.idmedida LEFT JOIN locales al ON a.idlocal=al.idlocal LEFT JOIN usuario u ON a.idusuario=u.idusuario LEFT JOIN marcas m ON a.idmarca=m.idmarca WHERE a.eliminado = '0' AND a.idarticulo = $idarticulo ORDER BY a.idarticulo DESC";
 		return ejecutarConsulta($sql);
 	}
 }

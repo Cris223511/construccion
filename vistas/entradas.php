@@ -188,12 +188,12 @@ if (!isset($_SESSION["nombre"])) {
                 <th>NOMBRE</th>
                 <th style="white-space: nowrap;">U. MEDIDA</th>
                 <th>CATEGORÍA</th>
-                <th style="width: 20%; min-width: 220px; white-space: nowrap;">UBICACIÓN DEL LOCAL</th>
                 <th>MARCA</th>
-                <th style="white-space: nowrap;">C. PRODUCTO</th>
-                <th style="white-space: nowrap;">C. DE BARRA</th>
                 <th style="white-space: nowrap;">STOCK NORMAL</th>
                 <th style="white-space: nowrap;">STOCK MÍNIMO</th>
+                <th style="width: 20%; min-width: 220px; white-space: nowrap;">UBICACIÓN DEL LOCAL</th>
+                <th style="white-space: nowrap;">C. PRODUCTO</th>
+                <th style="white-space: nowrap;">C. DE BARRA</th>
                 <th style="white-space: nowrap;">AGREGADO POR</th>
                 <th>CARGO</th>
                 <th style="white-space: nowrap;">FECHA Y HORA</th>
@@ -207,12 +207,12 @@ if (!isset($_SESSION["nombre"])) {
                 <TH>NOMBRE</TH>
                 <TH>U. MEDIDA</TH>
                 <TH>CATEGORÍA</TH>
-                <TH>UBICACIÓN DEL LOCAL</TH>
                 <TH>MARCA</TH>
-                <TH>C. PRODUCTO</TH>
-                <TH>C. DE BARRA</TH>
                 <TH>STOCK NORMAL</TH>
                 <TH>STOCK MÍNIMO</TH>
+                <TH>UBICACIÓN DEL LOCAL</TH>
+                <TH>C. PRODUCTO</TH>
+                <TH>C. DE BARRA</TH>
                 <TH>AGREGADO POR</TH>
                 <TH>CARGO</TH>
                 <TH>FECHA Y HORA</TH>

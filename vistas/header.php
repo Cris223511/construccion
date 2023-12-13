@@ -4,6 +4,7 @@ if (strlen(session_id()) < 1)
 
 $nombre_login = $_SESSION['nombre'];
 $cargo_login = $_SESSION['cargo_detalle'];
+$local_login = $_SESSION['local'];
 ?>
 
 <style>
@@ -179,10 +180,11 @@ $cargo_login = $_SESSION['cargo_detalle'];
         </div>
         <div class="navbar-custom-menu">
           <ul class="nav navbar-nav">
-            <li class="dropdown user user-menu" style="background: #002a8e !important;">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="color: white !important;">
+            <li class="dropdown user user-menu" style="background: #002a8e !important; display: inline-flex; align-items: center; height: 50px;">
+              <span style="color: white !important;" class="hidden-xs user-info local"><?php echo '<strong> Local: ' . $local_login . '</strong>' ?></span>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="color: white !important; height: 50px;">
                 <img src="../files/usuarios/<?php echo $_SESSION['imagen']; ?>" class="user-image" alt="User Image">
-                <span class="hidden-xs user-info"><?php echo $nombre_login; ?> - <?php echo '<strong> Rol: ' . $cargo_login . '</strong>' ?></span>
+                <span class="hidden-xs user-info user"><?php echo $nombre_login; ?> - <?php echo '<strong> Rol: ' . $cargo_login . '</strong>' ?></span>
               </a>
               <ul class="dropdown-menu">
                 <li class="user-header" style="background: #002a8e !important;">
@@ -227,8 +229,12 @@ $cargo_login = $_SESSION['cargo_detalle'];
               </a>
               <ul class="treeview-menu">
                 <li id="lArticulos"><a href="articulo.php"><i class="fa fa-circle-o"></i> Productos</a></li>
-                <li id="lCategorias"><a href="categoria.php"><i class="fa fa-circle-o"></i> Categorías</a></li>
-                <li id="lLocales"><a href="locales.php"><i class="fa fa-circle-o"></i> Mis locales</a></li>
+            ';
+            if ($_SESSION['cargo'] == "superadmin") {
+              echo '<li id="lArticuloExterno"><a href="articuloExterno.php"><i class="fa fa-circle-o"></i> Productos externos</a></li>';
+            }
+            echo '<li id="lCategorias"><a href="categoria.php"><i class="fa fa-circle-o"></i> Categorías</a></li>
+                <li id="lLocales"><a href="locales.php"><i class="fa fa-circle-o"></i> Mi local</a></li>
                 <li id="lMarcas"><a href="marcas.php"><i class="fa fa-circle-o"></i> Marcas</a></li>
                 <li id="lMedidas"><a href="medidas.php"><i class="fa fa-circle-o"></i> Unidades de medidas</a></li>
               </ul>
@@ -321,15 +327,15 @@ $cargo_login = $_SESSION['cargo_detalle'];
           <?php
           if ($_SESSION['cargo'] == "superadmin" || $_SESSION['cargo'] == "admin") {
           ?>
-            <li id="sql_export">
+            <!-- <li id="sql_export">
               <a>
                 <?php
-                if ($_POST) {
-                  if ($_POST["backup"]) {
-                    require("backup/backup.php");
-                    $backupdb = new backupdb();
-                  }
-                }
+                // if ($_POST) {
+                //   if ($_POST["backup"]) {
+                //     require("backup/backup.php");
+                //     $backupdb = new backupdb();
+                //   }
+                // }
                 ?>
                 <form method="post" style="margin: 0 !important;">
                   <input type="hidden" value="true" name="backup">
@@ -338,7 +344,7 @@ $cargo_login = $_SESSION['cargo_detalle'];
                 </form>
                 <small class="label pull-right bg-green">SQL</small>
               </a>
-            </li>
+            </li> -->
             <div style="display: none;" id="rolUsuario"><?php echo $_SESSION['cargo'] ?></div>
           <?php
           }

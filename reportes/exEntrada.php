@@ -12,7 +12,7 @@ if (!isset($_SESSION["nombre"])) {
 
     $logo = "logo.jpeg";
     $ext_logo = "jpg";
-    $empresa = "Arena San Andrés Perú S.A.C.";
+    $empresa = "Almacenes S.A.C.";
     $documento = "20477157772";
     $direccion = "Av Gerardo Unger 5689 - Los Olivos - Lima";
     $telefono = "998 393 220";

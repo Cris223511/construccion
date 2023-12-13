@@ -10,7 +10,9 @@
     <script src="../public/js/bootstrap.min.js"></script>
     <!-- AdminLTE App -->
     <script src="../public/js/app.min.js"></script>
-
+    <!-- Quagga JS -->
+    <script src="../public/js/quagga.min.js"></script>
+    
     <!-- DATATABLES -->
     <script src="../public/datatables/jquery.dataTables.min.js"></script>
     <script src="../public/datatables/dataTables.buttons.min.js"></script>

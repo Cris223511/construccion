@@ -107,7 +107,7 @@ if (!isset($_SESSION["nombre"])) {
 
   require 'footer.php';
   ?>
-  <script type="text/javascript" src="scripts/localesDisponibles9.js"></script>
+  <script type="text/javascript" src="scripts/localesDisponibles.js"></script>
 <?php
 }
 ob_end_flush();

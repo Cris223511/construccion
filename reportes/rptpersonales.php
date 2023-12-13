@@ -30,7 +30,7 @@ if (!isset($_SESSION["nombre"])) {
     $pdf->Cell(28, 6, utf8_decode('Número'), 1, 0, 'C', 1);
     $pdf->Cell(22, 6, utf8_decode('Teléfono'), 1, 0, 'C', 1);
     $pdf->Cell(51, 6, 'Email', 1, 0, 'C', 1);
-    $pdf->Cell(25, 6, 'Fecha Nac.', 1, 0, 'C', 1);
+    $pdf->Cell(25, 6, 'Fecha y hora', 1, 0, 'C', 1);
 
     $pdf->Ln(10);
     require_once "../modelos/Personales.php";

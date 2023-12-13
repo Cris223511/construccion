@@ -7,7 +7,7 @@ if (strlen(session_id()) < 1)
 if (!isset($_SESSION["nombre"])) {
   echo 'Debe ingresar al sistema correctamente para visualizar el reporte';
 } else {
-  if ($_SESSION['almacen'] == 1) {
+  if ($_SESSION['perfilu'] == 1) {
 
     require('PDF_MC_Table.php');
 
@@ -30,8 +30,8 @@ if (!isset($_SESSION["nombre"])) {
     $pdf->Cell(40, 6, utf8_decode('Fecha y hora'), 1, 0, 'C', 1);
 
     $pdf->Ln(10);
-    require_once "../modelos/Locales.php";
-    $locales = new Local();
+    require_once "../modelos/LocalesExternos.php";
+    $locales = new LocalExterno();
 
     $idusuario = $_SESSION["idusuario"];
     $cargo = $_SESSION["cargo"];

@@ -72,7 +72,7 @@ if (!isset($_SESSION["nombre"])) {
                   </table>
                 </div>
               </div>
-              <div class="panel-body" style="height: 400px;" id="formularioregistros">
+              <div class="panel-body" style="height: max-content;" id="formularioregistros">
                 <form name="formulario" id="formulario" method="POST">
                   <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
                     <label>Marca(*):</label>
@@ -101,7 +101,7 @@ if (!isset($_SESSION["nombre"])) {
 
   require 'footer.php';
   ?>
-  <script type="text/javascript" src="scripts/marcas5.js"></script>
+  <script type="text/javascript" src="scripts/marcas6.js"></script>
 <?php
 }
 ob_end_flush();

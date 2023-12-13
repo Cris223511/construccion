@@ -1,5 +1,13 @@
 var tabla;
 
+function bloquearCampos() {
+	$("input, select, textarea").not("#fecha_hora").prop("disabled", true);
+}
+
+function desbloquearCampos() {
+	$("input, select, textarea").not("#fecha_hora").prop("disabled", false);
+}
+
 function init() {
 	mostrarform(false);
 	listar();
@@ -12,6 +20,8 @@ function init() {
 }
 
 function limpiar() {
+	desbloquearCampos();
+
 	$("#idlocal").val("");
 	$("#titulo").val("");
 	$("#local_ruc").val("");
@@ -174,6 +184,7 @@ function mostrar(idlocal) {
 		// console.log(data);
 		data = JSON.parse(data);
 		mostrarform(true);
+		bloquearCampos();
 
 		console.log(data);
 
@@ -192,7 +203,7 @@ function trabajadores(idlocal, titulo) {
 		"dom": 'Bfrtip',
 		"buttons": [],
 		"ajax": {
-			url: '../ajax/locales.php?op=listarTrabajadores&idlocal=' + idlocal,
+			url: '../ajax/locales.php?op=listarUsuariosLocal&idlocal=' + idlocal,
 			type: "GET",
 			dataType: "json",
 			error: function (e) {

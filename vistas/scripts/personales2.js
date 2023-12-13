@@ -20,7 +20,6 @@ function limpiar() {
 	$("#direccion").val("");
 	$("#telefono").val("");
 	$("#email").val("");
-	$("#fecha_nac").val("");
 }
 
 function mostrarform(flag) {
@@ -181,7 +180,6 @@ function mostrar(idpersonal) {
 		$("#direccion").val(data.direccion);
 		$("#telefono").val(data.telefono);
 		$("#email").val(data.email);
-		$("#fecha_nac").val(data.fecha_nac);
 		$("#idpersonal").val(data.idpersonal);
 	})
 }

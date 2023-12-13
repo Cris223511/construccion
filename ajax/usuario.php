@@ -58,7 +58,7 @@ switch ($_GET["op"]) {
 					if ($usuarioExiste) {
 						echo "El nombre del usuario que ha ingresado ya existe.";
 					} else {
-						$rspta = $usuario->editar($idusuario, $nombre, $tipo_documento, $num_documento, $direccion, $telefono, $email, $cargo, $login, $clave, $imagen, $_POST['permiso']);
+						$rspta = $usuario->editar($idusuario, $idlocal, $nombre, $tipo_documento, $num_documento, $direccion, $telefono, $email, $cargo, $login, $clave, $imagen, $_POST['permiso']);
 						echo $rspta ? "Usuario actualizado" : "Usuario no se pudo actualizar";
 					}
 				}
@@ -136,7 +136,7 @@ switch ($_GET["op"]) {
 							break;
 					}
 
-					$telefono = number_format($reg->telefono, 0, '', ' ');
+					$telefono = ($reg->telefono == '') ? 'Sin registrar' : number_format($reg->telefono, 0, '', ' ');
 
 					$data[] = array(
 						"0" => '<div style="display: flex; flex-wrap: nowrap; gap: 3px">' .
@@ -244,6 +244,7 @@ switch ($_GET["op"]) {
 	case 'getSessionId':
 		$sessionIdData = array(
 			'idusuario' => $_SESSION['idusuario'],
+			'idlocal' => $_SESSION['idlocal']
 		);
 
 		echo json_encode($sessionIdData);
@@ -270,6 +271,8 @@ switch ($_GET["op"]) {
 
 			//Declaramos las variables de sesión
 			$_SESSION['idusuario'] = $fetch->idusuario;
+			$_SESSION['idlocal'] = $fetch->idlocal;
+			$_SESSION['local'] = $fetch->local;
 			$_SESSION['nombre'] = $fetch->nombre;
 			$_SESSION['imagen'] = $fetch->imagen;
 			$_SESSION['login'] = $fetch->login;

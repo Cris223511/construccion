@@ -21,8 +21,8 @@ class Usuario
 		if (empty($imagen))
 			$imagen = "default.png";
 
-		$sql1 = "INSERT INTO usuario (nombre,tipo_documento,num_documento,direccion,telefono,email,cargo,login,clave,imagen,estado,eliminado)
-					VALUES ('$nombre','$tipo_documento','$num_documento','$direccion','$telefono','$email','$cargo','$login','$clave','$imagen','1','0')";
+		$sql1 = "INSERT INTO usuario (idlocal,nombre,tipo_documento,num_documento,direccion,telefono,email,cargo,login,clave,imagen,estado,eliminado)
+					VALUES ('$idlocal','$nombre','$tipo_documento','$num_documento','$direccion','$telefono','$email','$cargo','$login','$clave','$imagen','1','0')";
 		//return ejecutarConsulta($sql1);
 		$idusuarionew = ejecutarConsulta_retornarID($sql1);
 
@@ -103,14 +103,14 @@ class Usuario
 	}
 
 	//Implementamos un método para editar registros
-	public function editar($idusuario, $nombre, $tipo_documento, $num_documento, $direccion, $telefono, $email, $cargo, $login, $clave, $imagen, $permisos)
+	public function editar($idusuario, $idlocal, $nombre, $tipo_documento, $num_documento, $direccion, $telefono, $email, $cargo, $login, $clave, $imagen, $permisos)
 	{
-		$sql = "UPDATE usuario SET nombre='$nombre',tipo_documento='$tipo_documento',num_documento='$num_documento',direccion='$direccion',telefono='$telefono',email='$email',cargo='$cargo',login='$login',clave='$clave',imagen='$imagen' WHERE idusuario='$idusuario'";
-		ejecutarConsulta($sql);
+		$sql1 = "UPDATE usuario SET idlocal='$idlocal',nombre='$nombre',tipo_documento='$tipo_documento',num_documento='$num_documento',direccion='$direccion',telefono='$telefono',email='$email',cargo='$cargo',login='$login',clave='$clave',imagen='$imagen' WHERE idusuario='$idusuario'";
+		ejecutarConsulta($sql1);
 
 		//Eliminamos todos los permisos asignados para volverlos a registrar
-		$sqldel = "DELETE FROM usuario_permiso WHERE idusuario='$idusuario'";
-		ejecutarConsulta($sqldel);
+		$sql2 = "DELETE FROM usuario_permiso WHERE idusuario='$idusuario'";
+		ejecutarConsulta($sql2);
 
 		$num_elementos = 0;
 		$sw = true;
@@ -121,6 +121,9 @@ class Usuario
 			$num_elementos = $num_elementos + 1;
 		}
 
+		$sql3 = "UPDATE locales SET idusuario='$idusuario' WHERE idlocal='$idlocal'";
+		ejecutarConsulta($sql3);
+		
 		return $sw;
 	}
 
@@ -142,7 +145,10 @@ class Usuario
 	{
 		$sql = "SELECT
 				  u.idusuario,
+				  u.idlocal,
 				  u.nombre,
+				  l.titulo as local,
+				  l.local_ruc as local_ruc,
 				  u.tipo_documento,
 				  u.num_documento,
 				  u.direccion,
@@ -154,6 +160,7 @@ class Usuario
 				  u.imagen,
 				  u.estado
 				FROM usuario u
+				LEFT JOIN locales l ON u.idlocal = l.idlocal
 	  			WHERE u.idusuario='$idusuario'";
 
 		return ejecutarConsultaSimpleFila($sql);
@@ -163,7 +170,9 @@ class Usuario
 	public function eliminar($idusuario)
 	{
 		$sql1 = "UPDATE usuario SET eliminado = '1' WHERE idusuario='$idusuario'";
-		return ejecutarConsulta($sql1);
+		$sql2 = "UPDATE locales SET idusuario = 0 WHERE idusuario='$idusuario'";
+		ejecutarConsulta($sql1);
+		return ejecutarConsulta($sql2);
 	}
 
 	//Implementar un método para listar los registros
@@ -171,7 +180,10 @@ class Usuario
 	{
 		$sql = "SELECT
 				  u.idusuario,
+				  u.idlocal,
 				  u.nombre,
+				  l.titulo as local,
+				  l.local_ruc as local_ruc,
 				  u.tipo_documento,
 				  u.num_documento,
 				  u.direccion,
@@ -183,6 +195,7 @@ class Usuario
 				  u.imagen,
 				  u.estado
 				FROM usuario u
+				LEFT JOIN locales l ON u.idlocal = l.idlocal
 				WHERE u.eliminado = '0'
 				ORDER BY idusuario DESC";
 
@@ -194,7 +207,10 @@ class Usuario
 	{
 		$sql = "SELECT
 				  u.idusuario,
+				  u.idlocal,
 				  u.nombre,
+				  l.titulo as local,
+				  l.local_ruc as local_ruc,
 				  u.tipo_documento,
 				  u.num_documento,
 				  u.direccion,
@@ -206,6 +222,7 @@ class Usuario
 				  u.imagen,
 				  u.estado
 				FROM usuario u
+				LEFT JOIN locales l ON u.idlocal = l.idlocal
 				WHERE u.eliminado = '0'
 				ORDER BY idusuario ASC";
 
@@ -217,7 +234,10 @@ class Usuario
 	{
 		$sql = "SELECT
 				  u.idusuario,
+				  u.idlocal,
 				  u.nombre,
+				  l.titulo as local,
+				  l.local_ruc as local_ruc,
 				  u.tipo_documento,
 				  u.num_documento,
 				  u.direccion,
@@ -229,6 +249,7 @@ class Usuario
 				  u.imagen,
 				  u.estado
 				FROM usuario u
+				LEFT JOIN locales l ON u.idlocal = l.idlocal
 				WHERE u.eliminado = '0'
 				AND u.estado='1'
 				ORDER BY idusuario ASC";
@@ -240,7 +261,10 @@ class Usuario
 	{
 		$sql = "SELECT
 				  u.idusuario,
+				  u.idlocal,
 				  u.nombre,
+				  l.titulo as local,
+				  l.local_ruc as local_ruc,
 				  u.tipo_documento,
 				  u.num_documento,
 				  u.direccion,
@@ -252,6 +276,7 @@ class Usuario
 				  u.imagen,
 				  u.estado
 				FROM usuario u
+				LEFT JOIN locales l ON u.idlocal = l.idlocal
 				WHERE u.eliminado = '0'
 				AND u.estado='1'
 				AND u.idusuario = '$idusuario'
@@ -265,7 +290,10 @@ class Usuario
 	{
 		$sql = "SELECT
 				  u.idusuario,
+				  u.idlocal,
 				  u.nombre,
+				  l.titulo as local,
+				  l.local_ruc as local_ruc,
 				  u.tipo_documento,
 				  u.num_documento,
 				  u.direccion,
@@ -277,6 +305,7 @@ class Usuario
 				  u.imagen,
 				  u.estado
 				FROM usuario u
+				LEFT JOIN locales l ON u.idlocal = l.idlocal
 				WHERE u.eliminado = '0'
 				AND u.idusuario = '$idusuarioSession'";
 
@@ -288,7 +317,10 @@ class Usuario
 	{
 		$sql = "SELECT
 				  u.idusuario,
+				  u.idlocal,
 				  u.nombre,
+				  l.titulo as local,
+				  l.local_ruc as local_ruc,
 				  u.tipo_documento,
 				  u.num_documento,
 				  u.direccion,
@@ -300,6 +332,7 @@ class Usuario
 				  u.imagen,
 				  u.estado
 				FROM usuario u
+				LEFT JOIN locales l ON u.idlocal = l.idlocal
 				WHERE u.eliminado = '0'
 				AND u.estado='1'
 				ORDER BY idusuario DESC";
@@ -317,7 +350,7 @@ class Usuario
 	//Función para verificar el acceso al sistema
 	public function verificar($login, $clave)
 	{
-		$sql = "SELECT u.idusuario,u.nombre,u.tipo_documento,u.num_documento,u.telefono,u.email,u.cargo,u.imagen,u.login,u.clave,u.estado,u.eliminado FROM usuario u WHERE login='$login' AND clave='$clave'";
+		$sql = "SELECT u.idusuario,u.idlocal,l.titulo AS local,u.nombre,u.tipo_documento,u.num_documento,u.telefono,u.email,u.cargo,u.imagen,u.login,u.clave,u.estado,u.eliminado FROM usuario u LEFT JOIN locales l ON u.idlocal = l.idlocal WHERE login='$login' AND clave='$clave'";
 		return ejecutarConsulta($sql);
 	}
 }

@@ -1,4 +1,5 @@
-var tabla;
+var tabla1;
+var tabla2;
 
 function init() {
 	mostrarform(false);
@@ -7,8 +8,8 @@ function init() {
 	$("#formulario").on("submit", function (e) {
 		guardaryeditar(e);
 	});
-	$('#mAlmacen').addClass("treeview active");
-	$('#lLocales').addClass("active");
+	$('#mPerfilUsuario').addClass("treeview active");
+	$('#lLocalesExternos').addClass("active");
 }
 
 function limpiar() {
@@ -45,7 +46,7 @@ function listar() {
 	var fecha_inicio = $("#fecha_inicio").val();
 	var fecha_fin = $("#fecha_fin").val();
 
-	tabla = $('#tbllistado').dataTable(
+	tabla1 = $('#tbllistado').dataTable(
 		{
 			"lengthMenu": [5, 10, 25, 75, 100],
 			"aProcessing": true,
@@ -58,7 +59,7 @@ function listar() {
 			],
 			"ajax":
 			{
-				url: '../ajax/locales.php?op=listar',
+				url: '../ajax/localesExternos.php?op=listar',
 				data: { fecha_inicio: fecha_inicio, fecha_fin: fecha_fin },
 				type: "get",
 				dataType: "json",
@@ -97,7 +98,7 @@ function buscar() {
 		return;
 	}
 
-	tabla = $('#tbllistado').dataTable(
+	tabla1 = $('#tbllistado').dataTable(
 		{
 			"lengthMenu": [5, 10, 25, 75, 100],
 			"aProcessing": true,
@@ -110,7 +111,7 @@ function buscar() {
 			],
 			"ajax":
 			{
-				url: '../ajax/locales.php?op=listar',
+				url: '../ajax/localesExternos.php?op=listar',
 				data: { fecha_inicio: fecha_inicio, fecha_fin: fecha_fin },
 				type: "get",
 				dataType: "json",
@@ -149,7 +150,7 @@ function guardaryeditar(e) {
 	}
 
 	$.ajax({
-		url: "../ajax/locales.php?op=guardaryeditar",
+		url: "../ajax/localesExternos.php?op=guardaryeditar",
 		type: "POST",
 		data: formData,
 		contentType: false,
@@ -164,13 +165,13 @@ function guardaryeditar(e) {
 			limpiar();
 			bootbox.alert(datos);
 			mostrarform(false);
-			tabla.ajax.reload();
+			tabla1.ajax.reload();
 		}
 	});
 }
 
 function mostrar(idlocal) {
-	$.post("../ajax/locales.php?op=mostrar", { idlocal: idlocal }, function (data, status) {
+	$.post("../ajax/localesExternos.php?op=mostrar", { idlocal: idlocal }, function (data, status) {
 		// console.log(data);
 		data = JSON.parse(data);
 		mostrarform(true);
@@ -186,13 +187,13 @@ function mostrar(idlocal) {
 
 function trabajadores(idlocal, titulo) {
 	$("#local").text(titulo);
-	tabla = $('#tbltrabajadores').DataTable({
+	tabla2 = $('#tbltrabajadores').DataTable({
 		"aProcessing": true,
 		"aServerSide": true,
 		"dom": 'Bfrtip',
 		"buttons": [],
 		"ajax": {
-			url: '../ajax/locales.php?op=listarTrabajadores&idlocal=' + idlocal,
+			url: '../ajax/localesExternos.php?op=listarUsuariosLocal&idlocal=' + idlocal,
 			type: "GET",
 			dataType: "json",
 			error: function (e) {
@@ -212,9 +213,9 @@ function trabajadores(idlocal, titulo) {
 function desactivar(idlocal) {
 	bootbox.confirm("¿Está seguro de desactivar el local?", function (result) {
 		if (result) {
-			$.post("../ajax/locales.php?op=desactivar", { idlocal: idlocal }, function (e) {
+			$.post("../ajax/localesExternos.php?op=desactivar", { idlocal: idlocal }, function (e) {
 				bootbox.alert(e);
-				tabla.ajax.reload();
+				tabla1.ajax.reload();
 			});
 		}
 	})
@@ -223,9 +224,9 @@ function desactivar(idlocal) {
 function activar(idlocal) {
 	bootbox.confirm("¿Está seguro de activar el local?", function (result) {
 		if (result) {
-			$.post("../ajax/locales.php?op=activar", { idlocal: idlocal }, function (e) {
+			$.post("../ajax/localesExternos.php?op=activar", { idlocal: idlocal }, function (e) {
 				bootbox.alert(e);
-				tabla.ajax.reload();
+				tabla1.ajax.reload();
 			});
 		}
 	})
@@ -234,9 +235,9 @@ function activar(idlocal) {
 function eliminar(idlocal) {
 	bootbox.confirm("¿Estás seguro de eliminar el local?", function (result) {
 		if (result) {
-			$.post("../ajax/locales.php?op=eliminar", { idlocal: idlocal }, function (e) {
+			$.post("../ajax/localesExternos.php?op=eliminar", { idlocal: idlocal }, function (e) {
 				bootbox.alert(e);
-				tabla.ajax.reload();
+				tabla1.ajax.reload();
 			});
 		}
 	})

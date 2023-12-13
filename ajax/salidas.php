@@ -19,6 +19,7 @@ if (!isset($_SESSION["nombre"])) {
 
 		// Variables de sesión a utilizar.
 		$idusuario = $_SESSION["idusuario"];
+		$idlocalSession = $_SESSION["idlocal"];
 		$cargo = $_SESSION["cargo"];
 
 		$idsalida = isset($_POST["idsalida"]) ? limpiarCadena($_POST["idsalida"]) : "";
@@ -150,12 +151,12 @@ if (!isset($_SESSION["nombre"])) {
 						"2" => $reg->tipo,
 						"3" => 'N° ' . $reg->codigo,
 						"4" => ($reg->autorizado == '' ? 'Sin registrar' : $reg->autorizado),
-						"5" => ($reg->entregado == '' ? 'Sin registrar' : $reg->entregado),
-						"6" => ($reg->recibido == '' ? 'Sin registrar' : $reg->recibido),
-						"7" => ($reg->final == '' ? 'Sin registrar' : $reg->final),
-						"8" => $reg->usuario,
-						"9" => $cargo_detalle,
-						"10" => ($reg->estado == 'activado') ? '<span class="label bg-green">Activado</span>' :
+						// "5" => ($reg->entregado == '' ? 'Sin registrar' : $reg->entregado),
+						"5" => ($reg->recibido == '' ? 'Sin registrar' : $reg->recibido),
+						"6" => ($reg->final == '' ? 'Sin registrar' : $reg->final),
+						"7" => $reg->usuario,
+						"8" => $cargo_detalle,
+						"9" => ($reg->estado == 'activado') ? '<span class="label bg-green">Activado</span>' :
 							'<span class="label bg-red">Desactivado</span>'
 					);
 				}
@@ -176,7 +177,7 @@ if (!isset($_SESSION["nombre"])) {
 				if ($cargo == "superadmin") {
 					$rspta = $articulo->listar();
 				} else {
-					$rspta = $articulo->listarPorUsuario($idusuario);
+					$rspta = $articulo->listarPorUsuario($idlocalSession);
 				}
 
 				$data = array();
@@ -204,12 +205,12 @@ if (!isset($_SESSION["nombre"])) {
 						"2" => $reg->nombre,
 						"3" => $reg->medida,
 						"4" => $reg->categoria,
-						"5" => $reg->local,
-						"6" => $reg->marca,
-						"7" => $reg->codigo_producto,
-						"8" => $reg->codigo,
-						"9" => ($reg->stock > 0 && $reg->stock < $reg->stock_minimo) ? '<span style="color: #Ea9900; font-weight: bold">' . $reg->stock . '</span>' : (($reg->stock != '0') ? '<span>' . $reg->stock . '</span>' : '<span style="color: red; font-weight: bold">' . $reg->stock . '</span>'),
-						"10" => $reg->stock_minimo,
+						"5" => $reg->marca,
+						"6" => ($reg->stock > 0 && $reg->stock < $reg->stock_minimo) ? '<span style="color: #Ea9900; font-weight: bold">' . $reg->stock . '</span>' : (($reg->stock != '0') ? '<span>' . $reg->stock . '</span>' : '<span style="color: red; font-weight: bold">' . $reg->stock . '</span>'),
+						"7" => $reg->stock_minimo,
+						"8" => $reg->local,
+						"9" => $reg->codigo_producto,
+						"10" => $reg->codigo,
 						"11" => $reg->usuario,
 						"12" => $cargo_detalle,
 						"13" => $reg->fecha,

@@ -19,6 +19,7 @@ if (!isset($_SESSION["nombre"])) {
 
 		// Variables de sesión a utilizar.
 		$idusuario = $_SESSION["idusuario"];
+		$idlocalSession = $_SESSION["idlocal"];
 		$cargo = $_SESSION["cargo"];
 
 		$identrada = isset($_POST["identrada"]) ? limpiarCadena($_POST["identrada"]) : "";
@@ -163,7 +164,7 @@ if (!isset($_SESSION["nombre"])) {
 				if ($cargo == "superadmin") {
 					$rspta = $articulo->listar();
 				} else {
-					$rspta = $articulo->listarPorUsuario($idusuario);
+					$rspta = $articulo->listarPorUsuario($idlocalSession);
 				}
 
 				$data = array();
@@ -192,12 +193,12 @@ if (!isset($_SESSION["nombre"])) {
 						"2" => $reg->nombre,
 						"3" => $reg->medida,
 						"4" => $reg->categoria,
-						"5" => $reg->local,
-						"6" => $reg->marca,
-						"7" => $reg->codigo_producto,
-						"8" => $reg->codigo,
-						"9" => ($reg->stock > 0 && $reg->stock < $reg->stock_minimo) ? '<span style="color: #Ea9900; font-weight: bold">' . $reg->stock . '</span>' : (($reg->stock != '0') ? '<span>' . $reg->stock . '</span>' : '<span style="color: red; font-weight: bold">' . $reg->stock . '</span>'),
-						"10" => $reg->stock_minimo,
+						"5" => $reg->marca,
+						"6" => ($reg->stock > 0 && $reg->stock < $reg->stock_minimo) ? '<span style="color: #Ea9900; font-weight: bold">' . $reg->stock . '</span>' : (($reg->stock != '0') ? '<span>' . $reg->stock . '</span>' : '<span style="color: red; font-weight: bold">' . $reg->stock . '</span>'),
+						"7" => $reg->stock_minimo,
+						"8" => $reg->local,
+						"9" => $reg->codigo_producto,
+						"10" => $reg->codigo,
 						"11" => $reg->usuario,
 						"12" => $cargo_detalle,
 						"13" => $reg->fecha,

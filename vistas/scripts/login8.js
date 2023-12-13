@@ -39,3 +39,14 @@ $("#frmAcceso").on('submit', function (e) {
             }
         });
 })
+
+function mostrarOcultarClave() {
+    console.log("di click =)");
+    var claveInput = $('#clave');
+
+    if ($('#rememberMe').is(':checked')) {
+        claveInput.attr('type', 'text');
+    } else {
+        claveInput.attr('type', 'password');
+    }
+}

@@ -18,19 +18,19 @@ function init() {
 
 	cargarLocalesDisponibles();
 
-	$.post("../ajax/usuario.php?op=listarUsuariosActivos", function (r) {
-		console.log(r);
-		$("#idusuario_asignar").html(r);
-		$('#idusuario_asignar').selectpicker('refresh');
-	});
+	// $.post("../ajax/usuario.php?op=listarUsuariosActivos", function (r) {
+	// 	console.log(r);
+	// 	$("#idusuario_asignar").html(r);
+	// 	$('#idusuario_asignar').selectpicker('refresh');
+	// });
 }
 
 function cargarLocalesDisponibles() {
-	$.post("../ajax/localesDisponibles.php?op=selectLocalDisponible", function (r) {
-		console.log(r);
-		$("#idlocal_asignar").html(r);
-		$('#idlocal_asignar').selectpicker('refresh');
-	});
+	// $.post("../ajax/localesDisponibles.php?op=selectLocalDisponible", function (r) {
+	// 	console.log(r);
+	// 	$("#idlocal_asignar").html(r);
+	// 	$('#idlocal_asignar').selectpicker('refresh');
+	// });
 }
 
 function limpiar() {

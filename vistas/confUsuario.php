@@ -60,6 +60,15 @@ if (!isset($_SESSION["nombre"])) {
                     <input type="email" class="form-control" name="email" id="email" maxlength="50" placeholder="Email">
                   </div>
                   <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                    <label>Local principal(*):</label>
+                    <select class="form-control selectpicker" name="idlocal" id="idlocal" data-live-search="true" required onchange="actualizarRUC()">
+                    </select>
+                  </div>
+                  <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                    <label>RUC local(*):</label>
+                    <input type="number" class="form-control" id="local_ruc" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="11" placeholder="RUC del local" disabled>
+                  </div>
+                  <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
                     <label>Usuario(*):</label>
                     <input type="text" class="form-control" name="login" id="login" maxlength="20" placeholder="Usuario" required>
                   </div>
@@ -93,7 +102,7 @@ if (!isset($_SESSION["nombre"])) {
 
   require 'footer.php';
   ?>
-  <script type="text/javascript" src="scripts/confUsuario19.js"></script>
+  <script type="text/javascript" src="scripts/confUsuario22.js"></script>
 <?php
 }
 ob_end_flush();

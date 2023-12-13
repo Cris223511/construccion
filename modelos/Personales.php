@@ -7,11 +7,11 @@ class Personal
 	{
 	}
 
-	public function agregar($idusuario, $nombre, $tipo_documento, $num_documento, $direccion, $telefono, $email, $fecha_nac)
+	public function agregar($idusuario, $nombre, $tipo_documento, $num_documento, $direccion, $telefono, $email)
 	{
 		date_default_timezone_set("America/Lima");
-		$sql = "INSERT INTO personales (idusuario, nombre, tipo_documento, num_documento, direccion, telefono, email, fecha_nac, fecha_hora, estado, eliminado)
-            VALUES ('$idusuario','$nombre','$tipo_documento','$num_documento','$direccion','$telefono', '$email', '$fecha_nac', SYSDATE(), 'activado','0')";
+		$sql = "INSERT INTO personales (idusuario, nombre, tipo_documento, num_documento, direccion, telefono, email, fecha_hora, estado, eliminado)
+            VALUES ('$idusuario','$nombre','$tipo_documento','$num_documento','$direccion','$telefono', '$email', SYSDATE(), 'activado','0')";
 		return ejecutarConsulta($sql);
 	}
 
@@ -43,9 +43,9 @@ class Personal
 		return false;
 	}
 
-	public function editar($idpersonal, $nombre, $tipo_documento, $num_documento, $direccion, $telefono, $email, $fecha_nac)
+	public function editar($idpersonal, $nombre, $tipo_documento, $num_documento, $direccion, $telefono, $email)
 	{
-		$sql = "UPDATE personales SET nombre='$nombre',tipo_documento='$tipo_documento',num_documento='$num_documento',direccion='$direccion',telefono='$telefono',email='$email',fecha_nac='$fecha_nac' WHERE idpersonal='$idpersonal'";
+		$sql = "UPDATE personales SET nombre='$nombre',tipo_documento='$tipo_documento',num_documento='$num_documento',direccion='$direccion',telefono='$telefono',email='$email' WHERE idpersonal='$idpersonal'";
 		return ejecutarConsulta($sql);
 	}
 
@@ -76,21 +76,7 @@ class Personal
 	public function listar()
 	{
 		$sql = "SELECT p.idpersonal, p.nombre, p.tipo_documento, p.num_documento, p.direccion, p.telefono, p.email, u.idusuario, u.cargo as cargo,
-				CONCAT(DAY(p.fecha_nac), ' de ', 
-				CASE MONTH(p.fecha_nac)
-					WHEN 1 THEN 'Enero'
-					WHEN 2 THEN 'Febrero'
-					WHEN 3 THEN 'Marzo'
-					WHEN 4 THEN 'Abril'
-					WHEN 5 THEN 'Mayo'
-					WHEN 6 THEN 'Junio'
-					WHEN 7 THEN 'Julio'
-					WHEN 8 THEN 'Agosto'
-					WHEN 9 THEN 'Septiembre'
-					WHEN 10 THEN 'Octubre'
-					WHEN 11 THEN 'Noviembre'
-					WHEN 12 THEN 'Diciembre'
-				END, ' del ', YEAR(p.fecha_nac)) as fecha_nac, DATE_FORMAT(p.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, p.estado
+				DATE_FORMAT(p.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, p.estado
 				FROM personales p
 				LEFT JOIN usuario u ON p.idusuario = u.idusuario
 				WHERE p.eliminado = '0' ORDER BY p.idpersonal DESC";
@@ -100,21 +86,7 @@ class Personal
 	public function listarPorFecha($fecha_inicio, $fecha_fin)
 	{
 		$sql = "SELECT p.idpersonal, p.nombre, p.tipo_documento, p.num_documento, p.direccion, p.telefono, p.email, u.idusuario, u.cargo as cargo,
-				CONCAT(DAY(p.fecha_nac), ' de ', 
-				CASE MONTH(p.fecha_nac)
-					WHEN 1 THEN 'Enero'
-					WHEN 2 THEN 'Febrero'
-					WHEN 3 THEN 'Marzo'
-					WHEN 4 THEN 'Abril'
-					WHEN 5 THEN 'Mayo'
-					WHEN 6 THEN 'Junio'
-					WHEN 7 THEN 'Julio'
-					WHEN 8 THEN 'Agosto'
-					WHEN 9 THEN 'Septiembre'
-					WHEN 10 THEN 'Octubre'
-					WHEN 11 THEN 'Noviembre'
-					WHEN 12 THEN 'Diciembre'
-				END, ' del ', YEAR(p.fecha_nac)) as fecha_nac, DATE_FORMAT(p.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, p.estado
+				DATE_FORMAT(p.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, p.estado
 				FROM personales p
 				LEFT JOIN usuario u ON p.idusuario = u.idusuario
 				WHERE p.eliminado = '0' AND DATE(p.fecha_hora) >= '$fecha_inicio' AND DATE(p.fecha_hora) <= '$fecha_fin' ORDER BY p.idpersonal DESC";
@@ -123,7 +95,7 @@ class Personal
 
 	public function listarFechaNormal()
 	{
-		$sql = "SELECT p.idpersonal, p.nombre, p.tipo_documento, p.num_documento, p.direccion, p.telefono, p.email, u.idusuario, u.cargo as cargo, p.fecha_nac as fecha_nac, DATE_FORMAT(p.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, p.estado
+		$sql = "SELECT p.idpersonal, p.nombre, p.tipo_documento, p.num_documento, p.direccion, p.telefono, p.email, u.idusuario, u.cargo as cargo, DATE_FORMAT(p.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, p.estado
 				FROM personales p
 				LEFT JOIN usuario u ON p.idusuario = u.idusuario
 				WHERE p.eliminado = '0' ORDER BY p.idpersonal DESC";
@@ -133,21 +105,7 @@ class Personal
 	public function listarPorUsuario($idusuario)
 	{
 		$sql = "SELECT p.idpersonal, p.nombre, p.tipo_documento, p.num_documento, p.direccion, p.telefono, p.email, u.idusuario, u.cargo as cargo,
-				CONCAT(DAY(p.fecha_nac), ' de ', 
-				CASE MONTH(p.fecha_nac)
-					WHEN 1 THEN 'Enero'
-					WHEN 2 THEN 'Febrero'
-					WHEN 3 THEN 'Marzo'
-					WHEN 4 THEN 'Abril'
-					WHEN 5 THEN 'Mayo'
-					WHEN 6 THEN 'Junio'
-					WHEN 7 THEN 'Julio'
-					WHEN 8 THEN 'Agosto'
-					WHEN 9 THEN 'Septiembre'
-					WHEN 10 THEN 'Octubre'
-					WHEN 11 THEN 'Noviembre'
-					WHEN 12 THEN 'Diciembre'
-				END, ' del ', YEAR(p.fecha_nac)) as fecha_nac, DATE_FORMAT(p.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, p.estado
+				DATE_FORMAT(p.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, p.estado
 				FROM personales p
 				LEFT JOIN usuario u ON p.idusuario = u.idusuario
 				WHERE p.idusuario = '$idusuario' AND p.eliminado = '0' ORDER BY p.idpersonal DESC";
@@ -157,21 +115,7 @@ class Personal
 	public function listarPorUsuarioFecha($idusuario, $fecha_inicio, $fecha_fin)
 	{
 		$sql = "SELECT p.idpersonal, p.nombre, p.tipo_documento, p.num_documento, p.direccion, p.telefono, p.email, u.idusuario, u.cargo as cargo,
-				CONCAT(DAY(p.fecha_nac), ' de ', 
-				CASE MONTH(p.fecha_nac)
-					WHEN 1 THEN 'Enero'
-					WHEN 2 THEN 'Febrero'
-					WHEN 3 THEN 'Marzo'
-					WHEN 4 THEN 'Abril'
-					WHEN 5 THEN 'Mayo'
-					WHEN 6 THEN 'Junio'
-					WHEN 7 THEN 'Julio'
-					WHEN 8 THEN 'Agosto'
-					WHEN 9 THEN 'Septiembre'
-					WHEN 10 THEN 'Octubre'
-					WHEN 11 THEN 'Noviembre'
-					WHEN 12 THEN 'Diciembre'
-				END, ' del ', YEAR(p.fecha_nac)) as fecha_nac, DATE_FORMAT(p.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, p.estado
+				DATE_FORMAT(p.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, p.estado
 				FROM personales p
 				LEFT JOIN usuario u ON p.idusuario = u.idusuario
 				WHERE p.idusuario = '$idusuario' AND p.eliminado = '0' AND DATE(p.fecha_hora) >= '$fecha_inicio' AND DATE(p.fecha_hora) <= '$fecha_fin' ORDER BY p.idpersonal DESC";
@@ -180,7 +124,7 @@ class Personal
 
 	public function listarFechaNormalPorUsuario($idusuario)
 	{
-		$sql = "SELECT p.idpersonal, p.nombre, p.tipo_documento, p.num_documento, p.direccion, p.telefono, p.email, u.idusuario, u.cargo as cargo, p.fecha_nac as fecha_nac, DATE_FORMAT(p.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, p.estado
+		$sql = "SELECT p.idpersonal, p.nombre, p.tipo_documento, p.num_documento, p.direccion, p.telefono, p.email, u.idusuario, u.cargo as cargo, DATE_FORMAT(p.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, p.estado
 				FROM personales p
 				LEFT JOIN usuario u ON p.idusuario = u.idusuario
 				WHERE p.idusuario = '$idusuario' AND p.eliminado = '0' ORDER BY p.idpersonal DESC";

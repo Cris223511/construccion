@@ -30,10 +30,10 @@ if (!isset($_SESSION["nombre"])) {
     $pdf->Cell(40, 6, utf8_decode('Fecha y hora'), 1, 0, 'C', 1);
 
     $pdf->Ln(10);
-    require_once "../modelos/Locales.php";
-    $locales = new Local();
+    require_once "../modelos/LocalesDisponibles.php";
+    $locales = new LocalDisponible();
 
-    $rspta = $locales->listar();
+    $rspta = $locales->listarLocalesDisponibles();
 
     $pdf->SetWidths(array(40, 110, 40));
 

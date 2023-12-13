@@ -12,7 +12,7 @@ if (!isset($_SESSION["nombre"])) {
 
     $logo = "logo.jpeg";
     $ext_logo = "jpg";
-    $empresa = "Arena San Andrés Perú S.A.C.";
+    $empresa = "Almacenes S.A.C.";
     $documento = "20477157772";
     $direccion = "Av Gerardo Unger 5689 - Los Olivos - Lima";
     $telefono = "998 393 220";
@@ -55,7 +55,7 @@ if (!isset($_SESSION["nombre"])) {
 
     $pdf->addClientAdresse2(
       utf8_decode($regv->autorizado == '' ? 'Sin registrar' : $regv->autorizado),
-      utf8_decode($regv->entregado == '' ? 'Sin registrar' : $regv->entregado),
+      // utf8_decode($regv->entregado == '' ? 'Sin registrar' : $regv->entregado),
       utf8_decode($regv->recibido == '' ? 'Sin registrar' : $regv->recibido),
       utf8_decode($regv->final == '' ? 'Sin registrar' : $regv->final)
     );
