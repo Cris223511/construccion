@@ -234,10 +234,8 @@ if (!isset($_SESSION["nombre"])) {
                       <input type="hidden" name="imagenactual" id="imagenactual">
                     </div>
                     <div class="form-group col-lg-6 col-md-12">
-                      <div style="display: flex; flex-direction: row; gap: 10px; align-items: center;">
-                        <label style="width: 110px;">Código del producto(*):</label>
-                        <input type="text" class="form-control" name="codigo_producto" id="codigo_producto" maxlength="10" placeholder="Código del producto" required>
-                      </div>
+                      <label>Código del producto(*):</label>
+                      <input type="text" class="form-control" name="codigo_producto" id="codigo_producto" maxlength="10" placeholder="Código del producto" onblur="convertirMayus()" required>
                       <div style="display: flex; justify-content: end;">
                         <div id="camera"></div>
                       </div>

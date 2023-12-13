@@ -222,22 +222,25 @@ if (!isset($_SESSION["nombre"])) {
                     </div>
                     <div class="form-group col-lg-6 col-md-12">
                       <label>Código del producto(*):</label>
-                      <input type="text" class="form-control" name="codigo_producto" id="codigo_producto" maxlength="10" placeholder="Ingrese el código del producto." onblur="convertirMayus()" required>
+                      <input type="text" class="form-control" name="codigo_producto" id="codigo_producto" maxlength="10" placeholder="Código del producto" onblur="convertirMayus()" required>
+                      <div style="display: flex; justify-content: end;">
+                        <div id="camera"></div>
+                      </div>
                     </div>
                     <div class="form-group col-lg-6 col-md-12">
                       <div>
                         <label>Código de barra(*):</label>
                         <input type="text" class="form-control" name="codigo" id="codigo" maxlength="18" placeholder="Ingrese el código de barra.">
                       </div>
-                      <div style="margin-top: 10px;">
-                        <button class="btn btn-bcp" type="button" onclick="generarbarcode(1)">Visualizar</button>
+                      <div style="margin-top: 10px; display: flex; gap: 5px; flex-wrap: wrap;">
                         <button class="btn btn-info" type="button" onclick="generar()">Generar</button>
                         <button class="btn btn-warning" type="button" onclick="imprimir()">Imprimir</button>
                         <button class="btn btn-danger" type="button" onclick="borrar()">Borrar</button>
+                        <button class="btn btn-success btn1" type="button" onclick="escanear()">Escanear</button>
+                        <button class="btn btn-danger btn2" type="button" onclick="detenerEscaneo()">Detener</button>
                       </div>
                       <div id="print" style="overflow-y: hidden;">
                         <img id="barcode">
-                        <div id="barcode-number"></div>
                       </div>
                     </div>
                   </div>
