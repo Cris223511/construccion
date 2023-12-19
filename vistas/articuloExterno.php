@@ -69,6 +69,9 @@ if (!isset($_SESSION["nombre"])) {
             <div class="box">
               <div class="box-header with-border">
                 <h1 class="box-title">Productos externos
+                  <button class="btn btn-success" id="btnagregar" onclick="mostrarform(true)">
+                    <i class="fa fa-plus-circle"></i> Agregar
+                  </button>
                   <a href="../reportes/rptarticulos.php" target="_blank">
                     <button class="btn btn-secondary" style="color: black !important;">
                       <i class="fa fa-clipboard"></i> Reporte
@@ -229,10 +232,8 @@ if (!isset($_SESSION["nombre"])) {
                       <input type="text" class="form-control" name="stock_minimo" id="stock_minimo" step="any" onkeydown="evitarNegativo(event)" oninput="validarNumeroDecimal(this, 6)" placeholder="Ingrese el stock mínimo." required>
                     </div>
                     <div class="form-group col-lg-6 col-md-12">
-                      <div style="display: flex; flex-direction: row; gap: 10px; align-items: center;">
-                        <label style="width: 110px;">Código del producto(*):</label>
-                        <input type="text" class="form-control" name="codigo_producto" id="codigo_producto" maxlength="10" placeholder="Código del producto" required>
-                      </div>
+                      <label>Código del producto(*):</label>
+                      <input type="text" class="form-control" name="codigo_producto" id="codigo_producto" maxlength="10" placeholder="Código del producto" onblur="convertirMayus()" required>
                       <div style="display: flex; justify-content: end;">
                         <div id="camera"></div>
                       </div>

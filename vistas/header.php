@@ -129,6 +129,10 @@ $local_login = $_SESSION['local'];
   body {
     padding-right: 0 !important
   }
+
+  .table-responsive {
+    border: none !important;
+  }
 </style>
 
 <!DOCTYPE html>
@@ -302,7 +306,7 @@ $local_login = $_SESSION['local'];
             <ul class="treeview-menu">
               <li id="lConfUsuario"><a href="confUsuario.php"><i class="fa fa-circle-o"></i> Configuración de perfil</a></li>
               ';
-            if ($_SESSION['cargo'] == "superadmin") {
+            if ($_SESSION['cargo'] == "superadmin" || $_SESSION['cargo'] == "admin") {
               echo '
                 <li id="lLocalesExternos"><a href="localesExternos.php"><i class="fa fa-circle-o"></i> Locales externos</a></li>
                 ';

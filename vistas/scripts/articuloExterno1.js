@@ -232,7 +232,7 @@ function mostrar(idarticulo) {
 	$(".caja2").removeClass("col-lg-12 col-md-12 col-sm-12").addClass("col-lg-10 col-md-8 col-sm-12");
 	$(".botones").removeClass("col-lg-12 col-md-12 col-sm-12").addClass("col-lg-10 col-md-8 col-sm-12");
 
-	$(".btn1").hide();
+	$(".btn1").show();
 	$(".btn2").hide();
 
 	$.post("../ajax/articuloExterno.php?op=mostrar", { idarticulo: idarticulo }, function (data, status) {
@@ -455,7 +455,7 @@ function formatearNumero() {
 		formattedCode = formattedCode.substring(0, maxLength);
 	}
 
-	$("#codigo").val(formattedCode);
+	$("#codigo").val(codigo);
 	generarbarcode(0);
 }
 
@@ -502,9 +502,13 @@ function generarbarcode(param) {
 		var codigo = $("#codigo").val()
 	}
 
-	JsBarcode("#barcode", codigo);
-	$("#codigo").val(codigo);
-	$("#print").show();
+	if (codigo != "") {
+		JsBarcode("#barcode", codigo);
+		$("#codigo").val(codigo);
+		$("#print").show();
+	} else {
+		$("#print").hide();
+	}
 }
 
 //Función para imprimir el código de barras

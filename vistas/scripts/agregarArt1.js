@@ -501,9 +501,13 @@ function generarbarcode(param) {
 		var codigo = $("#codigo").val()
 	}
 
-	JsBarcode("#barcode", codigo);
-	$("#codigo").val(codigo);
-	$("#print").show();
+	if (codigo != "") {
+		JsBarcode("#barcode", codigo);
+		$("#codigo").val(codigo);
+		$("#print").show();
+	} else {
+		$("#print").hide();
+	}
 }
 
 function convertirMayus() {

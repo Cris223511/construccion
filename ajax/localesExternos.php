@@ -77,7 +77,7 @@ if (!isset($_SESSION["nombre"])) {
 				$fecha_inicio = $_GET["fecha_inicio"];
 				$fecha_fin = $_GET["fecha_fin"];
 
-				if ($cargo == "superadmin") {
+				if ($cargo == "superadmin" || $cargo == "admin") {
 					if ($fecha_inicio == "" && $fecha_fin == "") {
 						$rspta = $locales->listar();
 					} else {
@@ -93,11 +93,9 @@ if (!isset($_SESSION["nombre"])) {
 
 				$data = array();
 
-				function mostrarBoton($reg, $cargo, $idusuario, $buttonType)
+				function mostrarBoton($cargo, $idusuario, $buttonType)
 				{
-					if ($reg == "admin" && $cargo == "admin" && $idusuario == $_SESSION["idusuario"]) {
-						return $buttonType;
-					} elseif ($cargo == "superadmin" || $cargo == "usuario" && $idusuario == $_SESSION["idusuario"]) {
+					if ($cargo == "superadmin" || $cargo == "admin") {
 						return $buttonType;
 					} else {
 						return '';
@@ -125,10 +123,10 @@ if (!isset($_SESSION["nombre"])) {
 
 					$data[] = array(
 						"0" => '<div style="display: flex; flex-wrap: nowrap; gap: 3px">' .
-							mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-warning" style="margin-right: 3px; height: 35px;" onclick="mostrar(' . $reg->idlocal . ')"><i class="fa fa-pencil"></i></button>') .
+							mostrarBoton($cargo, $reg->idusuario, '<button class="btn btn-warning" style="margin-right: 3px; height: 35px;" onclick="mostrar(' . $reg->idlocal . ')"><i class="fa fa-pencil"></i></button>') .
 							'<a data-toggle="modal" href="#myModal"><button class="btn btn-bcp" style="margin-right: 3px; height: 35px;" onclick="trabajadores(' . $reg->idlocal . ',\'' . $reg->titulo . '\')"><i class="fa fa-user"></i></button></a>' .
 							(($reg->estado == 'activado') ?
-								(mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-danger" style="margin-right: 3px; height: 35px;" onclick="desactivar(' . $reg->idlocal . ')"><i class="fa fa-close"></i></button>')) : (mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-success" style="margin-right: 3px; width: 35px; height: 35px;" onclick="activar(' . $reg->idlocal . ')"><i style="margin-left: -2px" class="fa fa-check"></i></button>'))) .
+								(mostrarBoton($cargo, $reg->idusuario, '<button class="btn btn-danger" style="margin-right: 3px; height: 35px;" onclick="desactivar(' . $reg->idlocal . ')"><i class="fa fa-close"></i></button>')) : (mostrarBoton($cargo, $reg->idusuario, '<button class="btn btn-success" style="margin-right: 3px; width: 35px; height: 35px;" onclick="activar(' . $reg->idlocal . ')"><i style="margin-left: -2px" class="fa fa-check"></i></button>'))) .
 							'</div>',
 						"1" => $reg->titulo,
 						"2" => $reg->local_ruc,

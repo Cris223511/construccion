@@ -33,11 +33,6 @@ if (!isset($_SESSION["nombre"])) {
                   <button class="btn btn-bcp" id="btnagregar" onclick="mostrarform(true)">
                     <i class="fa fa-plus-circle"></i> Nueva entrada
                   </button>
-                  <a href="../reportes/rptentradas.php" target="_blank">
-                    <button class="btn btn-secondary" style="color: black !important;">
-                      <i class="fa fa-clipboard"></i> Reporte
-                    </button>
-                  </a>
                   <a href="agregarArt1.php">
                     <button class="btn btn-success" id="btnInsertarArt">
                       <i class="fa fa-plus-circle"></i> Nuevos productos
@@ -46,6 +41,11 @@ if (!isset($_SESSION["nombre"])) {
                   <a href="articulo.php">
                     <button class="btn btn-warning" id="btnInsertarArt">
                       <i class="fa fa-sign-in"></i> Ver productos
+                    </button>
+                  </a>
+                  <a href="../reportes/rptentradas.php" target="_blank">
+                    <button class="btn btn-secondary" style="color: black !important;">
+                      <i class="fa fa-clipboard"></i> Reporte
                     </button>
                   </a>
                 </h1>

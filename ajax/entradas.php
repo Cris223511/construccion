@@ -222,13 +222,13 @@ if (!isset($_SESSION["nombre"])) {
 				if ($cargo == "superadmin") {
 					$rspta = $articulo->listar();
 				} else {
-					$rspta = $articulo->listarPorUsuario($idusuario);
+					$rspta = $articulo->listarPorUsuario($idlocalSession);
 				}
 
 				echo '<option value="">Busca un producto.</option>';
 				while ($reg = $rspta->fetch_object()) {
 					if (!empty($reg->codigo) && $reg->stock != '0') {
-						echo '<option value="' . $reg->idarticulo . '">' . str_replace(' ', '', $reg->codigo) . ' - ' . $reg->nombre . '</option>';
+						echo '<option value="' . $reg->idarticulo . '">' . $reg->codigo . ' - ' . $reg->nombre . '</option>';
 					}
 				}
 				break;
