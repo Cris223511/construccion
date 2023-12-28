@@ -205,7 +205,9 @@ if (!isset($_SESSION["nombre"])) {
 							mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-warning" style="margin-right: 3px; height: 35px;" onclick="mostrar(' . $reg->idarticulo . ')"><i class="fa fa-pencil"></i></button>') .
 							mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-danger "style="height: 35px;" onclick="eliminar(' . $reg->idarticulo . ')"><i class="fa fa-trash"></i></button>') .
 							'</div>',
-						"1" => "<img src='../files/articulos/" . $reg->imagen . "' height='50px' width='50px' >",
+						"1" => '<a href="../files/articulos/' . $reg->imagen . '" class="galleria-lightbox" style="z-index: 10000 !important;">
+									<img src="../files/articulos/' . $reg->imagen . '" height="50px" width="50px" class="img-fluid">
+								</a>',
 						"2" => $reg->nombre,
 						"3" => $reg->medida,
 						"4" => $reg->categoria,

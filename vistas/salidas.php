@@ -83,6 +83,7 @@ if (!isset($_SESSION["nombre"])) {
                     <thead>
                       <th>Opciones</th>
                       <th style="white-space: nowrap;">Fecha y hora</th>
+                      <th style="width: 20%; min-width: 220px; white-space: nowrap;">Ubicación del local</th>
                       <th>Tipo</th>
                       <th style="white-space: nowrap;">N° de documento</th>
                       <th style="white-space: nowrap;">Autorizado por</th>
@@ -98,6 +99,7 @@ if (!isset($_SESSION["nombre"])) {
                     <tfoot>
                       <th>Opciones</th>
                       <th>Fecha y hora</th>
+                      <th>Ubicación del local</th>
                       <th>Tipo</th>
                       <th>N° de documento</th>
                       <th>Autorizado por</th>
@@ -233,7 +235,7 @@ if (!isset($_SESSION["nombre"])) {
           <div class="modal-body table-responsive">
             <table id="tblarticulos" class="table table-striped table-bordered table-condensed table-hover w-100" style="width: 100% !important">
               <thead>
-                <th>OPCIONES</th>
+                <th>Opciones</th>
                 <th>IMAGEN</th>
                 <th>NOMBRE</th>
                 <th style="white-space: nowrap;">U. MEDIDA</th>
@@ -252,7 +254,7 @@ if (!isset($_SESSION["nombre"])) {
               <tbody>
               </tbody>
               <tfoot>
-                <TH>OPCIONES</TH>
+                <th>Opciones</th>
                 <TH>IMAGEN</TH>
                 <TH>NOMBRE</TH>
                 <TH>U. MEDIDA</TH>

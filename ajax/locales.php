@@ -17,7 +17,7 @@ if (empty($_SESSION['idusuario']) || empty($_SESSION['cargo'])) {
 if (!isset($_SESSION["nombre"])) {
 	header("Location: ../vistas/login.html");
 } else {
-	if ($_SESSION['perfilu'] == 1) {
+	if ($_SESSION['almacen'] == 1) {
 		require_once "../modelos/Locales.php";
 
 		$locales = new Local();
@@ -41,6 +41,9 @@ if (!isset($_SESSION["nombre"])) {
 					} else {
 						$rspta = $locales->agregar($idusuario, $titulo, $local_ruc, $descripcion);
 						echo $rspta ? "Local registrado" : "El local no se pudo registrar";
+						if ($rspta) {
+							$_SESSION['local'] = $titulo;
+						}
 					}
 				} else {
 					$nombreExiste = $locales->verificarNombreEditarExiste($titulo, $idlocal);
@@ -49,6 +52,9 @@ if (!isset($_SESSION["nombre"])) {
 					} else {
 						$rspta = $locales->editar($idlocal, $titulo, $local_ruc, $descripcion);
 						echo $rspta ? "Local actualizado" : "El local no se pudo actualizar";
+						if ($rspta) {
+							$_SESSION['local'] = $titulo;
+						}
 					}
 				}
 				break;
@@ -74,22 +80,7 @@ if (!isset($_SESSION["nombre"])) {
 				break;
 
 			case 'listar':
-				$fecha_inicio = $_GET["fecha_inicio"];
-				$fecha_fin = $_GET["fecha_fin"];
-
-				// if ($cargo == "superadmin") {
-				// 	if ($fecha_inicio == "" && $fecha_fin == "") {
-				// 		$rspta = $locales->listar();
-				// 	} else {
-				// 		$rspta = $locales->listarPorFecha($fecha_inicio, $fecha_fin);
-				// 	}
-				// } else {
-				if ($fecha_inicio == "" && $fecha_fin == "") {
-					$rspta = $locales->listarPorUsuario($idlocalSession);
-				} else {
-					$rspta = $locales->listarPorUsuarioFecha($idlocalSession, $fecha_inicio, $fecha_fin);
-				}
-				// }
+				$rspta = $locales->listarPorUsuario($idlocalSession);
 
 				$data = array();
 
@@ -124,8 +115,10 @@ if (!isset($_SESSION["nombre"])) {
 					$reg->descripcion = (strlen($reg->descripcion) > 70) ? substr($reg->descripcion, 0, 70) . "..." : $reg->descripcion;
 
 					$data[] = array(
-						"0" => '<div style="display: flex; justify-content: center;">' .
-							'<button class="btn btn-bcp" style="margin-right: 3px; height: 35px;" onclick="mostrar(' . $reg->idlocal . ')"><i class="fa fa-eye"></i></button>' .
+						"0" => '<div style="display: flex; flex-wrap: nowrap; gap: 3px; justify-content: center;">' .
+							'<button class="btn btn-warning" style="margin-right: 3px;" onclick="mostrar(' . $reg->idlocal . ')"><i class="fa fa-pencil"></i></button>' .
+							'<button class="btn btn-bcp" style="margin-right: 3px; height: 35px;" onclick="mostrar2(' . $reg->idlocal . ')"><i class="fa fa-eye"></i></button>' .
+							'<a data-toggle="modal" href="#myModal"><button class="btn btn-bcp" style="margin-right: 3px; height: 35px;" onclick="trabajadores(' . $reg->idlocal . ',\'' . $reg->titulo . '\')"><i class="fa fa-user"></i></button></a>' .
 							'</div>',
 						"1" => $reg->titulo,
 						"2" => $reg->local_ruc,
@@ -154,9 +147,27 @@ if (!isset($_SESSION["nombre"])) {
 				$data = array();
 
 				while ($reg = $rspta->fetch_object()) {
+					$cargo_detalle = "";
+
+					switch ($reg->cargo) {
+						case 'superadmin':
+							$cargo_detalle = "Superadministrador";
+							break;
+						case 'admin':
+							$cargo_detalle = "Administrador";
+							break;
+						case 'usuario':
+							$cargo_detalle = "Usuario";
+							break;
+						default:
+							break;
+					}
+
+					$telefono = ($reg->telefono == '') ? 'Sin registrar' : number_format($reg->telefono, 0, '', ' ');
+
 					$data[] = array(
 						"0" => $reg->login,
-						"1" => $cargo,
+						"1" => $cargo_detalle,
 						"2" => $reg->nombre,
 						"3" => $reg->tipo_documento,
 						"4" => $reg->num_documento,
@@ -199,6 +210,13 @@ if (!isset($_SESSION["nombre"])) {
 				}
 
 				echo json_encode($data);
+				break;
+
+			case 'actualizarSession':
+				$info = array(
+					'local' => $_SESSION['local'],
+				);
+				echo json_encode($info);
 				break;
 		}
 	} else {

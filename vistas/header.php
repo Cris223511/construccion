@@ -154,6 +154,8 @@ $local_login = $_SESSION['local'];
   <link rel="stylesheet" href="../public/css/font-awesome.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="../public/css/AdminLTE.min.css">
+  <!-- Lightbox style -->
+  <link href="../public/glightbox/css/glightbox.min.css" rel="stylesheet" asp-append-version="true">
   <!-- AdminLTE Skins. Choose a skin from the css/skins
          folder instead of downloading all of them to reduce the load. -->
   <link rel="stylesheet" href="../public/css/_all-skins.min.css">

@@ -155,17 +155,17 @@ if (!isset($_SESSION["nombre"])) {
 				$data = array();
 
 				while ($reg = $rspta->fetch_object()) {
-
-					$cargo = "";
+					$cargo_detalle = "";
+					
 					switch ($reg->cargo) {
 						case 'superadmin':
-							$cargo = "Superadministrador";
+							$cargo_detalle = "Superadministrador";
 							break;
 						case 'admin':
-							$cargo = "Administrador";
+							$cargo_detalle = "Administrador";
 							break;
 						case 'usuario':
-							$cargo = "Usuario";
+							$cargo_detalle = "Usuario";
 							break;
 						default:
 							break;
@@ -175,7 +175,7 @@ if (!isset($_SESSION["nombre"])) {
 
 					$data[] = array(
 						"0" => $reg->login,
-						"1" => $cargo,
+						"1" => $cargo_detalle,
 						"2" => $reg->nombre,
 						"3" => $reg->tipo_documento,
 						"4" => $reg->num_documento,

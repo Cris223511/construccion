@@ -95,7 +95,7 @@ class Proveedor
 
 	public function listarFechaNormal()
 	{
-		$sql = "SELECT p.idproveedor, p.nombre, p.tipo_documento, p.num_documento, p.direccion, p.telefono, p.email, u.idusuario, u.cargo as cargo, DATE_FORMAT(p.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, p.estado
+		$sql = "SELECT p.idproveedor, p.nombre, p.tipo_documento, p.num_documento, p.direccion, p.telefono, p.email, u.idusuario, u.cargo as cargo, DATE_FORMAT(p.fecha_hora, '%d-%m-%Y') as fecha, p.estado
 				FROM proveedores p
 				LEFT JOIN usuario u ON p.idusuario = u.idusuario
 				WHERE p.eliminado = '0' ORDER BY p.idproveedor DESC";

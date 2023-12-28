@@ -70,19 +70,19 @@ if (!isset($_SESSION["nombre"])) {
 				$fecha_inicio = $_GET["fecha_inicio"];
 				$fecha_fin = $_GET["fecha_fin"];
 
-				if ($cargo == "superadmin") {
+				// if ($cargo == "superadmin") {
 					if ($fecha_inicio == "" && $fecha_fin == "") {
 						$rspta = $maquinarias->listar();
 					} else {
 						$rspta = $maquinarias->listarPorFecha($fecha_inicio, $fecha_fin);
 					}
-				} else {
-					if ($fecha_inicio == "" && $fecha_fin == "") {
-						$rspta = $maquinarias->listarPorUsuario($idusuario);
-					} else {
-						$rspta = $maquinarias->listarPorUsuarioFecha($idusuario, $fecha_inicio, $fecha_fin);
-					}
-				}
+				// } else {
+					// if ($fecha_inicio == "" && $fecha_fin == "") {
+						// $rspta = $maquinarias->listarPorUsuario($idusuario);
+					// } else {
+						// $rspta = $maquinarias->listarPorUsuarioFecha($idusuario, $fecha_inicio, $fecha_fin);
+					// }
+				// }
 
 				$data = array();
 
@@ -113,6 +113,7 @@ if (!isset($_SESSION["nombre"])) {
 						default:
 							break;
 					}
+					
 					$reg->descripcion = (strlen($reg->descripcion) > 70) ? substr($reg->descripcion, 0, 70) . "..." : $reg->descripcion;
 
 					$data[] = array(

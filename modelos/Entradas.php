@@ -73,25 +73,25 @@ class Entrada
 
 	public function listar()
 	{
-		$sql = "SELECT e.identrada,e.idusuario,u.nombre as usuario,u.cargo as cargo,u.cargo,t.titulo as tipo,p.nombre as proveedor,e.codigo,e.ubicacion,e.descripcion,e.descripcion,DATE_FORMAT(e.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,e.estado FROM entradas e LEFT JOIN tipos t ON e.idtipo=t.idtipo LEFT JOIN proveedores p ON e.idproveedor=p.idproveedor LEFT JOIN usuario u ON e.idusuario=u.idusuario ORDER BY e.identrada DESC";
+		$sql = "SELECT e.identrada,e.idusuario,u.nombre as usuario,u.cargo as cargo,u.cargo,lo.titulo as local,t.titulo as tipo,p.nombre as proveedor,e.codigo,e.ubicacion,e.descripcion,e.descripcion,DATE_FORMAT(e.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,e.estado FROM entradas e LEFT JOIN locales lo ON e.idlocal=lo.idlocal LEFT JOIN tipos t ON e.idtipo=t.idtipo LEFT JOIN proveedores p ON e.idproveedor=p.idproveedor LEFT JOIN usuario u ON e.idusuario=u.idusuario ORDER BY e.identrada DESC";
 		return ejecutarConsulta($sql);
 	}
 
 	public function listarPorFecha($fecha_inicio, $fecha_fin)
 	{
-		$sql = "SELECT e.identrada,e.idusuario,u.nombre as usuario,u.cargo as cargo,u.cargo,t.titulo as tipo,p.nombre as proveedor,e.codigo,e.ubicacion,e.descripcion,e.descripcion,DATE_FORMAT(e.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,e.estado FROM entradas e LEFT JOIN tipos t ON e.idtipo=t.idtipo LEFT JOIN proveedores p ON e.idproveedor=p.idproveedor LEFT JOIN usuario u ON e.idusuario=u.idusuario WHERE DATE(e.fecha_hora) >= '$fecha_inicio' AND DATE(e.fecha_hora) <= '$fecha_fin' ORDER BY e.identrada DESC";
+		$sql = "SELECT e.identrada,e.idusuario,u.nombre as usuario,u.cargo as cargo,u.cargo,lo.titulo as local,t.titulo as tipo,p.nombre as proveedor,e.codigo,e.ubicacion,e.descripcion,e.descripcion,DATE_FORMAT(e.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,e.estado FROM entradas e LEFT JOIN locales lo ON e.idlocal=lo.idlocal LEFT JOIN tipos t ON e.idtipo=t.idtipo LEFT JOIN proveedores p ON e.idproveedor=p.idproveedor LEFT JOIN usuario u ON e.idusuario=u.idusuario WHERE DATE(e.fecha_hora) >= '$fecha_inicio' AND DATE(e.fecha_hora) <= '$fecha_fin' ORDER BY e.identrada DESC";
 		return ejecutarConsulta($sql);
 	}
 
-	public function listarPorUsuario($idusuario)
+	public function listarPorUsuario($idlocalSession)
 	{
-		$sql = "SELECT e.identrada,e.idusuario,u.nombre as usuario,u.cargo as cargo,u.cargo,t.titulo as tipo,p.nombre as proveedor,e.codigo,e.ubicacion,e.descripcion,e.descripcion,DATE_FORMAT(e.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,e.estado FROM entradas e LEFT JOIN tipos t ON e.idtipo=t.idtipo LEFT JOIN proveedores p ON e.idproveedor=p.idproveedor LEFT JOIN usuario u ON e.idusuario=u.idusuario WHERE e.idusuario = '$idusuario' ORDER BY e.identrada DESC";
+		$sql = "SELECT e.identrada,e.idusuario,u.nombre as usuario,u.cargo as cargo,u.cargo,lo.titulo as local,t.titulo as tipo,p.nombre as proveedor,e.codigo,e.ubicacion,e.descripcion,e.descripcion,DATE_FORMAT(e.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,e.estado FROM entradas e LEFT JOIN locales lo ON e.idlocal=lo.idlocal LEFT JOIN tipos t ON e.idtipo=t.idtipo LEFT JOIN proveedores p ON e.idproveedor=p.idproveedor LEFT JOIN usuario u ON e.idusuario=u.idusuario WHERE e.idlocal = '$idlocalSession' ORDER BY e.identrada DESC";
 		return ejecutarConsulta($sql);
 	}
 
-	public function listarPorUsuarioFecha($idusuario, $fecha_inicio, $fecha_fin)
+	public function listarPorUsuarioFecha($idlocalSession, $fecha_inicio, $fecha_fin)
 	{
-		$sql = "SELECT e.identrada,e.idusuario,u.nombre as usuario,u.cargo as cargo,u.cargo,t.titulo as tipo,p.nombre as proveedor,e.codigo,e.ubicacion,e.descripcion,e.descripcion,DATE_FORMAT(e.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,e.estado FROM entradas e LEFT JOIN tipos t ON e.idtipo=t.idtipo LEFT JOIN proveedores p ON e.idproveedor=p.idproveedor LEFT JOIN usuario u ON e.idusuario=u.idusuario WHERE e.idusuario = '$idusuario' AND DATE(e.fecha_hora) >= '$fecha_inicio' AND DATE(e.fecha_hora) <= '$fecha_fin' ORDER BY e.identrada DESC";
+		$sql = "SELECT e.identrada,e.idusuario,u.nombre as usuario,u.cargo as cargo,u.cargo,lo.titulo as local,t.titulo as tipo,p.nombre as proveedor,e.codigo,e.ubicacion,e.descripcion,e.descripcion,DATE_FORMAT(e.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,e.estado FROM entradas e LEFT JOIN locales lo ON e.idlocal=lo.idlocal LEFT JOIN tipos t ON e.idtipo=t.idtipo LEFT JOIN proveedores p ON e.idproveedor=p.idproveedor LEFT JOIN usuario u ON e.idusuario=u.idusuario WHERE e.idlocal = '$idlocalSession' AND DATE(e.fecha_hora) >= '$fecha_inicio' AND DATE(e.fecha_hora) <= '$fecha_fin' ORDER BY e.identrada DESC";
 		return ejecutarConsulta($sql);
 	}
 
@@ -133,15 +133,9 @@ class Entrada
 
 	public function listarTodosActivosPorUsuario($idusuario)
 	{
-		$sql = "SELECT 'categoria' AS tabla, b.idcategoria AS id, b.titulo, u.nombre AS usuario FROM categoria b LEFT JOIN usuario u ON b.idusuario = u.idusuario WHERE b.estado='activado' AND b.eliminado='0'
+		$sql = "SELECT 'proveedor' AS tabla, p.idproveedor AS id, p.nombre, u.nombre AS usuario FROM proveedores p LEFT JOIN usuario u ON p.idusuario = u.idusuario WHERE p.estado='activado' AND p.eliminado='0'
 			UNION ALL
-			SELECT 'marca' AS tabla, o.idmarca AS id, o.titulo, u.nombre AS usuario FROM marcas o LEFT JOIN usuario u ON o.idusuario = u.idusuario WHERE o.estado='activado' AND o.eliminado='0'
-			UNION ALL
-			SELECT 'medida' AS tabla, m.idmedida AS id, m.titulo, u.nombre AS usuario FROM medidas m LEFT JOIN usuario u ON m.idusuario = u.idusuario WHERE m.estado='activado' AND m.eliminado='0'
-			UNION ALL
-			SELECT 'proveedor' AS tabla, p.idproveedor AS id, p.nombre, u.nombre AS usuario FROM proveedores p LEFT JOIN usuario u ON p.idusuario = u.idusuario WHERE p.idusuario='$idusuario' AND p.estado='activado' AND p.eliminado='0'
-			UNION ALL
-			SELECT 'tipo' AS tabla, t.idtipo AS id, t.titulo, u.nombre AS usuario FROM tipos t LEFT JOIN usuario u ON t.idusuario = u.idusuario WHERE t.idusuario='$idusuario' AND t.estado='activado' AND t.eliminado='0'";
+			SELECT 'tipo' AS tabla, t.idtipo AS id, t.titulo, u.nombre AS usuario FROM tipos t LEFT JOIN usuario u ON t.idusuario = u.idusuario WHERE t.estado='activado' AND t.eliminado='0'";
 
 		return ejecutarConsulta($sql);
 	}

@@ -121,16 +121,17 @@ switch ($_GET["op"]) {
 				$data = array();
 
 				while ($reg = $rspta->fetch_object()) {
-					$cargo = "";
+					$cargo_detalle = "";
+
 					switch ($reg->cargo) {
 						case 'superadmin':
-							$cargo = "Superadministrador";
+							$cargo_detalle = "Superadministrador";
 							break;
 						case 'admin':
-							$cargo = "Administrador";
+							$cargo_detalle = "Administrador";
 							break;
 						case 'usuario':
-							$cargo = "Usuario";
+							$cargo_detalle = "Usuario";
 							break;
 						default:
 							break;
@@ -141,21 +142,23 @@ switch ($_GET["op"]) {
 					$data[] = array(
 						"0" => '<div style="display: flex; flex-wrap: nowrap; gap: 3px">' .
 							(!($reg->cargo == "superadmin" && $_SESSION['cargo'] == 'admin') ?
-								((($reg->estado) ?
+								((($reg->condicion) ?
 									(($_SESSION['cargo'] == 'superadmin' || $_SESSION['cargo'] == 'admin') ? ('<button class="btn btn-warning" style="margin-right: 3px;" onclick="mostrar(' . $reg->idusuario . ')"><i class="fa fa-pencil"></i></button>') : '') .
 									(($_SESSION['cargo'] == 'superadmin' || $_SESSION['cargo'] == 'admin') ? ('<button class="btn btn-danger" style="margin-right: 3px; height: 35px;" onclick="desactivar(' . $reg->idusuario . ')"><i class="fa fa-close"></i></button>') : '') .
 									(($_SESSION['cargo'] == 'superadmin' || $_SESSION['cargo'] == 'admin') ? ('<button class="btn btn-danger" style="height: 35px;" onclick="eliminar(' . $reg->idusuario . ')"><i class="fa fa-trash"></i></button>') : '') : (($_SESSION['cargo'] == 'superadmin' || $_SESSION['cargo'] == 'admin') ? ('<button class="btn btn-warning" style="margin-right: 3px; height: 35px;" onclick="mostrar(' . $reg->idusuario . ')"><i class="fa fa-pencil"></i></button>') : '') .
 									(($_SESSION['cargo'] == 'superadmin' || $_SESSION['cargo'] == 'admin') ? ('<button class="btn btn-success" style="margin-right: 3px; width: 35px; height: 35px; padding: 0;" onclick="activar(' . $reg->idusuario . ')"><i style="margin-left: -2px" class="fa fa-check"></i></button>') : '') .
 									(($_SESSION['cargo'] == 'superadmin' || $_SESSION['cargo'] == 'admin') ? ('<button class="btn btn-danger" style="height: 35px;" onclick="eliminar(' . $reg->idusuario . ')"><i class="fa fa-trash"></i></button>') : '')) . '</div>') : ("")),
 						"1" => $reg->login,
-						"2" => $cargo,
+						"2" => $cargo_detalle,
 						"3" => $reg->nombre,
 						"4" => $reg->tipo_documento,
 						"5" => $reg->num_documento,
-						"6" => $telefono,
+						"6" => $reg->telefono,
 						"7" => $reg->email,
-						"8" => "<img src='../files/usuarios/" . $reg->imagen . "' height='50px' width='50px' >",
-						"9" => ($reg->estado) ? '<span class="label bg-green">Activado</span>' :
+						"8" => $reg->local,
+						"9" => $reg->local_ruc,
+						"10" => "<img src='../files/usuarios/" . $reg->imagen . "' height='50px' width='50px' >",
+						"11" => ($reg->condicion) ? '<span class="label bg-green">Activado</span>' :
 							'<span class="label bg-red">Desactivado</span>'
 					);
 				}
@@ -176,21 +179,21 @@ switch ($_GET["op"]) {
 		$rspta = $usuario->listarUsuariosActivos();
 
 		while ($reg = $rspta->fetch_object()) {
-			$cargo = "";
+			$cargo_detalle = "";
 			switch ($reg->cargo) {
 				case 'superadmin':
-					$cargo = "Superadministrador";
+					$cargo_detalle = "Superadministrador";
 					break;
 				case 'admin':
-					$cargo = "Administrador";
+					$cargo_detalle = "Administrador";
 					break;
 				case 'usuario':
-					$cargo = "Usuario";
+					$cargo_detalle = "Usuario";
 					break;
 				default:
 					break;
 			}
-			echo '<option value="' . $reg->idusuario . '"> ' . $reg->nombre  . ' - ' . $cargo . '</option>';
+			echo '<option value="' . $reg->idusuario . '"> ' . $reg->nombre  . ' - ' . $cargo_detalle . '</option>';
 		}
 		break;
 
@@ -204,21 +207,21 @@ switch ($_GET["op"]) {
 
 		echo '<option value="">- Seleccione -</option>';
 		while ($reg = $rspta->fetch_object()) {
-			$cargo = "";
+			$cargo_detalle = "";
 			switch ($reg->cargo) {
 				case 'superadmin':
-					$cargo = "Superadministrador";
+					$cargo_detalle = "Superadministrador";
 					break;
 				case 'admin':
-					$cargo = "Administrador";
+					$cargo_detalle = "Administrador";
 					break;
 				case 'usuario':
-					$cargo = "Usuario";
+					$cargo_detalle = "Usuario";
 					break;
 				default:
 					break;
 			}
-			echo '<option value="' . $reg->idusuario . '"> ' . $reg->nombre  . ' - ' . $cargo . '</option>';
+			echo '<option value="' . $reg->idusuario . '"> ' . $reg->nombre  . ' - ' . $cargo_detalle . '</option>';
 		}
 		break;
 

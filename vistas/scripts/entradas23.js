@@ -41,7 +41,7 @@ function init() {
 	$('[data-toggle="popover"]').popover();
 
 	$.post("../ajax/entradas.php?op=listarTodosActivos", function (data) {
-		// console.log(data)
+		console.log(data)
 		const obj = JSON.parse(data);
 		console.log(obj);
 
@@ -59,7 +59,7 @@ function init() {
 					select.empty();
 					select.html('<option value="">- Seleccione -</option>');
 					obj[atributo].forEach(function (opcion) {
-						select.append('<option value="' + opcion.id + '">' + opcion.titulo + '</option>');
+						select.append('<option value="' + opcion.id + '">' + opcion.nombre + '</option>');
 					});
 					select.selectpicker('refresh');
 				}
@@ -161,7 +161,7 @@ function listar() {
 			"iDisplayLength": 5,
 			"order": [],
 			"createdRow": function (row, data, dataIndex) {
-				$(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(3), td:eq(4), td:eq(5), td:eq(6), td:eq(7), td:eq(8), td:eq(9)').addClass('nowrap-cell');
+				$(row).find('td:eq(0), td:eq(1), td:eq(3), td:eq(4), td:eq(5), td:eq(6), td:eq(7), td:eq(8)').addClass('nowrap-cell');
 			}
 		}).DataTable();
 }
@@ -213,7 +213,7 @@ function buscar() {
 			"iDisplayLength": 5,
 			"order": [],
 			"createdRow": function (row, data, dataIndex) {
-				$(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(3), td:eq(4), td:eq(5), td:eq(6), td:eq(7), td:eq(8), td:eq(9)').addClass('nowrap-cell');
+				$(row).find('td:eq(0), td:eq(1), td:eq(3), td:eq(4), td:eq(5), td:eq(6), td:eq(7), td:eq(8)').addClass('nowrap-cell');
 			}
 		}).DataTable();
 }

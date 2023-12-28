@@ -70,19 +70,19 @@ if (!isset($_SESSION["nombre"])) {
 				$fecha_inicio = $_GET["fecha_inicio"];
 				$fecha_fin = $_GET["fecha_fin"];
 
-				if ($cargo == "superadmin") {
+				// if ($cargo == "superadmin") {
 					if ($fecha_inicio == "" && $fecha_fin == "") {
 						$rspta = $tipos->listar();
 					} else {
 						$rspta = $tipos->listarPorFecha($fecha_inicio, $fecha_fin);
 					}
-				} else {
-					if ($fecha_inicio == "" && $fecha_fin == "") {
-						$rspta = $tipos->listarPorUsuario($idusuario);
-					} else {
-						$rspta = $tipos->listarPorUsuarioFecha($idusuario, $fecha_inicio, $fecha_fin);
-					}
-				}
+				// } else {
+					// if ($fecha_inicio == "" && $fecha_fin == "") {
+						// $rspta = $tipos->listarPorUsuario($idusuario);
+					// } else {
+						// $rspta = $tipos->listarPorUsuarioFecha($idusuario, $fecha_inicio, $fecha_fin);
+					// }
+				// }
 
 				$data = array();
 

@@ -92,9 +92,9 @@ if (!isset($_SESSION["nombre"])) {
 					}
 				} else {
 					if ($fecha_inicio == "" && $fecha_fin == "") {
-						$rspta = $entradas->listarPorUsuario($idusuario);
+						$rspta = $entradas->listarPorUsuario($idlocalSession);
 					} else {
-						$rspta = $entradas->listarPorUsuarioFecha($idusuario, $fecha_inicio, $fecha_fin);
+						$rspta = $entradas->listarPorUsuarioFecha($idlocalSession, $fecha_inicio, $fecha_fin);
 					}
 				}
 
@@ -131,19 +131,21 @@ if (!isset($_SESSION["nombre"])) {
 
 					$data[] = array(
 						"0" => '<div style="display: flex; flex-wrap: nowrap; gap: 3px">' .
-							mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-bcp" style="margin-right: 3px; height: 35px;" onclick="mostrar(' . $reg->identrada . ')"><i class="fa fa-eye"></i></button>') .
+						'<button class="btn btn-bcp" style="margin-right: 3px; height: 35px;" onclick="mostrar(' . $reg->identrada . ')"><i class="fa fa-eye"></i></button>' .
 							(($reg->estado == 'activado') ?
 								(mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-danger" style="margin-right: 3px; height: 35px;" onclick="desactivar(' . $reg->identrada . ')"><i class="fa fa-close"></i></button>')) .
-								(mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<a target="_blank" href="../reportes/exEntrada.php?id=' . $reg->identrada . '"><button class="btn btn-success" style="margin-right: 3px; height: 35px;"><i class="fa fa-file"></i></button></a>')) : (mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-success" style="margin-right: 3px; width: 35px; height: 35px;" onclick="activar(' . $reg->identrada . ')"><i style="margin-left: -2px" class="fa fa-check"></i></button>'))) .
+								('<a target="_blank" href="../reportes/exEntrada.php?id=' . $reg->identrada . '"><button class="btn btn-success" style="margin-right: 3px; height: 35px;"><i class="fa fa-file"></i></button></a>') :
+								(mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-success" style="margin-right: 3px; width: 35px; height: 35px;" onclick="activar(' . $reg->identrada . ')"><i style="margin-left: -2px" class="fa fa-check"></i></button>'))) .
 							mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-danger" style="height: 35px;" onclick="eliminar(' . $reg->identrada . ')"><i class="fa fa-trash"></i></button>') .
 							'</div>',
 						"1" => $reg->fecha,
-						"2" => $reg->tipo,
-						"3" => $reg->proveedor,
-						"4" => "N° " . $reg->codigo,
-						"5" => $reg->usuario,
-						"6" => $cargo_detalle,
-						"7" => ($reg->estado == 'activado') ? '<span class="label bg-green">Activado</span>' :
+						"2" => $reg->local,
+						"3" => $reg->tipo,
+						"4" => $reg->proveedor,
+						"5" => "N° " . $reg->codigo,
+						"6" => $reg->usuario,
+						"7" => $cargo_detalle,
+						"8" => ($reg->estado == 'activado') ? '<span class="label bg-green">Activado</span>' :
 							'<span class="label bg-red">Desactivado</span>'
 					);
 				}
@@ -189,7 +191,9 @@ if (!isset($_SESSION["nombre"])) {
 					$data[] = array(
 						// "0" => ($reg->stock != '0') ? '<div style="display: flex; justify-content: center;"><button class="btn btn-warning" data-idarticulo="' . $reg->idarticulo . '" onclick="agregarDetalle(' . $reg->idarticulo . ',\'' . $reg->nombre . '\',\'' . $reg->codigo . '\'); disableButton(this);"><span class="fa fa-plus"></span></button></div>' : '',
 						"0" => '<div style="display: flex; justify-content: center;"><button class="btn btn-warning" style="height: 35px;" data-idarticulo="' . $reg->idarticulo . '" onclick="agregarDetalle(' . $reg->idarticulo . ',\'' . $reg->nombre . '\',\'' . $reg->categoria . '\',\'' . $reg->marca . '\',\'' . $reg->medida . '\',\'' . $reg->stock . '\',\'' . $reg->stock_minimo . '\',\'' . $reg->codigo_producto . '\',\'' . $reg->codigo . '\',\'' . $reg->imagen . '\'); disableButton(this);"><span class="fa fa-plus"></span></button></div>',
-						"1" => "<img src='../files/articulos/" . $reg->imagen . "' height='50px' width='50px' >",
+						"1" => '<a href="../files/articulos/' . $reg->imagen . '" class="galleria-lightbox" style="z-index: 10000 !important;">
+									<img src="../files/articulos/' . $reg->imagen . '" height="50px" width="50px" class="img-fluid">
+								</a>',
 						"2" => $reg->nombre,
 						"3" => $reg->medida,
 						"4" => $reg->categoria,

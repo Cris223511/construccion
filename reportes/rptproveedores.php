@@ -39,20 +39,22 @@ if (!isset($_SESSION["nombre"])) {
     $idusuario = $_SESSION["idusuario"];
     $cargo = $_SESSION["cargo"];
 
-    if ($cargo == "superadmin") {
+    // if ($cargo == "superadmin") {
       $rspta = $proveedores->listarFechaNormal();
-    } else {
-      $rspta = $proveedores->listarFechaNormalPorUsuario($idusuario);
-    }
+    // } else {
+      // $rspta = $proveedores->listarFechaNormalPorUsuario($idusuario);
+    // }
 
     $pdf->SetWidths(array(35, 25, 28, 22, 51, 25));
 
     while ($reg = $rspta->fetch_object()) {
+      $reg->telefono = ($reg->telefono == "") ? 'Sin registrar' : number_format($reg->telefono, 0, '', ' ');
+
       $nombre = $reg->nombre;
-      $tipo_documento = $reg->tipo_documento;
-      $num_documento = $reg->num_documento;
+      $tipo_documento = ($reg->tipo_documento == '') ? 'Sin registrar' : $reg->tipo_documento;
+      $num_documento = ($reg->num_documento == '') ? 'Sin registrar' : $reg->num_documento;
       $telefono = $reg->telefono;
-      $email = $reg->email;
+      $email = ($reg->email == '') ? 'Sin registrar' : $reg->email;
       $fecha = $reg->fecha;
 
       $pdf->SetFont('Arial', '', 10);
