@@ -12,11 +12,11 @@ function nowrapCell() {
 }
 
 function bloquearCampos() {
-	$("input, select, textarea").not("#fecha_hora").prop("disabled", true);
+	$("input, select, textarea").not("#fecha_hora, #local_ruc").prop("disabled", true);
 }
 
 function desbloquearCampos() {
-	$("input, select, textarea").not("#fecha_hora").prop("disabled", false);
+	$("input, select, textarea").not("#fecha_hora, #local_ruc").prop("disabled", false);
 }
 
 function convertirMayus() {
@@ -48,6 +48,7 @@ function init() {
 		const selects = {
 			"idtipo": $("#idtipo"),
 			"idproveedor": $("#idproveedor"),
+			"idlocal": $("#idlocal"),
 		};
 
 		for (const selectId in selects) {
@@ -59,7 +60,11 @@ function init() {
 					select.empty();
 					select.html('<option value="">- Seleccione -</option>');
 					obj[atributo].forEach(function (opcion) {
-						select.append('<option value="' + opcion.id + '">' + opcion.nombre + '</option>');
+						if (atributo != "local") {
+							select.append('<option value="' + opcion.id + '">' + opcion.nombre + '</option>');
+						} else {
+							select.append('<option value="' + opcion.id + '" data-local-ruc="' + opcion.ruc + '">' + opcion.nombre + '</option>');
+						}
 					});
 					select.selectpicker('refresh');
 				}
@@ -70,7 +75,21 @@ function init() {
 	$.post("../ajax/entradas.php?op=selectProducto", function (r) {
 		$("#idproducto").html(r);
 		$('#idproducto').selectpicker('refresh');
+		actualizarRUC();
 	});
+}
+
+function actualizarRUC() {
+	const selectLocal = document.getElementById("idlocal");
+	const localRUCInput = document.getElementById("local_ruc");
+	const selectedOption = selectLocal.options[selectLocal.selectedIndex];
+
+	if (selectedOption.value !== "") {
+		const localRUC = selectedOption.getAttribute('data-local-ruc');
+		localRUCInput.value = localRUC;
+	} else {
+		localRUCInput.value = "";
+	}
 }
 
 function limpiar() {
@@ -87,6 +106,8 @@ function limpiar() {
 
 	$("#idtipo").val($("#idtipo option:first").val());
 	$("#idtipo").selectpicker('refresh');
+	$("#idlocal").val($("#idlocal option:first").val());
+	$("#idlocal").selectpicker('refresh');
 	$("#idproveedor").val($("#idproveedor option:first").val());
 	$("#idproveedor").selectpicker('refresh');
 
@@ -97,6 +118,7 @@ function limpiar() {
 	$("#botonArt").show();
 	$("#form_codigo_barra").show();
 	$('#tblarticulos button').removeAttr('disabled');
+	actualizarRUC();
 }
 
 function mostrarform(flag) {
@@ -258,6 +280,8 @@ function mostrar(identrada) {
 
 		$("#idtipo").val(data.idtipo);
 		$('#idtipo').selectpicker('refresh');
+		$("#idlocal").val(data.idlocal);
+		$('#idlocal').selectpicker('refresh');
 		$("#idproveedor").val(data.idproveedor);
 		$('#idproveedor').selectpicker('refresh');
 		$("#codigo").val(data.codigo);
@@ -271,6 +295,7 @@ function mostrar(identrada) {
 
 		$("#botonArt").hide();
 		$("#form_codigo_barra").hide();
+		actualizarRUC();
 
 		$.post("../ajax/entradas.php?op=listarDetalle&id=" + identrada, function (r) {
 			// console.log(r);

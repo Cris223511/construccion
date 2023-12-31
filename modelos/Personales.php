@@ -7,11 +7,11 @@ class Personal
 	{
 	}
 
-	public function agregar($idusuario, $nombre, $tipo_documento, $num_documento, $direccion, $telefono, $email)
+	public function agregar($idusuario, $idlocal, $nombre, $tipo_documento, $num_documento, $direccion, $telefono, $email)
 	{
 		date_default_timezone_set("America/Lima");
-		$sql = "INSERT INTO personales (idusuario, nombre, tipo_documento, num_documento, direccion, telefono, email, fecha_hora, estado, eliminado)
-            VALUES ('$idusuario','$nombre','$tipo_documento','$num_documento','$direccion','$telefono', '$email', SYSDATE(), 'activado','0')";
+		$sql = "INSERT INTO personales (idusuario, idlocal, nombre, tipo_documento, num_documento, direccion, telefono, email, fecha_hora, estado, eliminado)
+            VALUES ('$idusuario','$idlocal','$nombre','$tipo_documento','$num_documento','$direccion','$telefono', '$email', SYSDATE(), 'activado','0')";
 		return ejecutarConsulta($sql);
 	}
 
@@ -43,9 +43,9 @@ class Personal
 		return false;
 	}
 
-	public function editar($idpersonal, $nombre, $tipo_documento, $num_documento, $direccion, $telefono, $email)
+	public function editar($idpersonal, $idlocal, $nombre, $tipo_documento, $num_documento, $direccion, $telefono, $email)
 	{
-		$sql = "UPDATE personales SET nombre='$nombre',tipo_documento='$tipo_documento',num_documento='$num_documento',direccion='$direccion',telefono='$telefono',email='$email' WHERE idpersonal='$idpersonal'";
+		$sql = "UPDATE personales SET idlocal='$idlocal',nombre='$nombre',tipo_documento='$tipo_documento',num_documento='$num_documento',direccion='$direccion',telefono='$telefono',email='$email' WHERE idpersonal='$idpersonal'";
 		return ejecutarConsulta($sql);
 	}
 
@@ -75,59 +75,67 @@ class Personal
 
 	public function listar()
 	{
-		$sql = "SELECT p.idpersonal, p.nombre, p.tipo_documento, p.num_documento, p.direccion, p.telefono, p.email, u.idusuario, u.cargo as cargo,
+		$sql = "SELECT p.idpersonal, p.nombre, u.nombre as usuario, u.cargo as cargo, p.tipo_documento, p.num_documento, p.direccion, p.telefono, p.email, u.idusuario, u.cargo as cargo, l.titulo as local,
 				DATE_FORMAT(p.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, p.estado
 				FROM personales p
 				LEFT JOIN usuario u ON p.idusuario = u.idusuario
+				LEFT JOIN locales l ON p.idlocal = l.idlocal
 				WHERE p.eliminado = '0' ORDER BY p.idpersonal DESC";
 		return ejecutarConsulta($sql);
 	}
 
 	public function listarPorFecha($fecha_inicio, $fecha_fin)
 	{
-		$sql = "SELECT p.idpersonal, p.nombre, p.tipo_documento, p.num_documento, p.direccion, p.telefono, p.email, u.idusuario, u.cargo as cargo,
+		$sql = "SELECT p.idpersonal, p.nombre, u.nombre as usuario, u.cargo as cargo, p.tipo_documento, p.num_documento, p.direccion, p.telefono, p.email, u.idusuario, u.cargo as cargo, l.titulo as local,
 				DATE_FORMAT(p.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, p.estado
 				FROM personales p
 				LEFT JOIN usuario u ON p.idusuario = u.idusuario
+				LEFT JOIN locales l ON p.idlocal = l.idlocal
 				WHERE p.eliminado = '0' AND DATE(p.fecha_hora) >= '$fecha_inicio' AND DATE(p.fecha_hora) <= '$fecha_fin' ORDER BY p.idpersonal DESC";
 		return ejecutarConsulta($sql);
 	}
 
 	public function listarFechaNormal()
 	{
-		$sql = "SELECT p.idpersonal, p.nombre, p.tipo_documento, p.num_documento, p.direccion, p.telefono, p.email, u.idusuario, u.cargo as cargo, DATE_FORMAT(p.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, p.estado
+		$sql = "SELECT p.idpersonal, p.nombre, u.nombre as usuario, u.cargo as cargo, p.tipo_documento, p.num_documento, p.direccion, p.telefono, p.email, u.idusuario, u.cargo as cargo, l.titulo as local,
+				DATE_FORMAT(p.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, p.estado
 				FROM personales p
 				LEFT JOIN usuario u ON p.idusuario = u.idusuario
+				LEFT JOIN locales l ON p.idlocal = l.idlocal
 				WHERE p.eliminado = '0' ORDER BY p.idpersonal DESC";
 		return ejecutarConsulta($sql);
 	}
 
-	public function listarPorUsuario($idusuario)
+	public function listarPorUsuario($idlocal)
 	{
-		$sql = "SELECT p.idpersonal, p.nombre, p.tipo_documento, p.num_documento, p.direccion, p.telefono, p.email, u.idusuario, u.cargo as cargo,
+		$sql = "SELECT p.idpersonal, p.nombre, u.nombre as usuario, u.cargo as cargo, p.tipo_documento, p.num_documento, p.direccion, p.telefono, p.email, u.idusuario, u.cargo as cargo, l.titulo as local,
 				DATE_FORMAT(p.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, p.estado
 				FROM personales p
 				LEFT JOIN usuario u ON p.idusuario = u.idusuario
-				WHERE p.idusuario = '$idusuario' AND p.eliminado = '0' ORDER BY p.idpersonal DESC";
+				LEFT JOIN locales l ON p.idlocal = l.idlocal
+				WHERE p.idlocal = '$idlocal' AND p.eliminado = '0' ORDER BY p.idpersonal DESC";
 		return ejecutarConsulta($sql);
 	}
 
-	public function listarPorUsuarioFecha($idusuario, $fecha_inicio, $fecha_fin)
+	public function listarPorUsuarioFecha($idlocal, $fecha_inicio, $fecha_fin)
 	{
-		$sql = "SELECT p.idpersonal, p.nombre, p.tipo_documento, p.num_documento, p.direccion, p.telefono, p.email, u.idusuario, u.cargo as cargo,
+		$sql = "SELECT p.idpersonal, p.nombre, u.nombre as usuario, u.cargo as cargo, p.tipo_documento, p.num_documento, p.direccion, p.telefono, p.email, u.idusuario, u.cargo as cargo, l.titulo as local,
 				DATE_FORMAT(p.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, p.estado
 				FROM personales p
 				LEFT JOIN usuario u ON p.idusuario = u.idusuario
-				WHERE p.idusuario = '$idusuario' AND p.eliminado = '0' AND DATE(p.fecha_hora) >= '$fecha_inicio' AND DATE(p.fecha_hora) <= '$fecha_fin' ORDER BY p.idpersonal DESC";
+				LEFT JOIN locales l ON p.idlocal = l.idlocal
+				WHERE p.idlocal = '$idlocal' AND p.eliminado = '0' AND DATE(p.fecha_hora) >= '$fecha_inicio' AND DATE(p.fecha_hora) <= '$fecha_fin' ORDER BY p.idpersonal DESC";
 		return ejecutarConsulta($sql);
 	}
 
-	public function listarFechaNormalPorUsuario($idusuario)
+	public function listarFechaNormalPorUsuario($idlocal)
 	{
-		$sql = "SELECT p.idpersonal, p.nombre, p.tipo_documento, p.num_documento, p.direccion, p.telefono, p.email, u.idusuario, u.cargo as cargo, DATE_FORMAT(p.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, p.estado
+		$sql = "SELECT p.idpersonal, p.nombre, u.nombre as usuario, u.cargo as cargo, p.tipo_documento, p.num_documento, p.direccion, p.telefono, p.email, u.idusuario, u.cargo as cargo, l.titulo as local,
+				DATE_FORMAT(p.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, p.estado
 				FROM personales p
 				LEFT JOIN usuario u ON p.idusuario = u.idusuario
-				WHERE p.idusuario = '$idusuario' AND p.eliminado = '0' ORDER BY p.idpersonal DESC";
+				LEFT JOIN locales l ON p.idlocal = l.idlocal
+				WHERE p.idlocal = '$idlocal' AND p.eliminado = '0' ORDER BY p.idpersonal DESC";
 		return ejecutarConsulta($sql);
 	}
 }

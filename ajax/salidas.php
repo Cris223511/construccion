@@ -23,11 +23,11 @@ if (!isset($_SESSION["nombre"])) {
 		$cargo = $_SESSION["cargo"];
 
 		$idsalida = isset($_POST["idsalida"]) ? limpiarCadena($_POST["idsalida"]) : "";
+		$idlocal = isset($_POST["idlocal"]) ? limpiarCadena($_POST["idlocal"]) : "";
 		$idtipo = isset($_POST["idtipo"]) ? limpiarCadena($_POST["idtipo"]) : "";
 		$tipo_movimiento = isset($_POST["tipo_movimiento"]) ? limpiarCadena($_POST["tipo_movimiento"]) : "";
 		$idmaquinaria = isset($_POST["idmaquinaria"]) ? limpiarCadena($_POST["idmaquinaria"]) : "";
 		$idautorizado = isset($_POST["idautorizado"]) ? limpiarCadena($_POST["idautorizado"]) : "";
-		$identregado = isset($_POST["identregado"]) ? limpiarCadena($_POST["identregado"]) : "";
 		$idrecibido = isset($_POST["idrecibido"]) ? limpiarCadena($_POST["idrecibido"]) : "";
 		$idfinal = isset($_POST["idfinal"]) ? limpiarCadena($_POST["idfinal"]) : "";
 		$codigo = isset($_POST["codigo"]) ? limpiarCadena($_POST["codigo"]) : "";
@@ -40,7 +40,7 @@ if (!isset($_SESSION["nombre"])) {
 				if ($codigoExiste) {
 					echo "El N° de documento de la salida ya existe.";
 				} else {
-					$rspta = $salidas->agregar($idusuario, $idtipo, $tipo_movimiento, $idmaquinaria, $idautorizado, $identregado, $idrecibido, $idfinal, $codigo, $ubicacion, $descripcion,  $_POST["idarticulo"], $_POST["cantidad"]);
+					$rspta = $salidas->agregar($idlocal, $idusuario, $idtipo, $tipo_movimiento, $idmaquinaria, $idautorizado, $idrecibido, $idfinal, $codigo, $ubicacion, $descripcion,  $_POST["idarticulo"], $_POST["cantidad"]);
 					echo $rspta ? "Salida registrada" : "Una de las cantidades superan al stock normal del artículo.";
 				}
 				break;
@@ -144,8 +144,7 @@ if (!isset($_SESSION["nombre"])) {
 							'<button class="btn btn-bcp" style="margin-right: 3px; height: 35px;" onclick="mostrar(' . $reg->idsalida . ')"><i class="fa fa-eye"></i></button>' .
 							(($reg->estado == 'activado') ?
 								(mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-danger" style="margin-right: 3px; height: 35px;" onclick="desactivar(' . $reg->idsalida . ')"><i class="fa fa-close"></i></button>')) .
-								('<a target="_blank" href="../reportes/exSalida.php?id=' . $reg->idsalida . '"><button class="btn btn-success" style="margin-right: 3px; height: 35px;"><i class="fa fa-file"></i></button></a>') :
-								(mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-success" style="margin-right: 3px; width: 35px; height: 35px;" onclick="activar(' . $reg->idsalida . ')"><i style="margin-left: -2px" class="fa fa-check"></i></button>'))) .
+								('<a target="_blank" href="../reportes/exSalida.php?id=' . $reg->idsalida . '"><button class="btn btn-success" style="margin-right: 3px; height: 35px;"><i class="fa fa-file"></i></button></a>') : (mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-success" style="margin-right: 3px; width: 35px; height: 35px;" onclick="activar(' . $reg->idsalida . ')"><i style="margin-left: -2px" class="fa fa-check"></i></button>'))) .
 							mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-danger" style="height: 35px;" onclick="eliminar(' . $reg->idsalida . ')"><i class="fa fa-trash"></i></button>') .
 							'</div>',
 						"1" => $reg->fecha,
@@ -293,8 +292,23 @@ if (!isset($_SESSION["nombre"])) {
 				if ($cargo == "superadmin") {
 					$rspta = $salidas->listarTodosActivos();
 				} else {
-					$rspta = $salidas->listarTodosActivosPorUsuario($idusuario);
+					$rspta = $salidas->listarTodosActivosUsuario($idlocalSession);
 				}
+
+				$result = mysqli_fetch_all($rspta, MYSQLI_ASSOC);
+
+				$data = [];
+				foreach ($result as $row) {
+					$tabla = $row['tabla'];
+					unset($row['tabla']);
+					$data[$tabla][] = $row;
+				}
+
+				echo json_encode($data);
+				break;
+
+			case 'listarTodosLocalActivosPorUsuario':
+				$rspta = $salidas->listarTodosLocalActivosPorUsuario($idlocal);
 
 				$result = mysqli_fetch_all($rspta, MYSQLI_ASSOC);
 

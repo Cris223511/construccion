@@ -103,12 +103,22 @@ if (!isset($_SESSION["nombre"])) {
                 <form name="formulario" id="formulario" method="POST">
                   <div class="form-group col-lg-12 col-md-12 col-sm-12" style="background-color: white; border-top: 3px #3686b4 solid; padding: 20px;">
                     <div class="form-group col-lg-6 col-md-6 col-md-12">
-                      <label>Ubicación(*):</label>
+                      <label>Ubicación del producto(*):</label>
                       <input type="text" class="form-control" name="ubicacion" id="ubicacion" maxlength="50" placeholder="Ingrese la ubicación." autocomplete="off">
                     </div>
                     <div class="form-group col-lg-6 col-md-6 col-md-12">
                       <label>Fecha y hora(*):</label>
                       <input type="datetime-local" class="form-control" id="fecha_hora" readonly>
+                    </div>
+                    <div class="form-group col-lg-6 col-md-12">
+                      <label>Local(*):</label>
+                      <select id="idlocal" name="idlocal" class="form-control selectpicker idlocal" data-live-search="true" data-size="5" onchange="actualizarRUC()" required>
+                        <option value="">- Seleccione -</option>
+                      </select>
+                    </div>
+                    <div class="form-group col-lg-6 col-md-12">
+                      <label>RUC local(*):</label>
+                      <input type="number" class="form-control" id="local_ruc" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="11" placeholder="RUC del local" disabled>
                     </div>
                     <div class="form-group col-lg-4 col-md-4 col-md-12">
                       <label>Tipo(*):</label>

@@ -7,7 +7,7 @@ class Entrada
 	{
 	}
 
-	public function agregar($idusuario, $idproveedor, $idtipo, $codigo, $ubicacion, $descripcion, $idarticulo, $cantidad)
+	public function agregar($idlocal, $idusuario, $idproveedor, $idtipo, $codigo, $ubicacion, $descripcion, $idarticulo, $cantidad)
 	{
 		// // Primero, debemos verificar si hay suficiente stock para cada artículo
 		// $error = $this->validarStock($idarticulo, $cantidad);
@@ -18,8 +18,8 @@ class Entrada
 
 		date_default_timezone_set("America/Lima");
 		// Si no hay errores, continuamos con el registro de la entrada
-		$sql = "INSERT INTO entradas (idusuario,idproveedor,idtipo,codigo,ubicacion,descripcion,fecha_hora,estado)
-            VALUES ('$idusuario','$idproveedor','$idtipo','$codigo','$ubicacion','$descripcion', SYSDATE(), 'activado')";
+		$sql = "INSERT INTO entradas (idlocal,idusuario,idproveedor,idtipo,codigo,ubicacion,descripcion,fecha_hora,estado)
+            VALUES ('$idlocal','$idusuario','$idproveedor','$idtipo','$codigo','$ubicacion','$descripcion', SYSDATE(), 'activado')";
 		$identradanew = ejecutarConsulta_retornarID($sql);
 
 		$num_elementos = 0;
@@ -97,7 +97,7 @@ class Entrada
 
 	public function listarCabecera($identrada)
 	{
-		$sql = "SELECT e.identrada,p.nombre, p.tipo_documento, p.num_documento, p.direccion, p.email, p.direccion, p.telefono, e.codigo,DATE_FORMAT(e.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha FROM entradas e LEFT JOIN proveedores p ON e.idproveedor=p.idproveedor WHERE e.identrada = '$identrada' ORDER BY e.identrada DESC";
+		$sql = "SELECT e.identrada,lo.titulo as local, p.nombre, p.tipo_documento, p.num_documento, p.direccion, p.email, p.direccion, p.telefono, e.codigo,DATE_FORMAT(e.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha FROM entradas e LEFT JOIN locales AS lo ON e.idlocal=lo.idlocal LEFT JOIN proveedores p ON e.idproveedor=p.idproveedor WHERE e.identrada = '$identrada' ORDER BY e.identrada DESC";
 		return ejecutarConsulta($sql);
 	}
 
@@ -118,24 +118,22 @@ class Entrada
 
 	public function listarTodosActivos()
 	{
-		$sql = "SELECT 'categoria' AS tabla, b.idcategoria AS id, b.titulo, u.nombre AS usuario FROM categoria b LEFT JOIN usuario u ON b.idusuario = u.idusuario WHERE b.estado='activado' AND b.eliminado='0'
+		$sql = "SELECT 'proveedor' AS tabla, p.idproveedor AS id, p.nombre, u.nombre AS usuario, NULL AS ruc FROM proveedores p LEFT JOIN usuario u ON p.idusuario = u.idusuario WHERE p.estado='activado' AND p.eliminado='0'
 			UNION ALL
-			SELECT 'marca' AS tabla, o.idmarca AS id, o.titulo, u.nombre AS usuario FROM marcas o LEFT JOIN usuario u ON o.idusuario = u.idusuario WHERE o.estado='activado' AND o.eliminado='0'
+			SELECT 'tipo' AS tabla, t.idtipo AS id, t.titulo, u.nombre AS usuario, NULL AS ruc FROM tipos t LEFT JOIN usuario u ON t.idusuario = u.idusuario WHERE t.estado='activado' AND t.eliminado='0'
 			UNION ALL
-			SELECT 'medida' AS tabla, m.idmedida AS id, m.titulo, u.nombre AS usuario FROM medidas m LEFT JOIN usuario u ON m.idusuario = u.idusuario WHERE m.estado='activado' AND m.eliminado='0'
-			UNION ALL
-			SELECT 'proveedor' AS tabla, p.idproveedor AS id, p.nombre, u.nombre AS usuario FROM proveedores p LEFT JOIN usuario u ON p.idusuario = u.idusuario WHERE p.estado='activado' AND p.eliminado='0'
-			UNION ALL
-			SELECT 'tipo' AS tabla, t.idtipo AS id, t.titulo, u.nombre AS usuario FROM tipos t LEFT JOIN usuario u ON t.idusuario = u.idusuario WHERE t.estado='activado' AND t.eliminado='0'";
+			SELECT 'local' AS tabla, l.idlocal AS id, l.titulo, u.nombre AS usuario, local_ruc AS ruc FROM locales l LEFT JOIN usuario u ON l.idusuario = u.idusuario WHERE l.idusuario <> 0 AND l.estado='activado' AND l.eliminado='0'";
 
 		return ejecutarConsulta($sql);
 	}
 
-	public function listarTodosActivosPorUsuario($idusuario)
+	public function listarTodosActivosPorUsuario($idusuario, $idlocal)
 	{
-		$sql = "SELECT 'proveedor' AS tabla, p.idproveedor AS id, p.nombre, u.nombre AS usuario FROM proveedores p LEFT JOIN usuario u ON p.idusuario = u.idusuario WHERE p.estado='activado' AND p.eliminado='0'
+		$sql = "SELECT 'proveedor' AS tabla, p.idproveedor AS id, p.nombre, u.nombre AS usuario, NULL AS ruc FROM proveedores p LEFT JOIN usuario u ON p.idusuario = u.idusuario WHERE p.estado='activado' AND p.eliminado='0'
 			UNION ALL
-			SELECT 'tipo' AS tabla, t.idtipo AS id, t.titulo, u.nombre AS usuario FROM tipos t LEFT JOIN usuario u ON t.idusuario = u.idusuario WHERE t.estado='activado' AND t.eliminado='0'";
+			SELECT 'tipo' AS tabla, t.idtipo AS id, t.titulo, u.nombre AS usuario, NULL AS ruc FROM tipos t LEFT JOIN usuario u ON t.idusuario = u.idusuario WHERE t.estado='activado' AND t.eliminado='0'
+			UNION ALL
+			SELECT 'local' AS tabla, l.idlocal AS id, l.titulo, u.nombre AS usuario, local_ruc AS ruc FROM locales l LEFT JOIN usuario u ON l.idusuario = u.idusuario WHERE l.idlocal='$idlocal' AND l.idusuario <> 0 AND l.estado='activado' AND l.eliminado='0'";
 
 		return ejecutarConsulta($sql);
 	}

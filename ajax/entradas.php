@@ -23,6 +23,7 @@ if (!isset($_SESSION["nombre"])) {
 		$cargo = $_SESSION["cargo"];
 
 		$identrada = isset($_POST["identrada"]) ? limpiarCadena($_POST["identrada"]) : "";
+		$idlocal = isset($_POST["idlocal"]) ? limpiarCadena($_POST["idlocal"]) : "";
 		$idproveedor = isset($_POST["idproveedor"]) ? limpiarCadena($_POST["idproveedor"]) : "";
 		$idtipo = isset($_POST["idtipo"]) ? limpiarCadena($_POST["idtipo"]) : "";
 		$codigo = isset($_POST["codigo"]) ? limpiarCadena($_POST["codigo"]) : "";
@@ -31,7 +32,7 @@ if (!isset($_SESSION["nombre"])) {
 
 		switch ($_GET["op"]) {
 			case 'guardaryeditar':
-				$rspta = $entradas->agregar($idusuario, $idproveedor, $idtipo, $codigo, $ubicacion, $descripcion,  $_POST["idarticulo"], $_POST["cantidad"]);
+				$rspta = $entradas->agregar($idlocal, $idusuario, $idproveedor, $idtipo, $codigo, $ubicacion, $descripcion,  $_POST["idarticulo"], $_POST["cantidad"]);
 				echo $rspta ? "Entrada registrada" : "Una de las cantidades superan al stock normal del artículo.";
 				break;
 
@@ -270,7 +271,7 @@ if (!isset($_SESSION["nombre"])) {
 				if ($cargo == "superadmin") {
 					$rspta = $entradas->listarTodosActivos();
 				} else {
-					$rspta = $entradas->listarTodosActivosPorUsuario($idusuario);
+					$rspta = $entradas->listarTodosActivosPorUsuario($idusuario, $idlocalSession);
 				}
 
 				$result = mysqli_fetch_all($rspta, MYSQLI_ASSOC);

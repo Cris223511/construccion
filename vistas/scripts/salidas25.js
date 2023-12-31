@@ -13,11 +13,27 @@ function nowrapCell() {
 }
 
 function bloquearCampos() {
-	$("input, select, textarea").not("#fecha_hora").prop("disabled", true);
+	$("input, select, textarea").not("#fecha_hora, #local_ruc").prop("disabled", true);
 }
 
 function desbloquearCampos() {
-	$("input, select, textarea").not("#fecha_hora").prop("disabled", false);
+	$("input, select, textarea").not("#fecha_hora, #local_ruc").prop("disabled", false);
+}
+
+function habilitarPersonales() {
+	$("#idautorizado").prop("disabled", false);
+	$("#idrecibido").prop("disabled", false);
+	$("#idfinal").prop("disabled", false);
+}
+
+function deshabilitarPersonales() {
+	$("#idautorizado").prop("disabled", true);
+	$("#idrecibido").prop("disabled", true);
+	$("#idfinal").prop("disabled", true);
+
+	$("#idautorizado").empty().append('<option value="0">- Seleccione -</option>');
+	$("#idrecibido").empty().append('<option value="0">- Seleccione -</option>');
+	$("#idfinal").empty().append('<option value="0">- Seleccione -</option>');
 }
 
 function convertirMayus() {
@@ -67,6 +83,7 @@ function init() {
 	listar();
 	listarArticulos();
 	actualizarFecha();
+	deshabilitarPersonales();
 
 	$("#formulario").on("submit", function (e) {
 		guardaryeditar(e);
@@ -78,17 +95,14 @@ function init() {
 	$('[data-toggle="popover"]').popover();
 
 	$.post("../ajax/salidas.php?op=listarTodosActivos", function (data) {
-		// console.log(data);
+		console.log(data);
 		const obj = JSON.parse(data);
 		console.log(obj);
 
 		const selects = {
 			"idtipo": $("#idtipo"),
-			"idautorizado": $("#idautorizado"),
-			"identregado": $("#identregado"),
-			"idrecibido": $("#idrecibido"),
-			"idfinal": $("#idfinal"),
 			"idmaquinaria": $("#idmaquinaria"),
+			"idlocal": $("#idlocal"),
 		};
 
 		for (const selectId in selects) {
@@ -111,13 +125,14 @@ function init() {
 
 				if (obj.hasOwnProperty(atributo)) {
 					select.empty();
-					if (atributo == "tipo" || atributo == "maquinaria") {
-						select.html('<option value="">- Seleccione -</option>');
-					} else {
-						select.html('<option value="0">- Seleccione -</option>');
-					}
+					select.html('<option value="">- Seleccione -</option>');
+
 					obj[atributo].forEach(function (opcion) {
-						select.append('<option value="' + opcion.id + '">' + opcion.titulo + '</option>');
+						if (atributo != "local") {
+							select.append('<option value="' + opcion.id + '">' + opcion.titulo + '</option>');
+						} else {
+							select.append('<option value="' + opcion.id + '" data-local-ruc="' + opcion.ruc + '">' + opcion.titulo + '</option>');
+						}
 					});
 					select.selectpicker('refresh');
 				}
@@ -128,12 +143,72 @@ function init() {
 	$.post("../ajax/salidas.php?op=selectProducto", function (r) {
 		$("#idproducto").html(r);
 		$('#idproducto').selectpicker('refresh');
+		actualizarRUC();
+	});
+}
+
+function actualizarRUC() {
+	const selectLocal = document.getElementById("idlocal");
+	const localRUCInput = document.getElementById("local_ruc");
+	const selectedOption = selectLocal.options[selectLocal.selectedIndex];
+
+	if (selectedOption.value !== "") {
+		const localRUC = selectedOption.getAttribute('data-local-ruc');
+		localRUCInput.value = localRUC;
+	} else {
+		localRUCInput.value = "";
+	}
+}
+
+function actualizarPersonales(idlocal) {
+	return new Promise((resolve, reject) => {
+		habilitarPersonales();
+		$.post("../ajax/salidas.php?op=listarTodosLocalActivosPorUsuario", { idlocal: idlocal }, function (data) {
+			console.log(data);
+			const obj = JSON.parse(data);
+			console.log(obj);
+
+			const selects = {
+				"idautorizado": $("#idautorizado"),
+				"idrecibido": $("#idrecibido"),
+				"idfinal": $("#idfinal"),
+			};
+
+			for (const selectId in selects) {
+				const select = selects[selectId];
+				const atributo = selectId.replace('id', '');
+
+				if (selects.hasOwnProperty(selectId)) {
+					if (obj.hasOwnProperty(atributo)) {
+						select.empty();
+						select.html('<option value="0">- Seleccione -</option>');
+						obj[atributo].forEach(function (opcion) {
+							select.append('<option value="' + opcion.id + '">' + opcion.nombre + '</option>');
+						});
+						select.selectpicker('refresh');
+					} else if (idlocal == 0) {
+						select.empty();
+						select.html('<option value="0">- Seleccione -</option>');
+						select.selectpicker('refresh');
+						deshabilitarPersonales();
+						select.selectpicker('refresh');
+					} else {
+						select.empty();
+						select.html('<option value="0">- Seleccione -</option>');
+						select.selectpicker('refresh');
+					}
+				}
+			}
+
+			resolve();  // Resuelve la promesa una vez completado
+		});
 	});
 }
 
 function limpiar() {
 	desbloquearCampos();
 	actualizarFecha();
+	deshabilitarPersonales();
 
 	$("#cod_1").val(letraCorrelativo);
 	$("#cod_2").val(siguienteCorrelativo);
@@ -149,12 +224,12 @@ function limpiar() {
 
 	$("#idtipo").val($("#idtipo option:first").val());
 	$("#idtipo").selectpicker('refresh');
+	$("#idlocal").val($("#idlocal option:first").val());
+	$("#idlocal").selectpicker('refresh');
 	$("#tipo_movimiento").val($("#tipo_movimiento option:first").val());
 	$("#tipo_movimiento").selectpicker('refresh');
 	$("#idautorizado").val($("#idautorizado option:first").val());
 	$("#idautorizado").selectpicker('refresh');
-	$("#identregado").val($("#identregado option:first").val());
-	$("#identregado").selectpicker('refresh');
 	$("#idrecibido").val($("#idrecibido option:first").val());
 	$("#idrecibido").selectpicker('refresh');
 	$("#idfinal").val($("#idfinal option:first").val());
@@ -169,6 +244,7 @@ function limpiar() {
 	$("#botonArt").show();
 	$("#form_codigo_barra").show();
 	$('#tblarticulos button').removeAttr('disabled');
+	actualizarRUC();
 }
 
 function mostrarform(flag) {
@@ -333,53 +409,57 @@ function mostrar(idsalida) {
 	$.post("../ajax/salidas.php?op=mostrar", { idsalida: idsalida }, function (data, status) {
 		data = JSON.parse(data);
 		mostrarform(true);
-		bloquearCampos();
-		console.log(data);
 
-		$("#idtipo").val(data.idtipo);
-		$('#idtipo').selectpicker('refresh');
+		actualizarPersonales(data.idlocal).then(() => {
+			bloquearCampos();
+			console.log(data);
 
-		if (data.tipo_movimiento == "personal") {
-			$("#tipo_movimiento").val('personal');
-			$('#tipo_movimiento').selectpicker('refresh');
-			$('#tipo_movimiento').trigger('onchange');
-		} else {
-			$("#tipo_movimiento").val('maquinaria');
-			$('#tipo_movimiento').selectpicker('refresh');
-			$('#tipo_movimiento').trigger('onchange');
-		}
+			$("#idtipo").val(data.idtipo);
+			$('#idtipo').selectpicker('refresh');
+			$("#idlocal").val(data.idlocal);
+			$('#idlocal').selectpicker('refresh');
 
-		$("#idautorizado").val(data.idautorizado);
-		$('#idautorizado').selectpicker('refresh');
-		$("#identregado").val(data.identregado);
-		$('#identregado').selectpicker('refresh');
-		$("#idrecibido").val(data.idrecibido);
-		$('#idrecibido').selectpicker('refresh');
-		$("#idfinal").val(data.idfinal);
-		$('#idfinal').selectpicker('refresh');
-		$("#idmaquinaria").val(data.idmaquinaria);
-		$('#idmaquinaria').selectpicker('refresh');
+			if (data.tipo_movimiento == "personal") {
+				$("#tipo_movimiento").val('personal');
+				$('#tipo_movimiento').selectpicker('refresh');
+				$('#tipo_movimiento').trigger('onchange');
+			} else {
+				$("#tipo_movimiento").val('maquinaria');
+				$('#tipo_movimiento').selectpicker('refresh');
+				$('#tipo_movimiento').trigger('onchange');
+			}
 
-		const { letras, numeros } = separarLetrasYNumeros(data.codigo);
-		// Establecer valores en los campos correspondientes
-		$("#cod_1").val(letras);
-		$("#cod_2").val(numeros);
+			$("#idautorizado").val(data.idautorizado);
+			$('#idautorizado').selectpicker('refresh');
+			$("#idrecibido").val(data.idrecibido);
+			$('#idrecibido').selectpicker('refresh');
+			$("#idfinal").val(data.idfinal);
+			$('#idfinal').selectpicker('refresh');
+			$("#idmaquinaria").val(data.idmaquinaria);
+			$('#idmaquinaria').selectpicker('refresh');
 
-		$("#codigo_producto").val(data.codigo_producto);
-		$("#nombre").val(data.nombre);
-		$("#descripcion").val(data.descripcion);
-		$("#ubicacion").val(data.ubicacion);
-		$("#fecha_hora").val(data.fecha_hora);
-		$("#print").hide();
-		$("#idsalida").val(data.idsalida);
+			const { letras, numeros } = separarLetrasYNumeros(data.codigo);
+			// Establecer valores en los campos correspondientes
+			$("#cod_1").val(letras);
+			$("#cod_2").val(numeros);
 
-		$("#botonArt").hide();
-		$("#form_codigo_barra").hide();
+			$("#codigo_producto").val(data.codigo_producto);
+			$("#nombre").val(data.nombre);
+			$("#descripcion").val(data.descripcion);
+			$("#ubicacion").val(data.ubicacion);
+			$("#fecha_hora").val(data.fecha_hora);
+			$("#print").hide();
+			$("#idsalida").val(data.idsalida);
 
-		$.post("../ajax/salidas.php?op=listarDetalle&id=" + idsalida, function (r) {
-			// console.log(r);
-			$("#detalles").html(r);
-			nowrapCell();
+			$("#botonArt").hide();
+			$("#form_codigo_barra").hide();
+			actualizarRUC();
+
+			$.post("../ajax/salidas.php?op=listarDetalle&id=" + idsalida, function (r) {
+				// console.log(r);
+				$("#detalles").html(r);
+				nowrapCell();
+			})
 		})
 	})
 }
@@ -574,8 +654,6 @@ function evaluarMetodo() {
 
 	$("#idautorizado").val($("#idautorizado option:first").val());
 	$("#idautorizado").selectpicker('refresh');
-	$("#identregado").val($("#identregado option:first").val());
-	$("#identregado").selectpicker('refresh');
 	$("#idrecibido").val($("#idrecibido option:first").val());
 	$("#idrecibido").selectpicker('refresh');
 	$("#idfinal").val($("#idfinal option:first").val());
@@ -585,7 +663,6 @@ function evaluarMetodo() {
 
 	$("#idmaquinaria").attr("required", "required");
 	$("#idautorizado").attr("required", "required");
-	$("#identregado").attr("required", "required");
 	$("#idrecibido").attr("required", "required");
 	$("#idfinal").attr("required", "required");
 
@@ -593,19 +670,16 @@ function evaluarMetodo() {
 		$(".selectPersonal").show();
 		$("#idmaquinaria").removeAttr("required");
 		$("#idautorizado").removeAttr("required");
-		$("#identregado").removeAttr("required");
 	} else if (tipoMovimiento === "maquinaria") {
 		$(".selectPersonal").show();
 		$("#selectMaquinaria").show();
 		$("#idautorizado").removeAttr("required");
-		$("#identregado").removeAttr("required");
 		$("#idrecibido").removeAttr("required");
 		$("#idfinal").removeAttr("required");
 	}
 	else {
 		$("#idmaquinaria").attr("required", "required");
 		$("#idautorizado").attr("required", "required");
-		$("#identregado").attr("required", "required");
 		$("#idrecibido").attr("required", "required");
 		$("#idfinal").attr("required", "required");
 		$(".selectPersonal").hide();

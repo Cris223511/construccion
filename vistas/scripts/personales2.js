@@ -8,6 +8,13 @@ function init() {
 		guardaryeditar(e);
 	});
 
+	$.post("../ajax/locales.php?op=selectLocal", function (r) {
+		console.log(r)
+		$("#idlocal").html(r);
+		$('#idlocal').selectpicker('refresh');
+		actualizarRUC();
+	});
+
 	$('#mSalidas').addClass("treeview active");
 	$('#lPersonales').addClass("active");
 }
@@ -20,6 +27,22 @@ function limpiar() {
 	$("#direccion").val("");
 	$("#telefono").val("");
 	$("#email").val("");
+	$("#idlocal").val($("#idlocal option:first").val());
+	$("#idlocal").selectpicker('refresh');
+	actualizarRUC();
+}
+
+function actualizarRUC() {
+	const selectLocal = document.getElementById("idlocal");
+	const localRUCInput = document.getElementById("local_ruc");
+	const selectedOption = selectLocal.options[selectLocal.selectedIndex];
+
+	if (selectedOption.value !== "") {
+		const localRUC = selectedOption.getAttribute('data-local-ruc');
+		localRUCInput.value = localRUC;
+	} else {
+		localRUCInput.value = "";
+	}
 }
 
 function mostrarform(flag) {
@@ -84,7 +107,7 @@ function listar() {
 			"iDisplayLength": 5,
 			"order": [],
 			"createdRow": function (row, data, dataIndex) {
-				$(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(3), td:eq(4), td:eq(6), td:eq(7), td:eq(8), td:eq(9)').addClass('nowrap-cell');
+				$(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(4), td:eq(6), td:eq(7), td:eq(8), td:eq(9), td:eq(10)').addClass('nowrap-cell');
 			}
 		}).DataTable();
 }
@@ -181,6 +204,9 @@ function mostrar(idpersonal) {
 		$("#telefono").val(data.telefono);
 		$("#email").val(data.email);
 		$("#idpersonal").val(data.idpersonal);
+		$("#idlocal").val(data.idlocal);
+		$('#idlocal').selectpicker('refresh');
+		actualizarRUC();
 	})
 }
 

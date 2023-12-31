@@ -29,7 +29,8 @@ if (!isset($_SESSION["nombre"])) {
       utf8_decode($empresa),
       $documento . "\n" .
         utf8_decode("Dirección: ") . utf8_decode($direccion) . "\n" .
-        utf8_decode("Teléfono: ") . $telefono . "\n",
+        utf8_decode("Teléfono: ") . $telefono . "\n" .
+        utf8_decode("Local: ") . $regv->local . "\n",
       $logo,
       $ext_logo
     );

@@ -21,6 +21,12 @@ $("#frmAcceso").on('submit', function (e) {
                     title: 'Sin acceso',
                     text: 'El usuario no se encuentra disponible, comuníquese con el administrador.',
                 })
+            } else if (data == 2) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Sin acceso',
+                    text: 'El local en donde usted está trabajando está desactivado, comuníquese con el administrador.',
+                })
             } else if (data != "null") {
                 Swal.fire({
                     icon: 'success',

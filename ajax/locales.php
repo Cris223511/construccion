@@ -212,6 +212,19 @@ if (!isset($_SESSION["nombre"])) {
 				echo json_encode($data);
 				break;
 
+			case 'selectLocal':
+				if ($cargo == "superadmin") {
+					$rspta = $locales->listarActivosASC();
+				} else {
+					$rspta = $locales->listarPorUsuario($idlocalSession);
+				}
+
+				echo '<option value="">- Seleccione -</option>';
+				while ($reg = $rspta->fetch_object()) {
+					echo '<option value="' . $reg->idlocal . '" data-local-ruc="' . $reg->local_ruc . '">' . $reg->titulo . '</option>';
+				}
+				break;
+
 			case 'actualizarSession':
 				$info = array(
 					'local' => $_SESSION['local'],

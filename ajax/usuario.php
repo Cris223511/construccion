@@ -272,6 +272,11 @@ switch ($_GET["op"]) {
 				return;
 			}
 
+			if ($fetch->estadoLocal == "desactivado") {
+				echo 2;
+				return;
+			}
+
 			//Declaramos las variables de sesión
 			$_SESSION['idusuario'] = $fetch->idusuario;
 			$_SESSION['idlocal'] = $fetch->idlocal;

@@ -29,11 +29,11 @@ if (!isset($_SESSION["nombre"])) {
                 <div class="box-tools pull-right">
                 </div>
                 <div class="panel-body table-responsive listadoregistros" style="overflow-x: visible; padding-left: 0px; padding-right: 0px; padding-bottom: 0px;">
-                  <div class="form-group col-lg-5 col-md-5 col-sm-6 col-xs-12">
+                  <div class="form-group col-lg-5 col-md-5 col-sm-12">
                     <label>Fecha Inicial:</label>
                     <input type="date" class="form-control" name="fecha_inicio" id="fecha_inicio">
                   </div>
-                  <div class="form-group col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="form-group col-lg-4 col-md-4 col-sm-12">
                     <label>Fecha Final:</label>
                     <input type="date" class="form-control" name="fecha_fin" id="fecha_fin">
                   </div>
@@ -51,13 +51,16 @@ if (!isset($_SESSION["nombre"])) {
                   <table id="tbllistado" class="table table-striped table-bordered table-condensed table-hover w-100" style="width: 100% !important">
                     <thead>
                       <th>Opciones</th>
-                      <th style="white-space: nowrap;">Agregado el</th>
+                      <th style="white-space: nowrap;">Fecha y hora</th>
                       <th>Nombres</th>
+                      <th style="width: 20%; min-width: 220px; white-space: nowrap;">Ubicación del local</th>
                       <th style="white-space: nowrap;">Tipo Doc.</th>
                       <th style="white-space: nowrap;">Número Doc.</th>
                       <th style="width: 30%; min-width: 200px; white-space: nowrap;">Dirección</th>
                       <th>Teléfono</th>
                       <th>Email</th>
+                      <th style="white-space: nowrap;">Agregado por</th>
+                      <th>Cargo</th>
                       <th>Estado</th>
                     </thead>
                     <tbody>
@@ -65,13 +68,16 @@ if (!isset($_SESSION["nombre"])) {
                     </tbody>
                     <tfoot>
                       <th>Opciones</th>
-                      <th>Agregado el</th>
+                      <th>Fecha y hora</th>
                       <th>Nombres</th>
+                      <th>Ubicación del local</th>
                       <th>Tipo Doc.</th>
                       <th>Número Doc.</th>
                       <th>Dirección</th>
                       <th>Teléfono</th>
                       <th>Email</th>
+                      <th>Agregado por</th>
+                      <th>Cargo</th>
                       <th>Estado</th>
                     </tfoot>
                   </table>
@@ -79,33 +85,43 @@ if (!isset($_SESSION["nombre"])) {
               </div>
               <div class="panel-body" style="height: max-content;" id="formularioregistros">
                 <form name="formulario" id="formulario" method="POST">
-                  <div class="form-group col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                  <div class="form-group col-lg-6 col-md-6 col-sm-12">
                     <label>Nombre(*):</label>
                     <input type="hidden" name="idpersonal" id="idpersonal">
                     <input type="text" class="form-control" name="nombre" id="nombre" maxlength="40" placeholder="Ingrese el nombre del personal." autocomplete="off" required>
                   </div>
-                  <div class="form-group col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                  <div class="form-group col-lg-6 col-md-6 col-sm-12">
                     <label>Dirección:</label>
                     <input type="text" class="form-control" name="direccion" id="direccion" placeholder="Ingrese la dirección." maxlength="40">
                   </div>
-                  <div class="form-group col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                  <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                    <label>Local(*):</label>
+                    <select id="idlocal" name="idlocal" class="form-control selectpicker idlocal" data-live-search="true" data-size="5" onchange="actualizarRUC()" required>
+                      <option value="">- Seleccione -</option>
+                    </select>
+                  </div>
+                  <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                    <label>RUC local(*):</label>
+                    <input type="number" class="form-control" id="local_ruc" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="11" placeholder="RUC del local" disabled>
+                  </div>
+                  <div class="form-group col-lg-6 col-md-6 col-sm-12">
                     <label>Tipo Documento(*):</label>
-                    <select class="form-control select-picker" name="tipo_documento" id="tipo_documento" onchange="changeValue(this);">
+                    <select class="form-control select-picker" name="tipo_documento" id="tipo_documento" onchange="changeValue(this);" required>
                       <option value="">- Seleccione -</option>
                       <option value="DNI">DNI</option>
                       <option value="RUC">RUC</option>
                       <option value="CEDULA">CEDULA</option>
                     </select>
                   </div>
-                  <div class="form-group col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                  <div class="form-group col-lg-6 col-md-6 col-sm-12">
                     <label>Número(*):</label>
-                    <input type="number" class="form-control" name="num_documento" id="num_documento" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="8" placeholder="Ingrese el documento.">
+                    <input type="number" class="form-control" name="num_documento" id="num_documento" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="8" placeholder="Ingrese el documento." required>
                   </div>
-                  <div class="form-group col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                  <div class="form-group col-lg-6 col-md-6 col-sm-12">
                     <label>Teléfono:</label>
                     <input type="number" class="form-control" name="telefono" id="telefono" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="9" placeholder="Ingrese el teléfono.">
                   </div>
-                  <div class="form-group col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                  <div class="form-group col-lg-6 col-md-6 col-sm-12">
                     <label>Email:</label>
                     <input type="email" class="form-control" name="email" id="email" maxlength="50" placeholder="Ingrese el correo electrónico.">
                   </div>

@@ -32,21 +32,11 @@ if (!isset($_SESSION["nombre"])) {
 		switch ($_GET["op"]) {
 			case 'guardaryeditar':
 				if (empty($idproveedor)) {
-					$nombreExiste = $proveedores->verificarDniExiste($num_documento);
-					if ($nombreExiste) {
-						echo "El número de documento que ha ingresado ya existe.";
-					} else {
-						$rspta = $proveedores->agregar($idusuario, $nombre, $tipo_documento, $num_documento, $direccion, $telefono, $email);
-						echo $rspta ? "Proveedor registrado" : "El proveedor no se pudo registrar";
-					}
+					$rspta = $proveedores->agregar($idusuario, $nombre, $tipo_documento, $num_documento, $direccion, $telefono, $email);
+					echo $rspta ? "Proveedor registrado" : "El proveedor no se pudo registrar";
 				} else {
-					$nombreExiste = $proveedores->verificarDniEditarExiste($nombre, $idproveedor);
-					if ($nombreExiste) {
-						echo "El número de documento que ha ingresado ya existe.";
-					} else {
-						$rspta = $proveedores->editar($idproveedor, $nombre, $tipo_documento, $num_documento, $direccion, $telefono, $email);
-						echo $rspta ? "Proveedor actualizado" : "El proveedor no se pudo actualizar";
-					}
+					$rspta = $proveedores->editar($idproveedor, $nombre, $tipo_documento, $num_documento, $direccion, $telefono, $email);
+					echo $rspta ? "Proveedor actualizado" : "El proveedor no se pudo actualizar";
 				}
 				break;
 
@@ -73,13 +63,13 @@ if (!isset($_SESSION["nombre"])) {
 			case 'listar':
 				$fecha_inicio = $_GET["fecha_inicio"];
 				$fecha_fin = $_GET["fecha_fin"];
-				
+
 				// if ($cargo == "superadmin") {
-					if ($fecha_inicio == "" && $fecha_fin == "") {
-						$rspta = $proveedores->listar();
-					} else {
-						$rspta = $proveedores->listarPorFecha($fecha_inicio, $fecha_fin);
-					}
+				if ($fecha_inicio == "" && $fecha_fin == "") {
+					$rspta = $proveedores->listar();
+				} else {
+					$rspta = $proveedores->listarPorFecha($fecha_inicio, $fecha_fin);
+				}
 				// } else {
 				// 	if ($fecha_inicio == "" && $fecha_fin == "") {
 				// 		$rspta = $proveedores->listarPorUsuario($idusuario);
@@ -102,13 +92,29 @@ if (!isset($_SESSION["nombre"])) {
 				}
 
 				while ($reg = $rspta->fetch_object()) {
+					$cargo_detalle = "";
+
+					switch ($reg->cargo) {
+						case 'superadmin':
+							$cargo_detalle = "Superadministrador";
+							break;
+						case 'admin':
+							$cargo_detalle = "Administrador";
+							break;
+						case 'usuario':
+							$cargo_detalle = "Usuario";
+							break;
+						default:
+							break;
+					}
+
 					$telefono = ($reg->telefono == "") ? 'Sin registrar' : number_format($reg->telefono, 0, '', ' ');
+
 					$data[] = array(
 						"0" => '<div style="display: flex; flex-wrap: nowrap; gap: 3px">' .
 							mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-warning" style="margin-right: 3px; height: 35px;" onclick="mostrar(' . $reg->idproveedor . ')"><i class="fa fa-pencil"></i></button>') .
 							(($reg->estado == 'activado') ?
-								(mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-danger" style="margin-right: 3px; height: 35px;" onclick="desactivar(' . $reg->idproveedor . ')"><i class="fa fa-close"></i></button>')) :
-								(mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-success" style="margin-right: 3px; width: 35px; height: 35px;" onclick="activar(' . $reg->idproveedor . ')"><i style="margin-left: -2px" class="fa fa-check"></i></button>'))) .
+								(mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-danger" style="margin-right: 3px; height: 35px;" onclick="desactivar(' . $reg->idproveedor . ')"><i class="fa fa-close"></i></button>')) : (mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-success" style="margin-right: 3px; width: 35px; height: 35px;" onclick="activar(' . $reg->idproveedor . ')"><i style="margin-left: -2px" class="fa fa-check"></i></button>'))) .
 							mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-danger" style="height: 35px;" onclick="eliminar(' . $reg->idproveedor . ')"><i class="fa fa-trash"></i></button>') .
 							'</div>',
 						"1" => $reg->fecha,
@@ -118,7 +124,9 @@ if (!isset($_SESSION["nombre"])) {
 						"5" => ($reg->direccion == '') ? 'Sin registrar' : $reg->direccion,
 						"6" => $telefono,
 						"7" => ($reg->email == '') ? 'Sin registrar' : $reg->email,
-						"8" => ($reg->estado == 'activado') ? '<span class="label bg-green">Activado</span>' :
+						"8" => $reg->usuario,
+						"9" => $cargo_detalle,
+						"10" => ($reg->estado == 'activado') ? '<span class="label bg-green">Activado</span>' :
 							'<span class="label bg-red">Desactivado</span>'
 					);
 				}
