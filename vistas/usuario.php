@@ -42,9 +42,11 @@ if (!isset($_SESSION["nombre"])) {
                     <th>Cargo</th>
                     <th>Nombre</th>
                     <th>Documento</th>
-                    <th>Número</th>
+                    <th>Número Doc.</th>
                     <th>Teléfono</th>
                     <th>Email</th>
+                    <th>Ubicación del local</th>
+                    <th>RUC del local</th>
                     <th>Foto</th>
                     <th>Estado</th>
                   </thead>
@@ -56,9 +58,11 @@ if (!isset($_SESSION["nombre"])) {
                     <th>Cargo</th>
                     <th>Nombre</th>
                     <th>Documento</th>
-                    <th>Número</th>
+                    <th>Número Doc.</th>
                     <th>Teléfono</th>
                     <th>Email</th>
+                    <th>Ubicación del local</th>
+                    <th>RUC del local</th>
                     <th>Foto</th>
                     <th>Estado</th>
                   </tfoot>
@@ -126,10 +130,12 @@ if (!isset($_SESSION["nombre"])) {
                   </div>
                   <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
                     <label>Permisos:</label>
+                    <ul style="list-style: none; margin-bottom: 0px;">
+                      <li><input id="checkAll" type="checkbox" onchange="toggleCheckboxes(this)">Marcar todos</li>
+                    </ul>
                     <ul style="list-style: none;" id="permisos">
                     </ul>
                   </div>
-
                   <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
                     <label>Imagen:</label>
                     <input type="file" class="form-control" name="imagen" id="imagen" accept="image/x-png,image/gif,image/jpeg">

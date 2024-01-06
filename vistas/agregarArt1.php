@@ -133,7 +133,7 @@ if (!isset($_SESSION["nombre"])) {
                       <th>Opciones</th>
                       <th>Nombre</th>
                       <th>Categoría</th>
-                      <th style="width: 20%; min-width: 220px; white-space: nowrap;">Ubicación del local</th>
+                      <th>Ubicación del local</th>
                       <th>Marca</th>
                       <th style="white-space: nowrap;">C. producto</th>
                       <th style="white-space: nowrap;">C. de barra</th>

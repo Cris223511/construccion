@@ -142,7 +142,7 @@ switch ($_GET["op"]) {
 					$data[] = array(
 						"0" => '<div style="display: flex; flex-wrap: nowrap; gap: 3px">' .
 							(!($reg->cargo == "superadmin" && $_SESSION['cargo'] == 'admin') ?
-								((($reg->condicion) ?
+								((($reg->estado) ?
 									(($_SESSION['cargo'] == 'superadmin' || $_SESSION['cargo'] == 'admin') ? ('<button class="btn btn-warning" style="margin-right: 3px;" onclick="mostrar(' . $reg->idusuario . ')"><i class="fa fa-pencil"></i></button>') : '') .
 									(($_SESSION['cargo'] == 'superadmin' || $_SESSION['cargo'] == 'admin') ? ('<button class="btn btn-danger" style="margin-right: 3px; height: 35px;" onclick="desactivar(' . $reg->idusuario . ')"><i class="fa fa-close"></i></button>') : '') .
 									(($_SESSION['cargo'] == 'superadmin' || $_SESSION['cargo'] == 'admin') ? ('<button class="btn btn-danger" style="height: 35px;" onclick="eliminar(' . $reg->idusuario . ')"><i class="fa fa-trash"></i></button>') : '') : (($_SESSION['cargo'] == 'superadmin' || $_SESSION['cargo'] == 'admin') ? ('<button class="btn btn-warning" style="margin-right: 3px; height: 35px;" onclick="mostrar(' . $reg->idusuario . ')"><i class="fa fa-pencil"></i></button>') : '') .
@@ -153,12 +153,12 @@ switch ($_GET["op"]) {
 						"3" => $reg->nombre,
 						"4" => $reg->tipo_documento,
 						"5" => $reg->num_documento,
-						"6" => $reg->telefono,
+						"6" => $telefono,
 						"7" => $reg->email,
 						"8" => $reg->local,
-						"9" => $reg->local_ruc,
+						"9" => "N° " . $reg->local_ruc,
 						"10" => "<img src='../files/usuarios/" . $reg->imagen . "' height='50px' width='50px' >",
-						"11" => ($reg->condicion) ? '<span class="label bg-green">Activado</span>' :
+						"11" => ($reg->estado) ? '<span class="label bg-green">Activado</span>' :
 							'<span class="label bg-red">Desactivado</span>'
 					);
 				}

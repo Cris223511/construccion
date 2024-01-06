@@ -89,7 +89,7 @@ if (!isset($_SESSION["nombre"])) {
 								(('<button class="btn btn-success" style="margin-right: 3px; width: 35px; height: 35px;" onclick="activar(' . $reg->idlocal . ')"><i style="margin-left: -2px" class="fa fa-check"></i></button>')) .
 								(('<button class="btn btn-danger" style="width: 35px; height: 35px;" onclick="eliminar(' . $reg->idlocal . ')"><i class="fa fa-trash"></i></button>'))) . '</div>',
 						"1" => $reg->titulo,
-						"2" => $reg->local_ruc,
+						"2" => "N° " . $reg->local_ruc,
 						"3" => $reg->descripcion,
 						"4" => $reg->fecha,
 						"5" => ($reg->estado == 'activado') ? '<span class="label bg-green">Activado</span>' :

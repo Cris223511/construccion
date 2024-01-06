@@ -75,7 +75,7 @@ if (!isset($_SESSION["nombre"])) {
                     <thead>
                       <th>Opciones</th>
                       <th style="white-space: nowrap;">Fecha y hora</th>
-                      <th style="width: 20%; min-width: 220px; white-space: nowrap;">Ubicación del local</th>
+                      <th>Ubicación del local</th>
                       <th>Tipo</th>
                       <th>Proveedor</th>
                       <th style="white-space: nowrap;">N° de documento</th>
@@ -203,7 +203,7 @@ if (!isset($_SESSION["nombre"])) {
                 <th>MARCA</th>
                 <th style="white-space: nowrap;">STOCK NORMAL</th>
                 <th style="white-space: nowrap;">STOCK MÍNIMO</th>
-                <th style="width: 20%; min-width: 220px; white-space: nowrap;">UBICACIÓN DEL LOCAL</th>
+                <th>Ubicación DEL LOCAL</th>
                 <th style="white-space: nowrap;">C. PRODUCTO</th>
                 <th style="white-space: nowrap;">C. DE BARRA</th>
                 <th style="white-space: nowrap;">AGREGADO POR</th>

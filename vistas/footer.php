@@ -48,10 +48,11 @@
         return palabra.toUpperCase();
       }
 
-      const thElements = document.querySelectorAll("#tbllistado th");
+      const thElements = document.querySelectorAll("#tblarticulos th, #tbllistado th, #tbltrabajadores th");
 
       thElements.forEach((e) => {
         e.textContent = e.textContent.toUpperCase();
+        e.classList.add('nowrap-cell');
       });
 
       const boxTitle = document.querySelectorAll(".box-title");

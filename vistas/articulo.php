@@ -138,7 +138,7 @@ if (!isset($_SESSION["nombre"])) {
                       <th>Marca</th>
                       <th style="white-space: nowrap;">Stock normal</th>
                       <th style="white-space: nowrap;">Stock mínimo</th>
-                      <th style="width: 20%; min-width: 220px; white-space: nowrap;">Ubicación del local</th>
+                      <th>Ubicación del local</th>
                       <th style="white-space: nowrap;">C. producto</th>
                       <th style="white-space: nowrap;">C. de barra</th>
                       <th style="white-space: nowrap;">Agregado por</th>

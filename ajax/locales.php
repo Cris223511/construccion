@@ -121,7 +121,7 @@ if (!isset($_SESSION["nombre"])) {
 							'<a data-toggle="modal" href="#myModal"><button class="btn btn-bcp" style="margin-right: 3px; height: 35px;" onclick="trabajadores(' . $reg->idlocal . ',\'' . $reg->titulo . '\')"><i class="fa fa-user"></i></button></a>' .
 							'</div>',
 						"1" => $reg->titulo,
-						"2" => $reg->local_ruc,
+						"2" => "N° " . $reg->local_ruc,
 						"3" => $reg->descripcion,
 						"4" => $reg->fecha,
 						"5" => ($reg->estado == 'activado') ? '<span class="label bg-green">Activado</span>' :
@@ -173,8 +173,10 @@ if (!isset($_SESSION["nombre"])) {
 						"4" => $reg->num_documento,
 						"5" => $telefono,
 						"6" => $reg->email,
-						"7" => "<img src='../files/usuarios/" . $reg->imagen . "' height='50px' width='50px' >",
-						"8" => ($reg->estado) ? '<span class="label bg-green">Activado</span>' :
+						"7" => $reg->local,
+						"8" => "N° " . $reg->local_ruc,
+						"9" => "<img src='../files/usuarios/" . $reg->imagen . "' height='50px' width='50px' >",
+						"10" => ($reg->estado) ? '<span class="label bg-green">Activado</span>' :
 							'<span class="label bg-red">Desactivado</span>'
 					);
 				}

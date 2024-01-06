@@ -36,7 +36,7 @@ if (!isset($_SESSION["nombre"])) {
                 <table id="tbllistado" class="table table-striped table-bordered table-condensed table-hover w-100" style="width: 100% !important;">
                   <thead>
                     <th>Opciones</th>
-                    <th>Local</th>
+                    <th>Ubicación del local</th>
                     <th style="white-space: nowrap;">N° RUC</th>
                     <th style="width: 40%; min-width: 280px; white-space: nowrap;">Descripción del local</th>
                     <th style="white-space: nowrap;">Fecha y hora</th>
@@ -46,7 +46,7 @@ if (!isset($_SESSION["nombre"])) {
                   </tbody>
                   <tfoot>
                     <th>Opciones</th>
-                    <th>Local</th>
+                    <th>Ubicación del local</th>
                     <th>N° RUC</th>
                     <th>Descripción del local</th>
                     <th>Fecha y hora</th>

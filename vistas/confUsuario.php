@@ -22,7 +22,7 @@ if (!isset($_SESSION["nombre"])) {
           <div class="col-md-12">
             <div class="box">
               <div class="box-header with-border">
-                <h1 class="box-title">Configuración de perfil de usuario</h1>
+                <h1 class="box-title">Configuración de perfil del <?php echo $_SESSION["cargo_detalle"] ?></h1>
                 <div class="box-tools pull-right">
                 </div>
               </div>

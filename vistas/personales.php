@@ -53,7 +53,7 @@ if (!isset($_SESSION["nombre"])) {
                       <th>Opciones</th>
                       <th style="white-space: nowrap;">Fecha y hora</th>
                       <th>Nombres</th>
-                      <th style="width: 20%; min-width: 220px; white-space: nowrap;">Ubicación del local</th>
+                      <th>Ubicación del local</th>
                       <th style="white-space: nowrap;">Tipo Doc.</th>
                       <th style="white-space: nowrap;">Número Doc.</th>
                       <th style="width: 30%; min-width: 200px; white-space: nowrap;">Dirección</th>
