@@ -34,9 +34,9 @@ class Salida
 		return $sw;
 	}
 
-	public function verificarCodigo($codigo)
+	public function verificarCodigo($codigo, $idlocal)
 	{
-		$sql = "SELECT * FROM salidas WHERE codigo = '$codigo'";
+		$sql = "SELECT * FROM salidas WHERE codigo = '$codigo' AND idlocal = '$idlocal'";
 		$resultado = ejecutarConsulta($sql);
 		if (mysqli_num_rows($resultado) > 0) {
 			// El codigo ya existe en la tabla
@@ -127,7 +127,7 @@ class Salida
 
 	/* ======================= SELECTS ======================= */
 
-	public function listarTodosActivos()
+	public function listarTodosActivos($idlocal)
 	{
 		$sql = "SELECT 'tipo' AS tabla, t.idtipo AS id, t.titulo, u.nombre AS usuario, NULL AS ruc FROM tipos t LEFT JOIN usuario u ON t.idusuario = u.idusuario WHERE t.estado='activado' AND t.eliminado='0'
 			UNION ALL
@@ -135,7 +135,7 @@ class Salida
 			UNION ALL
 			SELECT 'local' AS tabla, l.idlocal AS id, l.titulo, u.nombre AS usuario, local_ruc AS ruc FROM locales l LEFT JOIN usuario u ON l.idusuario = u.idusuario WHERE l.idusuario <> 0 AND l.estado='activado' AND l.eliminado='0'
 			UNION ALL
-			SELECT 'correlativo' AS tabla, 0 AS id, (SELECT codigo FROM salidas ORDER BY idsalida DESC LIMIT 1) AS correlativo, NULL AS usuario, NULL AS ruc";
+			SELECT 'correlativo' AS tabla, 0 AS id, (SELECT codigo FROM salidas WHERE idlocal = '$idlocal' ORDER BY idsalida DESC LIMIT 1) AS correlativo, NULL AS usuario, NULL AS ruc";
 
 		return ejecutarConsulta($sql);
 	}
@@ -148,7 +148,7 @@ class Salida
 			UNION ALL
 			SELECT 'local' AS tabla, l.idlocal AS id, l.titulo, u.nombre AS usuario, local_ruc AS ruc FROM locales l LEFT JOIN usuario u ON l.idusuario = u.idusuario WHERE l.idlocal='$idlocal' AND l.idusuario <> 0 AND l.estado='activado' AND l.eliminado='0'
 			UNION ALL
-			SELECT 'correlativo' AS tabla, 0 AS id, (SELECT codigo FROM salidas ORDER BY idsalida DESC LIMIT 1) AS correlativo, NULL AS usuario, NULL AS ruc";
+			SELECT 'correlativo' AS tabla, 0 AS id, (SELECT codigo FROM salidas WHERE idlocal = '$idlocal' ORDER BY idsalida DESC LIMIT 1) AS correlativo, NULL AS usuario, NULL AS ruc";
 
 		return ejecutarConsulta($sql);
 	}

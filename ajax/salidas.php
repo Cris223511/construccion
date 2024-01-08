@@ -36,7 +36,7 @@ if (!isset($_SESSION["nombre"])) {
 
 		switch ($_GET["op"]) {
 			case 'guardaryeditar':
-				$codigoExiste = $salidas->verificarCodigo($codigo);
+				$codigoExiste = $salidas->verificarCodigo($codigo, $idlocal);
 				if ($codigoExiste) {
 					echo "El N° de documento de la salida ya existe.";
 				} else {
@@ -290,7 +290,7 @@ if (!isset($_SESSION["nombre"])) {
 
 			case 'listarTodosActivos':
 				if ($cargo == "superadmin") {
-					$rspta = $salidas->listarTodosActivos();
+					$rspta = $salidas->listarTodosActivos($idlocalSession);
 				} else {
 					$rspta = $salidas->listarTodosActivosUsuario($idlocalSession);
 				}
