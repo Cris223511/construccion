@@ -133,6 +133,11 @@ $local_login = $_SESSION['local'];
   .table-responsive {
     border: none !important;
   }
+
+  #total2,
+  #total {
+    font-weight: bold;
+  }
 </style>
 
 <!DOCTYPE html>

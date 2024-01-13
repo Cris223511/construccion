@@ -35,7 +35,7 @@ if (!isset($_SESSION["nombre"])) {
 			case 'guardaryeditar':
 				if (empty($idpersonal)) {
 					$nombreExiste = $personales->verificarDniExiste($num_documento);
-					if ($nombreExiste) {
+					if ($nombreExiste && $num_documento != '') {
 						echo "El número de documento que ha ingresado ya existe.";
 					} else {
 						$rspta = $personales->agregar($idusuario, $idlocal, $nombre, $tipo_documento, $num_documento, $direccion, $telefono, $email);
@@ -43,7 +43,7 @@ if (!isset($_SESSION["nombre"])) {
 					}
 				} else {
 					$nombreExiste = $personales->verificarDniEditarExiste($nombre, $idpersonal);
-					if ($nombreExiste) {
+					if ($nombreExiste && $num_documento != '') {
 						echo "El número de documento que ha ingresado ya existe.";
 					} else {
 						$rspta = $personales->editar($idpersonal, $idlocal, $nombre, $tipo_documento, $num_documento, $direccion, $telefono, $email);
