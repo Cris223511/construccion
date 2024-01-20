@@ -563,7 +563,7 @@ function agregarDetalle(idarticulo, articulo, categoria, marca, medida, stock, s
 			'<td><input type="hidden" name="idarticulo[]" value="' + idarticulo + '">' + articulo + '</td>' +
 			'<td>' + categoria + '</td>' +
 			'<td>' + marca + '</td>' +
-			'<td><input type="text" name="cantidad[]" id="cantidad[]" step="any" onkeydown="evitarNegativo(event)" oninput="validarNumeroDecimal(this, 6)" value="' + cantidad + '"></td>' +
+			'<td><input type="number" name="cantidad[]" id="cantidad[]" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="6" onkeydown="evitarNegativo(event)" onpaste="return false;" onDrop="return false;" min="1" required value="' + cantidad + '"></td>' +
 			'<td>' + medida + '</td>' +
 			'<td>' + stock + '</td>' +
 			'<td>' + stock_minimo + '</td>' +
@@ -575,6 +575,8 @@ function agregarDetalle(idarticulo, articulo, categoria, marca, medida, stock, s
 		detalles = detalles + 1;
 		$('#detalles').append(fila);
 		evaluar();
+		evitarCaracteresEspecialesCamposNumericos();
+		aplicarRestrictATodosLosInputs();
 		console.log("Deshabilito a: " + idarticulo + " =)");
 	}
 	else {

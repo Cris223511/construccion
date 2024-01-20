@@ -75,7 +75,7 @@ function limpiar() {
 	$("#telefono").val("");
 	$("#email").val("");
 	$("#local_ruc").val("");
-	$("#cargo").val("administrador");
+	$("#cargo").val("admin");
 	$("#cargo").selectpicker('refresh');
 	$("#login").val("");
 	$("#clave").val("");

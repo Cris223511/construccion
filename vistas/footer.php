@@ -2,7 +2,7 @@
       <div class="pull-right hidden-xs">
         <b>Version</b> 3.0.0
       </div>
-      <strong>Copyright &copy; 2023 <a href="#" style="color: #002a8e;">Almacenes S.A.C</a>.</strong> Todos los derechos reservados.
+      <strong>Copyright &copy; 2024 <a href="#" style="color: #002a8e;">Almacenes S.A.C</a>.</strong> Todos los derechos reservados.
     </footer>
     <!-- jQuery -->
     <script src="../public/js/jquery-3.1.1.min.js"></script>
@@ -142,17 +142,45 @@
     </script>
 
     <script>
-      var camposNumericos = document.querySelectorAll('input[type="number"]');
-      camposNumericos.forEach(function(campo) {
-        campo.addEventListener('keydown', function(event) {
-          var teclasPermitidas = [46, 8, 9, 27, 13, 110, 190]; // ., delete, tab, escape, enter
-          if ((event.ctrlKey || event.metaKey) && event.which === 65) return; // Permitir Ctrl+A o Command+A
-          if (teclasPermitidas.includes(event.which)) return; // Si es una tecla permitida, no hacer nada
-          if ((event.which < 48 || event.which > 57) && (event.which < 96 || event.which > 105) && event.which !== 190 && event.which !== 110) {
-            event.preventDefault(); // Prevenir cualquier otra tecla no numérica ni punto
-          }
+      function evitarCaracteresEspecialesCamposNumericos() {
+        var camposNumericos = document.querySelectorAll('input[type="number"]');
+        camposNumericos.forEach(function(campo) {
+          campo.addEventListener('keydown', function(event) {
+            var teclasPermitidas = [46, 8, 9, 27, 13, 110, 190, 37, 38, 39, 40, 17, 82]; // ., delete, tab, escape, enter, flechas, Ctrl+R
+            if ((event.ctrlKey || event.metaKey) && event.which === 65) return; // Permitir Ctrl+A o Command+A
+            if (teclasPermitidas.includes(event.which) || (event.which >= 48 && event.which <= 57) || (event.which >= 96 && event.which <= 105) || event.which === 190 || event.which === 110) {
+              // Si es una tecla permitida o numérica, no hacer nada
+              return;
+            } else {
+              event.preventDefault(); // Prevenir cualquier otra tecla no permitida
+            }
+          });
         });
-      });
+      }
+
+      evitarCaracteresEspecialesCamposNumericos();
+    </script>
+
+    <script>
+      function restrict(input) {
+        var prev = input.getAttribute("data-prev");
+        prev = (prev != '') ? prev : '';
+        if (Math.round(input.value * 100) / 100 != input.value) {
+          input.value = prev;
+        }
+        input.setAttribute("data-prev", input.value);
+      }
+
+      function aplicarRestrictATodosLosInputs() {
+        var camposNumericos = document.querySelectorAll('input[type="number"]');
+        camposNumericos.forEach(function(campo) {
+          campo.addEventListener('input', function(event) {
+            restrict(event.target);
+          });
+        });
+      }
+
+      aplicarRestrictATodosLosInputs();
     </script>
 
     </body>

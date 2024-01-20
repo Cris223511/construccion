@@ -102,11 +102,11 @@ if (!isset($_SESSION["nombre"])) {
               <div class="panel-body" id="formularioregistros" style="background-color: #ecf0f5 !important; padding-left: 0 !important; padding-right: 0 !important;">
                 <form name="formulario" id="formulario" method="POST">
                   <div class="form-group col-lg-12 col-md-12 col-sm-12" style="background-color: white; border-top: 3px #3686b4 solid; padding: 20px;">
-                    <div class="form-group col-lg-6 col-md-6 col-md-12">
+                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
                       <label>Ubicación del producto(*):</label>
                       <input type="text" class="form-control" name="ubicacion" id="ubicacion" maxlength="50" placeholder="Ingrese la ubicación." autocomplete="off">
                     </div>
-                    <div class="form-group col-lg-6 col-md-6 col-md-12">
+                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
                       <label>Fecha y hora(*):</label>
                       <input type="datetime-local" class="form-control" id="fecha_hora" readonly>
                     </div>
@@ -142,12 +142,12 @@ if (!isset($_SESSION["nombre"])) {
                     </div>
                   </div>
                   <div class="form-group col-lg-12 col-md-12 col-sm-12" style="background-color: white !important; padding: 20px !important;">
-                    <div class="form-group col-lg-6 col-md-6 col-md-12 botonArt" id="botonArt">
+                    <div class="form-group col-lg-6 col-md-6 col-sm-12 botonArt" id="botonArt">
                       <a data-toggle="modal" href="#myModal">
                         <button id="btnAgregarArt" type="button" class="btn btn-secondary" style="color: black !important"> <span class="fa fa-plus"></span> Agregar Productos</button>
                       </a>
                     </div>
-                    <div class="form-group col-lg-6 col-md-6 col-md-12" id="form_codigo_barra">
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12" id="form_codigo_barra" style="float: right;">
                       <label>Buscar por código de barra: <a style="cursor: pointer;" data-toggle="popover" data-placement="top" title="Buscar por código de barra" data-content="Sólo se listan los productos que no están en stock." style="color: #418bb7"><i class="fa fa-question-circle"></i></a></label>
                       <select id="idproducto" name="idproducto" class="form-control selectpicker" data-size="6" data-live-search="true" onchange="llenarTabla()">
                         <option value="">Busca un producto.</option>

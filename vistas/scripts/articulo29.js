@@ -201,6 +201,14 @@ function guardaryeditar(e) {
 		return;
 	}
 
+	var stock = parseFloat($("#stock").val());
+	var stock_minimo = parseFloat($("#stock_minimo").val());
+
+	if (stock_minimo > stock) {
+		bootbox.alert("El stock mínimo no puede ser mayor que el stock normal.");
+		return;
+	}
+
 	$("#btnGuardar").prop("disabled", true);
 	var formData = new FormData($("#formulario")[0]);
 

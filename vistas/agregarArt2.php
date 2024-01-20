@@ -209,11 +209,11 @@ if (!isset($_SESSION["nombre"])) {
                     </div>
                     <div class="form-group col-lg-6 col-md-12">
                       <label>Stock(*):</label>
-                      <input type="text" class="form-control" name="stock" id="stock" step="any" onkeydown="evitarNegativo(event)" oninput="validarNumeroDecimal(this, 6)" placeholder="Ingrese el stock." required>
+                      <input type="number" class="form-control" name="stock" id="stock" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="6" onkeydown="evitarNegativo(event)" onpaste="return false;" onDrop="return false;" min="1" placeholder="Ingrese el stock." required>
                     </div>
                     <div class="form-group col-lg-6 col-md-12">
                       <label>Stock mínimo(*):</label>
-                      <input type="text" class="form-control" name="stock_minimo" id="stock_minimo" step="any" onkeydown="evitarNegativo(event)" oninput="validarNumeroDecimal(this, 6)" placeholder="Ingrese el stock mínimo." required>
+                      <input type="number" class="form-control" name="stock_minimo" id="stock_minimo" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="6" onkeydown="evitarNegativo(event)" onpaste="return false;" onDrop="return false;" min="1" placeholder="Ingrese el stock mínimo." required>
                     </div>
                     <div class="form-group col-lg-12 col-md-12">
                       <label>Imagen:</label>

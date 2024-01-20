@@ -86,9 +86,9 @@ if (!isset($_SESSION["nombre"])) {
 
 				function mostrarBoton($reg, $cargo, $idusuario, $buttonType)
 				{
-					if ($reg == "admin" && $cargo == "admin" && $idusuario == $_SESSION["idusuario"]) {
+					if ($reg != "superadmin" && $cargo == "admin") {
 						return $buttonType;
-					} elseif ($cargo == "superadmin" || $cargo == "usuario" && $idusuario == $_SESSION["idusuario"]) {
+					} elseif ($cargo == "superadmin" || ($cargo == "usuario" && $idusuario == $_SESSION["idusuario"])) {
 						return $buttonType;
 					} else {
 						return '';
@@ -122,7 +122,7 @@ if (!isset($_SESSION["nombre"])) {
 							'</div>',
 						"1" => $reg->titulo,
 						"2" => "N° " . $reg->local_ruc,
-						"3" => $reg->descripcion,
+						"3" => ($reg->descripcion == '') ? 'Sin registrar.' : $reg->descripcion,
 						"4" => $reg->fecha,
 						"5" => ($reg->estado == 'activado') ? '<span class="label bg-green">Activado</span>' :
 							'<span class="label bg-red">Desactivado</span>'

@@ -15,7 +15,7 @@ if (!isset($_SESSION["nombre"])) {
         margin-top: 15px;
       }
 
-      .label2 {
+      #label2 {
         display: block;
       }
 
@@ -24,8 +24,10 @@ if (!isset($_SESSION["nombre"])) {
           display: flex;
           justify-content: center;
         }
+      }
 
-        .label2 {
+      @media (max-width: 767px) {
+        #label2 {
           display: none;
         }
       }
@@ -114,11 +116,11 @@ if (!isset($_SESSION["nombre"])) {
               <div class="panel-body" id="formularioregistros" style="background-color: #ecf0f5 !important; padding-left: 0 !important; padding-right: 0 !important;">
                 <form name="formulario" id="formulario" method="POST">
                   <div class="form-group col-lg-12 col-md-12 col-sm-12" style="background-color: white; border-top: 3px #3686b4 solid; padding: 20px;">
-                    <div class="form-group col-lg-6 col-md-6 col-md-12">
+                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
                       <label>Ubicación del producto(*):</label>
                       <input type="text" class="form-control" name="ubicacion" id="ubicacion" maxlength="50" placeholder="Ingrese la ubicación." autocomplete="off">
                     </div>
-                    <div class="form-group col-lg-6 col-md-6 col-md-12">
+                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
                       <label>Fecha y hora(*):</label>
                       <input type="datetime-local" class="form-control" id="fecha_hora" readonly>
                     </div>
@@ -132,21 +134,21 @@ if (!isset($_SESSION["nombre"])) {
                       <label>RUC local(*):</label>
                       <input type="number" class="form-control" id="local_ruc" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="11" placeholder="RUC del local" disabled>
                     </div>
-                    <div class="form-group col-lg-6 col-md-6 col-md-12">
+                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
                       <label>Tipo(*):</label>
                       <select id="idtipo" name="idtipo" class="form-control selectpicker" data-live-search="true" required>
                         <option value="">- Seleccione -</option>
                       </select>
                     </div>
-                    <div class="form-group col-lg-3 col-md-3 col-md-12">
+                    <div class="form-group col-lg-3 col-md-3 col-sm-6">
                       <label>N° de documento(*):</label>
                       <input type="text" class="form-control codigo" id="cod_1" maxlength="5" placeholder="Inicial del N° de documento de la salida." required oninput="onlyLetters()" onblur="convertirMayus()">
                     </div>
-                    <div class="form-group col-lg-3 col-md-3 col-md-12">
+                    <div class="form-group col-lg-3 col-md-3 col-sm-6">
                       <label id="label2">ㅤㅤ</label>
                       <input type="text" class="form-control codigo" id="cod_2" maxlength="5" placeholder="N° de documento de la salida." required step="any" onkeydown="evitarNegativo(event)" oninput="validarNumeroDecimal(this, 5)">
                     </div>
-                    <div class="form-group col-lg-6 col-md-6 col-md-12">
+                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
                       <label>Tipo de movimiento(*):</label>
                       <select id="tipo_movimiento" name="tipo_movimiento" class="form-control selectpicker" onchange="evaluarMetodo()" required>
                         <option value="">- Seleccione -</option>
@@ -154,31 +156,31 @@ if (!isset($_SESSION["nombre"])) {
                         <option value="maquinaria">Maquinaria</option>
                       </select>
                     </div>
-                    <div class="form-group col-lg-6 col-md-6 col-md-12" id="selectMaquinaria">
+                    <div class="form-group col-lg-6 col-md-6 col-sm-12" id="selectMaquinaria">
                       <label>Maquinaria(*):</label>
                       <select id="idmaquinaria" name="idmaquinaria" class="form-control selectpicker" data-live-search="true" required>
                         <option value="">- Seleccione -</option>
                       </select>
                     </div>
-                    <div class="form-group col-lg-6 col-md-6 col-md-12 selectPersonal">
+                    <div class="form-group col-lg-6 col-md-6 col-sm-12 selectPersonal">
                       <label>Autorizado por(*):</label>
                       <select id="idautorizado" name="idautorizado" class="form-control selectpicker" data-live-search="true" required>
                         <option value="0">- Seleccione -</option>
                       </select>
                     </div>
-                    <!-- <div class="form-group col-lg-6 col-md-6 col-md-12 selectPersonal">
+                    <!-- <div class="form-group col-lg-6 col-md-6 col-sm-12 selectPersonal">
                       <label>Entregado por(*):</label>
                       <select id="identregado" name="identregado" class="form-control selectpicker" data-live-search="true" required>
                         <option value="0">- Seleccione -</option>
                       </select>
                     </div> -->
-                    <div class="form-group col-lg-6 col-md-6 col-md-12 selectPersonal">
+                    <div class="form-group col-lg-6 col-md-6 col-sm-12 selectPersonal">
                       <label>Recibido por(*):</label>
                       <select id="idrecibido" name="idrecibido" class="form-control selectpicker" data-live-search="true" required>
                         <option value="0">- Seleccione -</option>
                       </select>
                     </div>
-                    <div class="form-group col-lg-6 col-md-6 col-md-12 selectPersonal">
+                    <div class="form-group col-lg-6 col-md-6 col-sm-12 selectPersonal">
                       <label>Usuario final(*):</label>
                       <select id="idfinal" name="idfinal" class="form-control selectpicker" data-live-search="true" required>
                         <option value="0">- Seleccione -</option>
@@ -190,12 +192,12 @@ if (!isset($_SESSION["nombre"])) {
                     </div>
                   </div>
                   <div class="form-group col-lg-12 col-md-12 col-sm-12" style="background-color: white !important; padding: 20px !important;">
-                    <div class="form-group col-lg-6 col-md-6 col-md-12 botonArt" id="botonArt">
+                    <div class="form-group col-lg-6 col-md-6 col-sm-12 botonArt" id="botonArt">
                       <a data-toggle="modal" href="#myModal">
                         <button id="btnAgregarArt" type="button" class="btn btn-secondary" style="color: black !important"> <span class="fa fa-plus"></span> Agregar Productos</button>
                       </a>
                     </div>
-                    <div class="form-group col-lg-6 col-md-6 col-md-12" id="form_codigo_barra">
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12" id="form_codigo_barra" style="float: right;">
                       <label>Buscar por código de barra: <a data-toggle="popover" data-placement="top" title="Buscar por código de barra" data-content="Sólo se listan los productos que no están en stock." style="color: #418bb7; cursor: pointer;"><i class="fa fa-question-circle"></i></a></label>
                       <select id="idproducto" name="idproducto" class="form-control selectpicker" data-size="6" data-live-search="true" onchange="llenarTabla()">
                         <option value="">Busca un producto.</option>

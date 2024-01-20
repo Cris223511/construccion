@@ -82,9 +82,9 @@ if (!isset($_SESSION["nombre"])) {
 
 				function mostrarBoton($reg, $cargo, $idusuario, $buttonType)
 				{
-					if ($reg == "admin" && $cargo == "admin" && $idusuario == $_SESSION["idusuario"]) {
+					if ($reg != "superadmin" && $cargo == "admin") {
 						return $buttonType;
-					} elseif ($cargo == "superadmin" || $cargo == "usuario" && $idusuario == $_SESSION["idusuario"]) {
+					} elseif ($cargo == "superadmin" || ($cargo == "usuario" && $idusuario == $_SESSION["idusuario"])) {
 						return $buttonType;
 					} else {
 						return '';
