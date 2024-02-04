@@ -169,7 +169,7 @@ if (!isset($_SESSION["nombre"])) {
                 </div>
               </div>
               <div class="panel-body" id="formularioregistros" style="background-color: #ecf0f5 !important; padding-left: 0 !important; padding-right: 0 !important;">
-                <form name="formulario" id="formulario" method="POST">
+                <form name="formulario" id="formulario" method="POST" enctype="multipart/form-data">
                   <div class="form-group col-lg-2 col-md-4 col-sm-12 caja1" style="padding-left: 0 !important; padding-right: 20px;">
                     <div class="contenedor" style="background-color: white; border-top: 3px #3686b4 solid; padding: 10px 20px 20px 20px;">
                       <label>Imagen de muestra:</label>

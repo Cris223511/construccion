@@ -31,14 +31,28 @@ switch ($_GET["op"]) {
         } else {
             //Validamos el acceso solo al usuario logueado y autorizado.
             if ($_SESSION['perfilu'] == 1) {
-                if (!file_exists($_FILES['imagen']['tmp_name']) || !is_uploaded_file($_FILES['imagen']['tmp_name'])) {
-                    $imagen = $_POST["imagenactual"];
-                } else {
-                    $ext = explode(".", $_FILES["imagen"]["name"]);
-                    if ($_FILES['imagen']['type'] == "image/jpg" || $_FILES['imagen']['type'] == "image/jpeg" || $_FILES['imagen']['type'] == "image/png") {
-                        $imagen = round(microtime(true)) . '.' . end($ext);
-                        move_uploaded_file($_FILES["imagen"]["tmp_name"], "../files/usuarios/" . $imagen);
+                if (!empty($_FILES['imagen']['name'])) {
+                    $uploadDirectory = "../files/usuarios/";
+
+                    $tempFile = $_FILES['imagen']['tmp_name'];
+                    $fileName = pathinfo($_FILES['imagen']['name'], PATHINFO_FILENAME);
+                    $fileExtension = strtolower(pathinfo($_FILES['imagen']['name'], PATHINFO_EXTENSION));
+                    $newFileName = $fileName . '_' . round(microtime(true)) . '.' . $fileExtension;
+                    $targetFile = $uploadDirectory . $newFileName;
+
+                    // Verificar si es una imagen y mover el archivo
+                    $allowedExtensions = array('jpg', 'jpeg', 'png');
+                    if (in_array($fileExtension, $allowedExtensions) && move_uploaded_file($tempFile, $targetFile)) {
+                        // El archivo se ha movido correctamente, ahora $newFileName contiene el nombre del archivo
+                        $imagen = $newFileName;
+                    } else {
+                        // Error en la subida del archivo
+                        echo "Error al subir la imagen.";
+                        exit;
                     }
+                } else {
+                    // No se ha seleccionado ninguna imagen
+                    $imagen = $_POST["imagenactual"];
                 }
 
                 $nombreExiste = $usuario->verificarNombreExiste($nombre);
