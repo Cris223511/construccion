@@ -48,13 +48,12 @@ if (!isset($_SESSION["nombre"])) {
 
 				if (!empty($_FILES['imagen']['name'])) {
 					$uploadDirectory = "../files/articulos/";
-
+				
 					$tempFile = $_FILES['imagen']['tmp_name'];
-					$fileName = pathinfo($_FILES['imagen']['name'], PATHINFO_FILENAME);
 					$fileExtension = strtolower(pathinfo($_FILES['imagen']['name'], PATHINFO_EXTENSION));
-					$newFileName = $fileName . '_' . round(microtime(true)) . '.' . $fileExtension;
+					$newFileName = sprintf("%09d", rand(0, 999999999)) . '.' . $fileExtension;
 					$targetFile = $uploadDirectory . $newFileName;
-
+				
 					// Verificar si es una imagen y mover el archivo
 					$allowedExtensions = array('jpg', 'jpeg', 'png');
 					if (in_array($fileExtension, $allowedExtensions) && move_uploaded_file($tempFile, $targetFile)) {

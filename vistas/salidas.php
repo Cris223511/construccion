@@ -146,7 +146,8 @@ if (!isset($_SESSION["nombre"])) {
                     </div>
                     <div class="form-group col-lg-3 col-md-3 col-sm-6">
                       <label id="label2">ㅤㅤ</label>
-                      <input type="text" class="form-control codigo" id="cod_2" maxlength="5" placeholder="N° de documento de la salida." required step="any" onkeydown="evitarNegativo(event)" oninput="validarNumeroDecimal(this, 5)">
+                      <input type="text" class="form-control codigo" id="cod_2" maxlength="5" placeholder="N° de documento de la salida." oninput="onlyNumbersAndMaxLenght(this)" onblur="formatearNumero(this)" required />
+
                     </div>
                     <div class="form-group col-lg-6 col-md-6 col-sm-12">
                       <label>Tipo de movimiento(*):</label>

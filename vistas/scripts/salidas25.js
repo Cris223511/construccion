@@ -70,13 +70,6 @@ function separarLetrasYNumeros(correlativoActual) {
 	}
 }
 
-function generarSiguienteCorrelativo(numeros) {
-	const siguienteNumero = parseInt(numeros, 10) + 1;
-	const longitud = numeros.length;
-	const siguienteCorrelativo = String(siguienteNumero).padStart(longitud, '0');
-	return siguienteCorrelativo;
-}
-
 function init() {
 	mostrarform(false);
 	limpiar();
@@ -105,19 +98,20 @@ function init() {
 			"idlocal": $("#idlocal"),
 		};
 
+		if (obj.hasOwnProperty('correlativo') && obj.correlativo.length > 0) {
+			const correlativoActual = obj.correlativo[0].titulo || "PRO00000";
+			const { letras, numeros } = separarLetrasYNumeros(correlativoActual);
+
+			letraCorrelativo = letras;
+			siguienteCorrelativo = generarSiguienteCorrelativo(numeros);
+
+			$("#cod_1").val(letraCorrelativo);
+			$("#cod_2").val(siguienteCorrelativo);
+		} else {
+			console.error("No se encontró el correlativo en el objeto");
+		}
+
 		for (const selectId in selects) {
-			if (obj.hasOwnProperty('correlativo') && obj.correlativo.length > 0) {
-				const correlativoActual = obj.correlativo[0].titulo || "PRO00000";
-				const { letras, numeros } = separarLetrasYNumeros(correlativoActual);
-
-				letraCorrelativo = letras;
-				siguienteCorrelativo = generarSiguienteCorrelativo(numeros);
-
-				$("#cod_1").val(letraCorrelativo);
-				$("#cod_2").val(siguienteCorrelativo);
-			} else {
-				console.error("No se encontró el correlativo en el objeto");
-			}
 
 			if (selects.hasOwnProperty(selectId)) {
 				const select = selects[selectId];

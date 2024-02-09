@@ -50,9 +50,8 @@ if (!isset($_SESSION["nombre"])) {
 					$uploadDirectory = "../files/articulos/";
 
 					$tempFile = $_FILES['imagen']['tmp_name'];
-					$fileName = pathinfo($_FILES['imagen']['name'], PATHINFO_FILENAME);
 					$fileExtension = strtolower(pathinfo($_FILES['imagen']['name'], PATHINFO_EXTENSION));
-					$newFileName = $fileName . '_' . round(microtime(true)) . '.' . $fileExtension;
+					$newFileName = sprintf("%09d", rand(0, 999999999)) . '.' . $fileExtension;
 					$targetFile = $uploadDirectory . $newFileName;
 
 					// Verificar si es una imagen y mover el archivo
@@ -123,129 +122,65 @@ if (!isset($_SESSION["nombre"])) {
 				$fecha_inicio = $_GET["fecha_inicio"];
 				$fecha_fin = $_GET["fecha_fin"];
 
-				if ($cargo == "superadmin") {
-					if ($param == 0) {
-						if ($fecha_inicio != "" && $fecha_fin != "") {
-							$rspta = $articulo->listarPorFecha($fecha_inicio, $fecha_fin);
-						} else {
-							$rspta = $articulo->listar();
-						}
+				if ($param == 0) {
+					if ($fecha_inicio != "" && $fecha_fin != "") {
+						$rspta = $articulo->listarPorFecha($idlocalSession, $fecha_inicio, $fecha_fin);
 					} else {
-						if ($param1 != '' && $param2 == '' && $param3 == '') {
-							$rspta = $articulo->listarPorParametro("a.idmarca = '$param1'");
-						} else if ($param1 == '' && $param2 != '' && $param3 == '') {
-							$rspta = $articulo->listarPorParametro("a.idcategoria = '$param2'");
-						} else if ($param1 == '' && $param2 == '' && $param3 != '') {
-							if ($param3 == "1") {
-								// Disponible
-								$rspta = $articulo->listarPorParametro("a.stock > a.stock_minimo");
-							} else if ($param3 == "2") {
-								// Agotándose
-								$rspta = $articulo->listarPorParametro("a.stock > 0 AND a.stock < a.stock_minimo");
-							} else {
-								// Agotado
-								$rspta = $articulo->listarPorParametro("a.stock = 0");
-							}
-						} else if ($param1 != '' && $param2 != '' && $param3 == '') {
-							$rspta = $articulo->listarPorParametro("a.idmarca = '$param1' AND a.idcategoria = '$param2'");
-						} else if ($param1 != '' && $param2 == '' && $param3 != '') {
-							if ($param3 == "1") {
-								// Disponible
-								$rspta = $articulo->listarPorParametro("a.idmarca = '$param1' AND a.stock > a.stock_minimo");
-							} else if ($param3 == "2") {
-								// Agotándose
-								$rspta = $articulo->listarPorParametro("a.idmarca = '$param1' AND a.stock > 0 AND a.stock < a.stock_minimo");
-							} else {
-								// Agotado
-								$rspta = $articulo->listarPorParametro("a.idmarca = '$param1' AND a.stock = 0");
-							}
-						} else if ($param1 == '' && $param2 != '' && $param3 != '') {
-							if ($param3 == "1") {
-								// Disponible
-								$rspta = $articulo->listarPorParametro("a.idcategoria = '$param2' AND a.stock > a.stock_minimo");
-							} else if ($param3 == "2") {
-								// Agotándose
-								$rspta = $articulo->listarPorParametro("a.idcategoria = '$param2' AND a.stock > 0 AND a.stock < a.stock_minimo");
-							} else {
-								// Agotado
-								$rspta = $articulo->listarPorParametro("a.idcategoria = '$param2' AND a.stock = 0");
-							}
-						} else if ($param1 != '' && $param2 != '' && $param3 != '') {
-							if ($param3 == "1") {
-								// Disponible
-								$rspta = $articulo->listarPorParametro("a.idmarca = '$param1' AND a.idcategoria = '$param2' AND a.stock > a.stock_minimo");
-							} else if ($param3 == "2") {
-								// Agotándose
-								$rspta = $articulo->listarPorParametro("a.idmarca = '$param1' AND a.idcategoria = '$param2' AND a.stock > 0 AND a.stock < a.stock_minimo");
-							} else {
-								// Agotado
-								$rspta = $articulo->listarPorParametro("a.idmarca = '$param1' AND a.idcategoria = '$param2' AND a.stock = 0");
-							}
-						} else {
-							$rspta = $articulo->listar();
-						}
+						$rspta = $articulo->listar($idlocalSession, );
 					}
 				} else {
-					if ($param == 0) {
-						if ($fecha_inicio != "" && $fecha_fin != "") {
-							$rspta = $articulo->listarPorFechaUsuario($idusuario, $fecha_inicio, $fecha_fin);
+					if ($param1 != '' && $param2 == '' && $param3 == '') {
+						$rspta = $articulo->listarPorParametro($idlocalSession, "a.idmarca = '$param1'");
+					} else if ($param1 == '' && $param2 != '' && $param3 == '') {
+						$rspta = $articulo->listarPorParametro($idlocalSession, "a.idcategoria = '$param2'");
+					} else if ($param1 == '' && $param2 == '' && $param3 != '') {
+						if ($param3 == "1") {
+							// Disponible
+							$rspta = $articulo->listarPorParametro($idlocalSession, "a.stock > a.stock_minimo");
+						} else if ($param3 == "2") {
+							// Agotándose
+							$rspta = $articulo->listarPorParametro($idlocalSession, "a.stock > 0 AND a.stock < a.stock_minimo");
 						} else {
-							$rspta = $articulo->listarPorUsuario($idusuario);
+							// Agotado
+							$rspta = $articulo->listarPorParametro($idlocalSession, "a.stock = 0");
+						}
+					} else if ($param1 != '' && $param2 != '' && $param3 == '') {
+						$rspta = $articulo->listarPorParametro($idlocalSession, "a.idmarca = '$param1' AND a.idcategoria = '$param2'");
+					} else if ($param1 != '' && $param2 == '' && $param3 != '') {
+						if ($param3 == "1") {
+							// Disponible
+							$rspta = $articulo->listarPorParametro($idlocalSession, "a.idmarca = '$param1' AND a.stock > a.stock_minimo");
+						} else if ($param3 == "2") {
+							// Agotándose
+							$rspta = $articulo->listarPorParametro($idlocalSession, "a.idmarca = '$param1' AND a.stock > 0 AND a.stock < a.stock_minimo");
+						} else {
+							// Agotado
+							$rspta = $articulo->listarPorParametro($idlocalSession, "a.idmarca = '$param1' AND a.stock = 0");
+						}
+					} else if ($param1 == '' && $param2 != '' && $param3 != '') {
+						if ($param3 == "1") {
+							// Disponible
+							$rspta = $articulo->listarPorParametro($idlocalSession, "a.idcategoria = '$param2' AND a.stock > a.stock_minimo");
+						} else if ($param3 == "2") {
+							// Agotándose
+							$rspta = $articulo->listarPorParametro($idlocalSession, "a.idcategoria = '$param2' AND a.stock > 0 AND a.stock < a.stock_minimo");
+						} else {
+							// Agotado
+							$rspta = $articulo->listarPorParametro($idlocalSession, "a.idcategoria = '$param2' AND a.stock = 0");
+						}
+					} else if ($param1 != '' && $param2 != '' && $param3 != '') {
+						if ($param3 == "1") {
+							// Disponible
+							$rspta = $articulo->listarPorParametro($idlocalSession, "a.idmarca = '$param1' AND a.idcategoria = '$param2' AND a.stock > a.stock_minimo");
+						} else if ($param3 == "2") {
+							// Agotándose
+							$rspta = $articulo->listarPorParametro($idlocalSession, "a.idmarca = '$param1' AND a.idcategoria = '$param2' AND a.stock > 0 AND a.stock < a.stock_minimo");
+						} else {
+							// Agotado
+							$rspta = $articulo->listarPorParametro($idlocalSession, "a.idmarca = '$param1' AND a.idcategoria = '$param2' AND a.stock = 0");
 						}
 					} else {
-						if ($param1 != '' && $param2 == '' && $param3 == '') {
-							$rspta = $articulo->listarPorUsuarioParametro($idusuario, "a.idmarca = '$param1'");
-						} else if ($param1 == '' && $param2 != '' && $param3 == '') {
-							$rspta = $articulo->listarPorUsuarioParametro($idusuario, "a.idcategoria = '$param2'");
-						} else if ($param1 == '' && $param2 == '' && $param3 != '') {
-							if ($param3 == "1") {
-								// Disponible
-								$rspta = $articulo->listarPorUsuarioParametro($idusuario, "a.stock > a.stock_minimo");
-							} else if ($param3 == "2") {
-								// Agotándose
-								$rspta = $articulo->listarPorUsuarioParametro($idusuario, "a.stock > 0 AND a.stock < a.stock_minimo");
-							} else {
-								// Agotado
-								$rspta = $articulo->listarPorUsuarioParametro($idusuario, "a.stock = 0");
-							}
-						} else if ($param1 != '' && $param2 != '' && $param3 == '') {
-							$rspta = $articulo->listarPorUsuarioParametro($idusuario, "a.idmarca = '$param1' AND a.idcategoria = '$param2'");
-						} else if ($param1 != '' && $param2 == '' && $param3 != '') {
-							if ($param3 == "1") {
-								// Disponible
-								$rspta = $articulo->listarPorUsuarioParametro($idusuario, "a.idmarca = '$param1' AND a.stock > a.stock_minimo");
-							} else if ($param3 == "2") {
-								// Agotándose
-								$rspta = $articulo->listarPorUsuarioParametro($idusuario, "a.idmarca = '$param1' AND a.stock > 0 AND a.stock < a.stock_minimo");
-							} else {
-								// Agotado
-								$rspta = $articulo->listarPorUsuarioParametro($idusuario, "a.idmarca = '$param1' AND a.stock = 0");
-							}
-						} else if ($param1 == '' && $param2 != '' && $param3 != '') {
-							if ($param3 == "1") {
-								// Disponible
-								$rspta = $articulo->listarPorUsuarioParametro($idusuario, "a.idcategoria = '$param2' AND a.stock > a.stock_minimo");
-							} else if ($param3 == "2") {
-								// Agotándose
-								$rspta = $articulo->listarPorUsuarioParametro($idusuario, "a.idcategoria = '$param2' AND a.stock > 0 AND a.stock < a.stock_minimo");
-							} else {
-								// Agotado
-								$rspta = $articulo->listarPorUsuarioParametro($idusuario, "a.idcategoria = '$param2' AND a.stock = 0");
-							}
-						} else if ($param1 != '' && $param2 != '' && $param3 != '') {
-							if ($param3 == "1") {
-								// Disponible
-								$rspta = $articulo->listarPorUsuarioParametro($idusuario, "a.idmarca = '$param1' AND a.idcategoria = '$param2' AND a.stock > a.stock_minimo");
-							} else if ($param3 == "2") {
-								// Agotándose
-								$rspta = $articulo->listarPorUsuarioParametro($idusuario, "a.idmarca = '$param1' AND a.idcategoria = '$param2' AND a.stock > 0 AND a.stock < a.stock_minimo");
-							} else {
-								// Agotado
-								$rspta = $articulo->listarPorUsuarioParametro($idusuario, "a.idmarca = '$param1' AND a.idcategoria = '$param2' AND a.stock = 0");
-							}
-						} else {
-							$rspta = $articulo->listarPorUsuario($idusuario);
-						}
+						$rspta = $articulo->listar($idlocalSession);
 					}
 				}
 
