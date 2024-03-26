@@ -141,6 +141,7 @@ $local_login = $_SESSION['local'];
 
   .box {
     box-shadow: none !important;
+    border-top: 3px #002a8e solid !important;
   }
 </style>
 
@@ -319,12 +320,10 @@ $local_login = $_SESSION['local'];
               ';
             if ($_SESSION['cargo'] == "superadmin" || $_SESSION['cargo'] == "admin") {
               echo '
+                <li id="lConfPortada"><a href="confPortada.php"><i class="fa fa-circle-o"></i> Configuración de portada</a></li>
+                <li id="lConfBoleta"><a href="confBoleta.php"><i class="fa fa-circle-o"></i> Configuración de boletas</a></li>
                 <li id="lLocalesExternos"><a href="localesExternos.php"><i class="fa fa-circle-o"></i> Locales externos</a></li>
-                ';
-            }
-            if ($_SESSION['cargo'] == "superadmin" || $_SESSION['cargo'] == "admin") {
-              echo '
-              <li id="lLocalesDisponibles"><a href="localesDisponibles.php"><i class="fa fa-circle-o"></i> Crear locales disponibles</a></li>
+                <li id="lLocalesDisponibles"><a href="localesDisponibles.php"><i class="fa fa-circle-o"></i> Crear locales disponibles</a></li>
               ';
             }
             echo '

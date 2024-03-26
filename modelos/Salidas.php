@@ -135,6 +135,10 @@ class Salida
 			UNION ALL
 			SELECT 'local' AS tabla, l.idlocal AS id, l.titulo, u.nombre AS usuario, local_ruc AS ruc FROM locales l LEFT JOIN usuario u ON l.idusuario = u.idusuario WHERE l.idusuario <> 0 AND l.estado='activado' AND l.eliminado='0'
 			UNION ALL
+			SELECT 'local2' AS tabla, l.idlocal AS id, l.titulo, u.nombre AS usuario, local_ruc AS ruc FROM locales l LEFT JOIN usuario u ON l.idusuario = u.idusuario WHERE l.idusuario <> 0 AND l.estado='activado' AND l.eliminado='0'
+			UNION ALL
+			SELECT 'local3' AS tabla, l.idlocal AS id, l.titulo, u.nombre AS usuario, local_ruc AS ruc FROM locales l LEFT JOIN usuario u ON l.idusuario = u.idusuario WHERE l.idusuario <> 0 AND l.estado='activado' AND l.eliminado='0'
+			UNION ALL
 			SELECT 'correlativo' AS tabla, 0 AS id, (SELECT codigo FROM salidas WHERE idlocal = '$idlocal' ORDER BY idsalida DESC LIMIT 1) AS correlativo, NULL AS usuario, NULL AS ruc";
 
 		return ejecutarConsulta($sql);
@@ -147,6 +151,10 @@ class Salida
 			SELECT 'maquinaria' AS tabla, ma.idmaquinaria AS id, ma.titulo, u.nombre AS usuario, NULL AS ruc FROM maquinarias ma LEFT JOIN usuario u ON ma.idusuario = u.idusuario WHERE ma.estado='activado' AND ma.eliminado='0'
 			UNION ALL
 			SELECT 'local' AS tabla, l.idlocal AS id, l.titulo, u.nombre AS usuario, local_ruc AS ruc FROM locales l LEFT JOIN usuario u ON l.idusuario = u.idusuario WHERE l.idlocal='$idlocal' AND l.idusuario <> 0 AND l.estado='activado' AND l.eliminado='0'
+			UNION ALL
+			SELECT 'local2' AS tabla, l.idlocal AS id, l.titulo, u.nombre AS usuario, local_ruc AS ruc FROM locales l LEFT JOIN usuario u ON l.idusuario = u.idusuario WHERE l.idlocal='$idlocal' AND l.idusuario <> 0 AND l.estado='activado' AND l.eliminado='0'
+			UNION ALL
+			SELECT 'local3' AS tabla, l.idlocal AS id, l.titulo, u.nombre AS usuario, local_ruc AS ruc FROM locales l LEFT JOIN usuario u ON l.idusuario = u.idusuario WHERE l.idlocal='$idlocal' AND l.idusuario <> 0 AND l.estado='activado' AND l.eliminado='0'
 			UNION ALL
 			SELECT 'correlativo' AS tabla, 0 AS id, (SELECT codigo FROM salidas WHERE idlocal = '$idlocal' ORDER BY idsalida DESC LIMIT 1) AS correlativo, NULL AS usuario, NULL AS ruc";
 

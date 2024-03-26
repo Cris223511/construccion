@@ -10,12 +10,18 @@ if (!isset($_SESSION["nombre"])) {
   if ($_SESSION['salidas'] == 1) {
     require('Salida.php');
 
-    $logo = "logo.jpeg";
-    $ext_logo = "jpg";
-    $empresa = "Almacenes S.A.C.";
-    $documento = "20477157772";
-    $direccion = "Av Gerardo Unger 5689 - Los Olivos - Lima";
-    $telefono = "998 393 220";
+    require_once "../modelos/Perfiles.php";
+    $perfil = new Perfiles();
+    $rspta = $perfil->mostrarReporte();
+
+    //Establecemos los datos de la empresa
+    $logo = $rspta["imagen"];
+    $ext_logo = strtolower(end(explode('.', $rspta["imagen"])));
+    $empresa = $rspta["titulo"];
+    $documento = ($rspta["ruc"] == '') ? 'Sin registrar' : $rspta["ruc"];
+    $direccion = ($rspta["direccion"] == '') ? 'Sin registrar' : $rspta["direccion"];
+    $telefono = ($rspta["telefono"] == '') ? 'Sin registrar' : number_format($rspta["telefono"], 0, '', ' ');
+    $email = ($rspta["email"] == '') ? 'Sin registrar' : $rspta["email"];
 
     require_once "../modelos/Salidas.php";
     $salida = new Salida();
@@ -30,8 +36,9 @@ if (!isset($_SESSION["nombre"])) {
       $documento . "\n" .
         utf8_decode("Dirección: ") . utf8_decode($direccion) . "\n" .
         utf8_decode("Teléfono: ") . $telefono . "\n" .
+        "Email: " . $email . "\n" .
         utf8_decode("Local: ") . $regv->local . "\n",
-      $logo,
+      '../files/logo_reportes/' . $logo,
       $ext_logo
     );
 

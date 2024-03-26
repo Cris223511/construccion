@@ -130,4 +130,24 @@ class Proveedor
 				WHERE p.idusuario = '$idusuario' AND p.eliminado = '0' ORDER BY p.idproveedor DESC";
 		return ejecutarConsulta($sql);
 	}
+
+	public function listarASC()
+	{
+		$sql = "SELECT p.idproveedor, p.nombre, u.nombre as usuario, u.cargo as cargo, p.tipo_documento, p.num_documento, p.direccion, p.telefono, p.email, u.idusuario, u.cargo as cargo,
+				DATE_FORMAT(p.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, p.estado
+				FROM proveedores p
+				LEFT JOIN usuario u ON p.idusuario = u.idusuario
+				WHERE p.eliminado = '0' ORDER BY p.idproveedor ASC";
+		return ejecutarConsulta($sql);
+	}
+
+	public function listarPorUsuarioASC($idusuario)
+	{
+		$sql = "SELECT p.idproveedor, p.nombre, u.nombre as usuario, u.cargo as cargo, p.tipo_documento, p.num_documento, p.direccion, p.telefono, p.email, u.idusuario, u.cargo as cargo,
+				DATE_FORMAT(p.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, p.estado
+				FROM proveedores p
+				LEFT JOIN usuario u ON p.idusuario = u.idusuario
+				WHERE p.idusuario = '$idusuario' AND p.eliminado = '0' ORDER BY p.idproveedor ASC";
+		return ejecutarConsulta($sql);
+	}
 }

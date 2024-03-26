@@ -79,13 +79,13 @@ if (!isset($_SESSION["nombre"])) {
                 <form name="formulario2" id="formulario2" method="POST">
                   <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
                     <label>Locales disponibles(*):</label>
-                    <select id="idlocal_asignar" name="idlocal_asignar" class="form-control selectpicker" data-live-search="true" required>
+                    <select id="idlocal_asignar" name="idlocal_asignar" class="form-control selectpicker" data-live-search="true" data-size="5" required>
                       <option value="">- Seleccione -</option>
                     </select>
                   </div>
                   <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
                     <label>Asignar a(*):</label>
-                    <select id="idusuario_asignar" name="idusuario_asignar" class="form-control selectpicker" data-live-search="true" required>
+                    <select id="idusuario_asignar" name="idusuario_asignar" class="form-control selectpicker" data-live-search="true" data-size="5" required>
                       <option value="">- Seleccione -</option>
                     </select>
                   </div>

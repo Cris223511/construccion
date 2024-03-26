@@ -30,6 +30,8 @@ if (!isset($_SESSION["nombre"])) {
 		$ubicacion = isset($_POST["ubicacion"]) ? limpiarCadena($_POST["ubicacion"]) : "";
 		$descripcion = isset($_POST["descripcion"]) ? limpiarCadena($_POST["descripcion"]) : "";
 
+		$sunat = isset($_POST["sunat"]) ? limpiarCadena($_POST["sunat"]) : "";
+
 		switch ($_GET["op"]) {
 			case 'guardaryeditar':
 				$rspta = $entradas->agregar($idlocal, $idusuario, $idproveedor, $idtipo, $codigo, $ubicacion, $descripcion,  $_POST["idarticulo"], $_POST["cantidad"]);
@@ -132,11 +134,10 @@ if (!isset($_SESSION["nombre"])) {
 
 					$data[] = array(
 						"0" => '<div style="display: flex; flex-wrap: nowrap; gap: 3px">' .
-						'<button class="btn btn-bcp" style="margin-right: 3px; height: 35px;" onclick="mostrar(' . $reg->identrada . ')"><i class="fa fa-eye"></i></button>' .
+							'<button class="btn btn-bcp" style="margin-right: 3px; height: 35px;" onclick="mostrar(' . $reg->identrada . ')"><i class="fa fa-eye"></i></button>' .
 							(($reg->estado == 'activado') ?
 								(mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-danger" style="margin-right: 3px; height: 35px;" onclick="desactivar(' . $reg->identrada . ')"><i class="fa fa-close"></i></button>')) .
-								('<a target="_blank" href="../reportes/exEntrada.php?id=' . $reg->identrada . '"><button class="btn btn-success" style="margin-right: 3px; height: 35px;"><i class="fa fa-file"></i></button></a>') :
-								(mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-success" style="margin-right: 3px; width: 35px; height: 35px;" onclick="activar(' . $reg->identrada . ')"><i style="margin-left: -2px" class="fa fa-check"></i></button>'))) .
+								('<a target="_blank" href="../reportes/exEntrada.php?id=' . $reg->identrada . '"><button class="btn btn-success" style="margin-right: 3px; height: 35px;"><i class="fa fa-file"></i></button></a>') : (mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-success" style="margin-right: 3px; width: 35px; height: 35px;" onclick="activar(' . $reg->identrada . ')"><i style="margin-left: -2px" class="fa fa-check"></i></button>'))) .
 							mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-danger" style="height: 35px;" onclick="eliminar(' . $reg->identrada . ')"><i class="fa fa-trash"></i></button>') .
 							'</div>',
 						"1" => $reg->fecha,
@@ -158,6 +159,18 @@ if (!isset($_SESSION["nombre"])) {
 				);
 
 				echo json_encode($results);
+				break;
+
+			case 'selectProveedor':
+				require_once "../modelos/Proveedores.php";
+				$proveedores = new Proveedor();
+
+				$rspta = $proveedores->listarASC();
+
+				echo '<option value="">- Seleccione -</option>';
+				while ($reg = $rspta->fetch_object()) {
+					echo '<option value=' . $reg->idproveedor . '>' . $reg->nombre . '</option>';
+				}
 				break;
 
 			case 'listarArticulos':
@@ -284,6 +297,59 @@ if (!isset($_SESSION["nombre"])) {
 				}
 
 				echo json_encode($data);
+				break;
+
+				/* ======================= SUNAT ======================= */
+
+			case 'consultaSunat':
+				$data = "";
+				$curl = curl_init();
+
+				try {
+					if (strlen($sunat) == 8) {
+						// DNI
+						curl_setopt($curl, CURLOPT_URL, 'https://api.apis.net.pe/v1/dni?numero=' . $sunat);
+					} elseif (strlen($sunat) == 11) {
+						// RUC
+						curl_setopt($curl, CURLOPT_URL, 'https://api.apis.net.pe/v1/ruc?numero=' . $sunat);
+					} elseif (strlen($sunat) < 8) {
+						// Mensaje para DNI no válido
+						$data = "El DNI debe tener 8 caracteres.";
+					} elseif (strlen($sunat) > 8 && strlen($sunat) < 11) {
+						// Mensaje para RUC no válido
+						$data = "El RUC debe tener 11 caracteres.";
+					}
+
+					if (!empty($data)) {
+						echo $data;
+						break;
+					}
+
+					// Configurar opciones de cURL
+					curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+					// Ejecutar la solicitud
+					$response = curl_exec($curl);
+
+					if ($response === false) {
+						throw new Exception(curl_error($curl));
+					}
+
+					// Verificar si la respuesta contiene "Not Found" y ajustar el mensaje en consecuencia
+					if (stripos($response, 'Not Found') !== false || stripos($response, '{"error":"RUC invalido"}') !== false) {
+						$data = (strlen($sunat) == 8) ? "DNI no encontrado" : "RUC no encontrado";
+					} else {
+						$data = $response;
+					}
+				} catch (Exception $e) {
+					// Capturar excepción y proporcionar mensaje controlado
+					$data = "Error al procesar la solicitud: " . $e->getMessage();
+				} finally {
+					// Cerrar cURL
+					curl_close($curl);
+				}
+
+				echo $data;
 				break;
 		}
 	} else {

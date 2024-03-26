@@ -138,4 +138,26 @@ class Personal
 				WHERE p.idlocal = '$idlocal' AND p.eliminado = '0' ORDER BY p.idpersonal DESC";
 		return ejecutarConsulta($sql);
 	}
+
+	public function listarASC()
+	{
+		$sql = "SELECT p.idpersonal, p.nombre, u.nombre as usuario, u.cargo as cargo, p.tipo_documento, p.num_documento, p.direccion, p.telefono, p.email, u.idusuario, u.cargo as cargo, l.titulo as local,
+				DATE_FORMAT(p.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, p.estado
+				FROM personales p
+				LEFT JOIN usuario u ON p.idusuario = u.idusuario
+				LEFT JOIN locales l ON p.idlocal = l.idlocal
+				WHERE p.eliminado = '0' ORDER BY p.idpersonal ASC";
+		return ejecutarConsulta($sql);
+	}
+
+	public function listarPorUsuarioASC($idlocal)
+	{
+		$sql = "SELECT p.idpersonal, p.nombre, u.nombre as usuario, u.cargo as cargo, p.tipo_documento, p.num_documento, p.direccion, p.telefono, p.email, u.idusuario, u.cargo as cargo, l.titulo as local,
+				DATE_FORMAT(p.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, p.estado
+				FROM personales p
+				LEFT JOIN usuario u ON p.idusuario = u.idusuario
+				LEFT JOIN locales l ON p.idlocal = l.idlocal
+				WHERE p.idlocal = '$idlocal' AND p.eliminado = '0' ORDER BY p.idpersonal ASC";
+		return ejecutarConsulta($sql);
+	}
 }

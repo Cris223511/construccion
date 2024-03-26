@@ -27,6 +27,12 @@ $("#frmAcceso").on('submit', function (e) {
                     title: 'Sin acceso',
                     text: 'El local en donde usted está trabajando está desactivado, comuníquese con el administrador.',
                 })
+            } else if (data == 3) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Sin acceso',
+                    text: 'El local del usuario no existe, comuníquese con el administrador.',
+                })
             } else if (data != "null") {
                 Swal.fire({
                     icon: 'success',
@@ -56,3 +62,19 @@ function mostrarOcultarClave() {
         claveInput.attr('type', 'password');
     }
 }
+
+function mostrar() {
+    $.post("../ajax/verPortada.php?op=mostrar", function (datas, status) {
+        data = JSON.parse(datas);
+        if (data != null) {
+            console.log(data.imagen);
+            $("#imagenmuestra").attr("src", "../files/portadas/" + data.imagen);
+            $(".fondo-login").css("background-image", "url('../files/portadas/" + data.imagen + "')");
+        } else {
+            $("#imagenmuestra").attr("src", "../files/portadas/default.jpg");
+            $(".fondo-login").css("background-image", "url('../files/portadas/default.jpg')");
+        }
+    });
+}
+
+mostrar();

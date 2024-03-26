@@ -47,8 +47,158 @@ function init() {
 
 		$("#idlocal").val($("#idlocal option:first").val());
 		$("#idlocal").selectpicker('refresh');
+
+		$('#idcategoria').closest('.form-group').find('input[type="text"]').attr('onkeydown', 'agregarCategoria(event)');
+		$('#idcategoria').closest('.form-group').find('input[type="text"]').attr('maxlength', '40');
+
+		$('#idmarcas').closest('.form-group').find('input[type="text"]').attr('onkeydown', 'agregarMarca(event)');
+		$('#idmarcas').closest('.form-group').find('input[type="text"]').attr('maxlength', '40');
+
+		$('#idmedida').closest('.form-group').find('input[type="text"]').attr('onkeydown', 'agregarMedida(event)');
+		$('#idmedida').closest('.form-group').find('input[type="text"]').attr('maxlength', '40');
+
 		actualizarRUC();
 	});
+}
+
+function listarTodosActivos(selectId) {
+	$.post("../ajax/articulo.php?op=listarTodosActivos", function (data) {
+		const obj = JSON.parse(data);
+
+		const select = $("#" + selectId);
+		const atributo = selectId.replace('id', '');
+
+		if (obj.hasOwnProperty(atributo)) {
+			select.empty();
+			select.html('<option value="">- Seleccione -</option>');
+			obj[atributo].forEach(function (opcion) {
+				if (atributo !== "almacen") {
+					select.append('<option value="' + opcion.id + '">' + opcion.nombre + '</option>');
+				}
+			});
+			select.selectpicker('refresh');
+		}
+
+		select.closest('.form-group').find('input[type="text"]').attr('onkeydown', 'agregar' + atributo.charAt(0).toUpperCase() + atributo.slice(1) + '(event)');
+		select.closest('.form-group').find('input[type="text"]').attr('maxlength', '40');
+		$("#" + selectId + ' option:last').prop("selected", true);
+		select.selectpicker('refresh');
+		select.selectpicker('toggle');
+	});
+}
+
+function agregarCategoria(e) {
+	let inputValue = $('#idcategoria').closest('.form-group').find('input[type="text"]');
+
+	if (e.key === "Enter") {
+		if ($('.no-results').is(':visible')) {
+			e.preventDefault();
+			$("#titulo2").val(inputValue.val());
+
+			var formData = new FormData($("#formularioCategoria")[0]);
+
+			$.ajax({
+				url: "../ajax/categoria.php?op=guardaryeditar",
+				type: "POST",
+				data: formData,
+				contentType: false,
+				processData: false,
+
+				success: function (datos) {
+					datos = limpiarCadena(datos);
+					if (!datos) {
+						console.log("No se recibieron datos del servidor.");
+						return;
+					} else if (datos == "El nombre de la categoría que ha ingresado ya existe.") {
+						bootbox.alert(datos);
+						return;
+					} else {
+						// bootbox.alert(datos);
+						listarTodosActivos("idcategoria");
+						$("#idcategoria2").val("");
+						$("#titulo2").val("");
+						$("#descripcion2").val("");
+					}
+				}
+			});
+		}
+	}
+}
+
+function agregarMarca(e) {
+	let inputValue = $('#idmarcas').closest('.form-group').find('input[type="text"]');
+
+	if (e.key === "Enter") {
+		if ($('.no-results').is(':visible')) {
+			e.preventDefault();
+			$("#titulo3").val(inputValue.val());
+
+			var formData = new FormData($("#formularioMarcas")[0]);
+
+			$.ajax({
+				url: "../ajax/marcas.php?op=guardaryeditar",
+				type: "POST",
+				data: formData,
+				contentType: false,
+				processData: false,
+
+				success: function (datos) {
+					datos = limpiarCadena(datos);
+					if (!datos) {
+						console.log("No se recibieron datos del servidor.");
+						return;
+					} else if (datos == "El nombre de la marca que ha ingresado ya existe.") {
+						bootbox.alert(datos);
+						return;
+					} else {
+						// bootbox.alert(datos);
+						listarTodosActivos("idmarcas");
+						$("#idmarcas3").val("");
+						$("#titulo3").val("");
+						$("#descripcion3").val("");
+					}
+				}
+			});
+		}
+	}
+}
+
+function agregarMedida(e) {
+	let inputValue = $('#idmedida').closest('.form-group').find('input[type="text"]');
+
+	if (e.key === "Enter") {
+		if ($('.no-results').is(':visible')) {
+			e.preventDefault();
+			$("#titulo4").val(inputValue.val());
+
+			var formData = new FormData($("#formularioMedidas")[0]);
+
+			$.ajax({
+				url: "../ajax/medidas.php?op=guardaryeditar",
+				type: "POST",
+				data: formData,
+				contentType: false,
+				processData: false,
+
+				success: function (datos) {
+					datos = limpiarCadena(datos);
+					if (!datos) {
+						console.log("No se recibieron datos del servidor.");
+						return;
+					} else if (datos == "El nombre de la medida que ha ingresado ya existe.") {
+						bootbox.alert(datos);
+						return;
+					} else {
+						// bootbox.alert(datos);
+						listarTodosActivos("idmedida");
+						$("#idmedida4").val("");
+						$("#titulo4").val("");
+						$("#descripcion4").val("");
+					}
+				}
+			});
+		}
+	}
 }
 
 function actualizarRUC() {

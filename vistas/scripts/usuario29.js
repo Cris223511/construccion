@@ -76,6 +76,7 @@ function limpiar() {
 	$("#email").val("");
 	$("#local_ruc").val("");
 	$("#cargo").val("admin");
+	$('#cargo option[value="superadmin"]').remove();
 	$("#cargo").selectpicker('refresh');
 	$("#login").val("");
 	$("#clave").val("");
@@ -113,6 +114,16 @@ function mostrarform(flag) {
 function cancelarform() {
 	limpiar();
 	mostrarform(false);
+}
+
+function verificarCargo(cargo) {
+	console.log(cargo);
+	$('#cargo option[value="superadmin"]').remove();
+
+	if (cargo == "superadmin") {
+		$('#cargo').prepend('<option value="superadmin">Superadministrador</option>');
+		$('#cargo').selectpicker('refresh');
+	}
 }
 
 //Función Listar

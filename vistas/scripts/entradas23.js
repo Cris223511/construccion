@@ -34,6 +34,19 @@ function init() {
 	$("#formulario").on("submit", function (e) {
 		guardaryeditar(e);
 	});
+
+	$("#formulario2").on("submit", function (e) {
+		guardaryeditar2(e);
+	});
+
+	$("#formulario3").on("submit", function (e) {
+		guardaryeditar3(e);
+	});
+
+	$("#formSunat").on("submit", function (e) {
+		buscarSunat(e);
+	});
+
 	$('#mEntradas').addClass("treeview active");
 	$('#lEntradas').addClass("active");
 	$("#btnGuardar").hide();
@@ -70,13 +83,83 @@ function init() {
 				}
 			}
 		}
+
+		actualizarRUC();
+
+		$('#idproveedor').closest('.form-group').find('input[type="text"]').attr('onkeydown', 'checkEnter(event)');
+
+		$('#idtipo').closest('.form-group').find('input[type="text"]').attr('onkeydown', 'agregarTipo(event)');
+		$('#idtipo').closest('.form-group').find('input[type="text"]').attr('maxlength', '40');
 	});
 
 	$.post("../ajax/entradas.php?op=selectProducto", function (r) {
 		$("#idproducto").html(r);
 		$('#idproducto').selectpicker('refresh');
-		actualizarRUC();
 	});
+}
+
+function listarTodosActivos(selectId) {
+	$.post("../ajax/entradas.php?op=listarTodosActivos", function (data) {
+		const obj = JSON.parse(data);
+
+		const select = $("#" + selectId);
+		const atributo = selectId.replace('id', '');
+
+		if (obj.hasOwnProperty(atributo)) {
+			select.empty();
+			select.html('<option value="">- Seleccione -</option>');
+			obj[atributo].forEach(function (opcion) {
+				if (atributo !== "almacen") {
+					select.append('<option value="' + opcion.id + '">' + opcion.nombre + '</option>');
+				}
+			});
+			select.selectpicker('refresh');
+		}
+
+		select.closest('.form-group').find('input[type="text"]').attr('onkeydown', 'agregar' + atributo.charAt(0).toUpperCase() + atributo.slice(1) + '(event)');
+		select.closest('.form-group').find('input[type="text"]').attr('maxlength', '40');
+		$("#" + selectId + ' option:last').prop("selected", true);
+		select.selectpicker('refresh');
+		select.selectpicker('toggle');
+	});
+}
+
+function agregarTipo(e) {
+	let inputValue = $('#idtipo').closest('.form-group').find('input[type="text"]');
+
+	if (e.key === "Enter") {
+		if ($('.no-results').is(':visible')) {
+			e.preventDefault();
+			$("#titulo3").val(inputValue.val());
+
+			var formData = new FormData($("#formularioTipo")[0]);
+
+			$.ajax({
+				url: "../ajax/tipos.php?op=guardaryeditar",
+				type: "POST",
+				data: formData,
+				contentType: false,
+				processData: false,
+
+				success: function (datos) {
+					datos = limpiarCadena(datos);
+					if (!datos) {
+						console.log("No se recibieron datos del servidor.");
+						return;
+					} else if (datos == "El nombre del tipo ya existe.") {
+						bootbox.alert(datos);
+						return;
+					} else {
+						// bootbox.alert(datos);
+						listarTodosActivos("idtipo");
+						$("#idtipo2").val("");
+						$("#titulo3").val("");
+						$("#descripcion2").val("");
+					}
+				}
+			});
+		}
+	}
 }
 
 function actualizarRUC() {
@@ -90,6 +173,233 @@ function actualizarRUC() {
 	} else {
 		localRUCInput.value = "";
 	}
+}
+
+function checkEnter(event) {
+	if (event.key === "Enter") {
+		if ($('.no-results').is(':visible')) {
+			$('#myModal3').modal('show');
+			limpiarModalClientes();
+			$("#sunat").val("");
+			console.log("di enter en idproveedor =)");
+		}
+	}
+}
+
+// CLIENTES NUEVOS (POR SUNAT)
+
+function listarClientes() {
+	$.post("../ajax/entradas.php?op=selectProveedor", function (r) {
+		$("#idproveedor").empty();
+		$("#idproveedor").html(r);
+		$('#idproveedor').selectpicker('refresh');
+		$('#idproveedor').closest('.form-group').find('input[type="text"]').attr('onkeydown', 'checkEnter(event)');
+
+		actualizarRUC();
+	});
+}
+
+function limpiarModalClientes() {
+	$("#idproveedor2").val("");
+	$("#nombre").val("");
+	$("#tipo_documento").val("");
+	$("#num_documento").val("");
+	$("#direccion").val("");
+	$("#telefono").val("");
+	$("#email").val("");
+	$("#descripcion2").val("");
+
+	habilitarTodoModalCliente();
+
+	$("#btnSunat").prop("disabled", false);
+	$("#btnGuardarCliente").prop("disabled", true);
+}
+
+function guardaryeditar2(e) {
+	e.preventDefault();
+	$("#btnGuardarCliente").prop("disabled", true);
+
+	deshabilitarTodoModalCliente();
+	var formData = new FormData($("#formulario2")[0]);
+	habilitarTodoModalCliente();
+
+	$.ajax({
+		url: "../ajax/proveedores.php?op=guardaryeditar",
+		type: "POST",
+		data: formData,
+		contentType: false,
+		processData: false,
+
+		success: function (datos) {
+			datos = limpiarCadena(datos);
+			if (!datos) {
+				console.log("No se recibieron datos del servidor.");
+				$("#btnGuardarCliente").prop("disabled", false);
+				return;
+			} else if (datos == "El número de documento que ha ingresado ya existe.") {
+				bootbox.alert(datos);
+				$("#btnGuardarCliente").prop("disabled", false);
+				return;
+			} else {
+				bootbox.alert(datos);
+				$('#myModal3').modal('hide');
+				listarClientes();
+				limpiarModalClientes();
+				$("#sunat").val("");
+			}
+		}
+	});
+}
+
+function buscarSunat(e) {
+	e.preventDefault();
+	var formData = new FormData($("#formSunat")[0]);
+	limpiarModalClientes();
+	$("#btnSunat").prop("disabled", true);
+
+	$.ajax({
+		url: "../ajax/entradas.php?op=consultaSunat",
+		type: "POST",
+		data: formData,
+		contentType: false,
+		processData: false,
+
+		success: function (datos) {
+			datos = limpiarCadena(datos);
+			if (!datos) {
+				console.log("No se recibieron datos del servidor.");
+				limpiarModalClientes();
+				return;
+			} else if (datos == "DNI no encontrado" || datos == "RUC no encontrado") {
+				limpiarModalClientes();
+				bootbox.confirm({
+					message: datos + ", ¿deseas crear un proveedor manualmente?",
+					buttons: {
+						cancel: {
+							label: 'Cancelar',
+						},
+						confirm: {
+							label: 'Aceptar',
+						}
+					},
+					callback: function (result) {
+						if (result) {
+							(datos == "DNI no encontrado") ? $("#tipo_documento2").val("DNI") : $("#tipo_documento2").val("RUC");
+
+							$("#tipo_documento2").trigger("change");
+
+							let inputValue = $('#sunat').val();
+							$("#num_documento2").val(inputValue);
+
+							$('#myModal3').modal('hide');
+							$('#myModal4').modal('show');
+						}
+					}
+				});
+			} else if (datos == "El DNI debe tener 8 caracteres." || datos == "El RUC debe tener 11 caracteres.") {
+				bootbox.alert(datos);
+				limpiarModalClientes();
+			} else {
+				// console.log(datos);
+				const obj = JSON.parse(datos);
+				console.log(obj);
+
+				$("#nombre").val(obj.nombre);
+				$("#tipo_documento").val(obj.tipoDocumento == "1" ? "DNI" : "RUC");
+				$("#num_documento").val(obj.numeroDocumento);
+				$("#direccion").val(obj.direccion);
+				$("#telefono").val(obj.telefono);
+				$("#email").val(obj.email);
+
+				// Deshabilitar los campos solo si están vacíos
+				$("#nombre").prop("disabled", obj.hasOwnProperty("nombre") && obj.nombre !== "" ? true : false);
+				$("#direccion").prop("disabled", obj.hasOwnProperty("direccion") && obj.direccion !== "" ? true : false);
+				$("#telefono").prop("disabled", obj.hasOwnProperty("telefono") && obj.telefono !== "" ? true : false);
+				$("#email").prop("disabled", obj.hasOwnProperty("email") && obj.email !== "" ? true : false);
+
+				$("#descripcion2").prop("disabled", false);
+
+				$("#sunat").val("");
+
+				$("#btnSunat").prop("disabled", false);
+				$("#btnGuardarCliente").prop("disabled", false);
+			}
+		}
+	});
+}
+
+function agregarClienteManual() {
+	limpiarModalClientes();
+	$("#sunat").val("");
+	$('#myModal3').modal('hide');
+	$('#myModal4').modal('show');
+}
+
+function habilitarTodoModalCliente() {
+	$("#tipo_documento").prop("disabled", true);
+	$("#num_documento").prop("disabled", true);
+	$("#nombre").prop("disabled", true);
+	$("#direccion").prop("disabled", true);
+	$("#telefono").prop("disabled", true);
+	$("#email").prop("disabled", true);
+	$("#descripcion2").prop("disabled", true);
+}
+
+function deshabilitarTodoModalCliente() {
+	$("#tipo_documento").prop("disabled", false);
+	$("#num_documento").prop("disabled", false);
+	$("#nombre").prop("disabled", false);
+	$("#direccion").prop("disabled", false);
+	$("#telefono").prop("disabled", false);
+	$("#email").prop("disabled", false);
+	$("#descripcion2").prop("disabled", false);
+}
+
+// CLIENTES NUEVOS (POR SI NO ENCUENTRA LA SUNAT)
+
+function limpiarModalClientes2() {
+	$("#idproveedor3").val("");
+	$("#nombre2").val("");
+	$("#tipo_documento2").val("");
+	$("#num_documento2").val("");
+	$("#direccion2").val("");
+	$("#telefono2").val("");
+	$("#email2").val("");
+	$("#descripcion3").val("");
+
+	$("#btnGuardarCliente2").prop("disabled", false);
+}
+
+function guardaryeditar3(e) {
+	e.preventDefault();
+	$("#btnGuardarCliente2").prop("disabled", true);
+	var formData = new FormData($("#formulario3")[0]);
+
+	$.ajax({
+		url: "../ajax/proveedores.php?op=guardaryeditar",
+		type: "POST",
+		data: formData,
+		contentType: false,
+		processData: false,
+
+		success: function (datos) {
+			datos = limpiarCadena(datos);
+			if (!datos) {
+				console.log("No se recibieron datos del servidor.");
+				$("#btnGuardarCliente2").prop("disabled", false);
+				return;
+			} else if (datos == "El número de documento que ha ingresado ya existe.") {
+				bootbox.alert(datos);
+				$("#btnGuardarCliente2").prop("disabled", false);
+				return;
+			} else {
+				bootbox.alert(datos);
+				$('#myModal4').modal('hide');
+				listarClientes();
+				limpiarModalClientes2();
+			}
+		}
+	});
 }
 
 function limpiar() {

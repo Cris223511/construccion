@@ -81,6 +81,19 @@ function init() {
 	$("#formulario").on("submit", function (e) {
 		guardaryeditar(e);
 	});
+
+	$("#formulario2").on("submit", function (e) {
+		guardaryeditar2(e);
+	});
+
+	$("#formulario3").on("submit", function (e) {
+		guardaryeditar3(e);
+	});
+
+	$("#formSunat").on("submit", function (e) {
+		buscarSunat(e);
+	});
+
 	$('#mSalidas').addClass("treeview active");
 	$('#lSalidas').addClass("active");
 	$("#btnGuardar").hide();
@@ -96,6 +109,8 @@ function init() {
 			"idtipo": $("#idtipo"),
 			"idmaquinaria": $("#idmaquinaria"),
 			"idlocal": $("#idlocal"),
+			"idlocal2": $("#idlocal2"),
+			"idlocal3": $("#idlocal3"),
 		};
 
 		if (obj.hasOwnProperty('correlativo') && obj.correlativo.length > 0) {
@@ -122,7 +137,7 @@ function init() {
 					select.html('<option value="">- Seleccione -</option>');
 
 					obj[atributo].forEach(function (opcion) {
-						if (atributo != "local") {
+						if (atributo != "local" && atributo != "local2" && atributo != "local3") {
 							select.append('<option value="' + opcion.id + '">' + opcion.titulo + '</option>');
 						} else {
 							select.append('<option value="' + opcion.id + '" data-local-ruc="' + opcion.ruc + '">' + opcion.titulo + '</option>');
@@ -132,13 +147,127 @@ function init() {
 				}
 			}
 		}
+
+		$('#idautorizado').closest('.form-group').find('input[type="text"]').attr('onkeydown', 'checkEnter(event)');
+		$('#idrecibido').closest('.form-group').find('input[type="text"]').attr('onkeydown', 'checkEnter(event)');
+		$('#idfinal').closest('.form-group').find('input[type="text"]').attr('onkeydown', 'checkEnter(event)');
+
+		$('#idmaquinaria').closest('.form-group').find('input[type="text"]').attr('onkeydown', 'agregarMaquinaria(event)');
+		$('#idmaquinaria').closest('.form-group').find('input[type="text"]').attr('maxlength', '40');
+
+		$('#idtipo').closest('.form-group').find('input[type="text"]').attr('onkeydown', 'agregarTipo(event)');
+		$('#idtipo').closest('.form-group').find('input[type="text"]').attr('maxlength', '40');
 	});
 
 	$.post("../ajax/salidas.php?op=selectProducto", function (r) {
 		$("#idproducto").html(r);
 		$('#idproducto').selectpicker('refresh');
 		actualizarRUC();
+		actualizarRUC2();
+		actualizarRUC3();
 	});
+}
+
+function listarTodosActivos(selectId) {
+	$.post("../ajax/salidas.php?op=listarTodosActivos", function (data) {
+		const obj = JSON.parse(data);
+
+		const select = $("#" + selectId);
+		const atributo = selectId.replace('id', '');
+
+		if (obj.hasOwnProperty(atributo)) {
+			select.empty();
+			select.html('<option value="">- Seleccione -</option>');
+			obj[atributo].forEach(function (opcion) {
+				if (atributo !== "almacen") {
+					select.append('<option value="' + opcion.id + '">' + opcion.titulo + '</option>');
+				}
+			});
+			select.selectpicker('refresh');
+		}
+
+		select.closest('.form-group').find('input[type="text"]').attr('onkeydown', 'agregar' + atributo.charAt(0).toUpperCase() + atributo.slice(1) + '(event)');
+		select.closest('.form-group').find('input[type="text"]').attr('maxlength', '40');
+		$("#" + selectId + ' option:last').prop("selected", true);
+		select.selectpicker('refresh');
+		select.selectpicker('toggle');
+	});
+}
+
+function agregarMaquinaria(e) {
+	let inputValue = $('#idmaquinaria').closest('.form-group').find('input[type="text"]');
+
+	if (e.key === "Enter") {
+		if ($('.no-results').is(':visible')) {
+			e.preventDefault();
+			$("#titulo2").val(inputValue.val());
+
+			var formData = new FormData($("#formularioMaquinaria")[0]);
+
+			$.ajax({
+				url: "../ajax/maquinarias.php?op=guardaryeditar",
+				type: "POST",
+				data: formData,
+				contentType: false,
+				processData: false,
+
+				success: function (datos) {
+					datos = limpiarCadena(datos);
+					if (!datos) {
+						console.log("No se recibieron datos del servidor.");
+						return;
+					} else if (datos == "El nombre de la maquinaria ya existe.") {
+						bootbox.alert(datos);
+						return;
+					} else {
+						// bootbox.alert(datos);
+						listarTodosActivos("idmaquinaria");
+						$("#idmaquinaria2").val("");
+						$("#titulo2").val("");
+						$("#descripcion2").val("");
+					}
+				}
+			});
+		}
+	}
+}
+
+function agregarTipo(e) {
+	let inputValue = $('#idtipo').closest('.form-group').find('input[type="text"]');
+
+	if (e.key === "Enter") {
+		if ($('.no-results').is(':visible')) {
+			e.preventDefault();
+			$("#titulo3").val(inputValue.val());
+
+			var formData = new FormData($("#formularioTipo")[0]);
+
+			$.ajax({
+				url: "../ajax/tipos.php?op=guardaryeditar",
+				type: "POST",
+				data: formData,
+				contentType: false,
+				processData: false,
+
+				success: function (datos) {
+					datos = limpiarCadena(datos);
+					if (!datos) {
+						console.log("No se recibieron datos del servidor.");
+						return;
+					} else if (datos == "El nombre del tipo ya existe.") {
+						bootbox.alert(datos);
+						return;
+					} else {
+						// bootbox.alert(datos);
+						listarTodosActivos("idtipo");
+						$("#idtipo2").val("");
+						$("#titulo3").val("");
+						$("#descripcion2").val("");
+					}
+				}
+			});
+		}
+	}
 }
 
 function actualizarRUC() {
@@ -152,6 +281,270 @@ function actualizarRUC() {
 	} else {
 		localRUCInput.value = "";
 	}
+}
+
+function actualizarRUC2() {
+	const selectLocal = document.getElementById("idlocal2");
+	const localRUCInput = document.getElementById("local_ruc2");
+	const selectedOption = selectLocal.options[selectLocal.selectedIndex];
+
+	if (selectedOption.value !== "") {
+		const localRUC = selectedOption.getAttribute('data-local-ruc');
+		localRUCInput.value = localRUC;
+	} else {
+		localRUCInput.value = "";
+	}
+}
+
+function actualizarRUC3() {
+	const selectLocal = document.getElementById("idlocal3");
+	const localRUCInput = document.getElementById("local_ruc3");
+	const selectedOption = selectLocal.options[selectLocal.selectedIndex];
+
+	if (selectedOption.value !== "") {
+		const localRUC = selectedOption.getAttribute('data-local-ruc');
+		localRUCInput.value = localRUC;
+	} else {
+		localRUCInput.value = "";
+	}
+}
+
+function checkEnter(event) {
+	if (event.key === "Enter") {
+		if ($('.no-results').is(':visible')) {
+			$('#myModal3').modal('show');
+			limpiarModalClientes();
+			$("#sunat").val("");
+			console.log("di enter en idpersonal =)");
+		}
+	}
+}
+
+// CLIENTES NUEVOS (POR SUNAT)
+
+function limpiarModalClientes() {
+	$("#idpersonal2").val("");
+	$("#nombre").val("");
+	$("#tipo_documento").val("");
+	$("#num_documento").val("");
+	$("#direccion").val("");
+	$("#telefono").val("");
+	$("#email").val("");
+	$("#descripcion2").val("");
+
+	habilitarTodoModalCliente();
+
+	$("#idlocal2").val($("#idlocal2 option:first").val());
+	$("#idlocal2").selectpicker('refresh');
+
+	$("#btnSunat").prop("disabled", false);
+	$("#btnGuardarCliente").prop("disabled", true);
+
+	actualizarRUC2();
+}
+
+function guardaryeditar2(e) {
+	e.preventDefault();
+	$("#btnGuardarCliente").prop("disabled", true);
+
+	deshabilitarTodoModalCliente();
+	var formData = new FormData($("#formulario2")[0]);
+	habilitarTodoModalCliente();
+
+	$.ajax({
+		url: "../ajax/personales.php?op=guardaryeditar",
+		type: "POST",
+		data: formData,
+		contentType: false,
+		processData: false,
+
+		success: function (datos) {
+			datos = limpiarCadena(datos);
+			if (!datos) {
+				console.log("No se recibieron datos del servidor.");
+				$("#btnGuardarCliente").prop("disabled", false);
+				return;
+			} else if (datos == "El número de documento que ha ingresado ya existe.") {
+				bootbox.alert(datos);
+				$("#btnGuardarCliente").prop("disabled", false);
+				return;
+			} else {
+				bootbox.alert(datos);
+				$('#myModal3').modal('hide');
+				let idlocal = $("#idlocal").val();
+				actualizarPersonales(idlocal);
+				limpiarModalClientes();
+				$("#sunat").val("");
+			}
+		}
+	});
+}
+
+function buscarSunat(e) {
+	e.preventDefault();
+	var formData = new FormData($("#formSunat")[0]);
+	limpiarModalClientes();
+	$("#btnSunat").prop("disabled", true);
+
+	$.ajax({
+		url: "../ajax/salidas.php?op=consultaSunat",
+		type: "POST",
+		data: formData,
+		contentType: false,
+		processData: false,
+
+		success: function (datos) {
+			datos = limpiarCadena(datos);
+			if (!datos) {
+				console.log("No se recibieron datos del servidor.");
+				limpiarModalClientes();
+				return;
+			} else if (datos == "DNI no encontrado" || datos == "RUC no encontrado") {
+				limpiarModalClientes();
+				bootbox.confirm({
+					message: datos + ", ¿deseas crear un personal manualmente?",
+					buttons: {
+						cancel: {
+							label: 'Cancelar',
+						},
+						confirm: {
+							label: 'Aceptar',
+						}
+					},
+					callback: function (result) {
+						if (result) {
+							(datos == "DNI no encontrado") ? $("#tipo_documento2").val("DNI") : $("#tipo_documento2").val("RUC");
+
+							$("#tipo_documento2").trigger("change");
+
+							let inputValue = $('#sunat').val();
+							$("#num_documento2").val(inputValue);
+
+							$('#myModal3').modal('hide');
+							$('#myModal4').modal('show');
+							$("#local_ruc3").prop("disabled", true);
+						}
+					}
+				});
+			} else if (datos == "El DNI debe tener 8 caracteres." || datos == "El RUC debe tener 11 caracteres.") {
+				bootbox.alert(datos);
+				limpiarModalClientes();
+			} else {
+				// console.log(datos);
+				const obj = JSON.parse(datos);
+				console.log(obj);
+
+				$("#nombre").val(obj.nombre);
+				$("#tipo_documento").val(obj.tipoDocumento == "1" ? "DNI" : "RUC");
+				$("#num_documento").val(obj.numeroDocumento);
+				$("#direccion").val(obj.direccion);
+				$("#telefono").val(obj.telefono);
+				$("#email").val(obj.email);
+
+				// Deshabilitar los campos solo si están vacíos
+				$("#nombre").prop("disabled", obj.hasOwnProperty("nombre") && obj.nombre !== "" ? true : false);
+				$("#direccion").prop("disabled", obj.hasOwnProperty("direccion") && obj.direccion !== "" ? true : false);
+				$("#telefono").prop("disabled", obj.hasOwnProperty("telefono") && obj.telefono !== "" ? true : false);
+				$("#email").prop("disabled", obj.hasOwnProperty("email") && obj.email !== "" ? true : false);
+
+				$("#idlocal2").prop("disabled", false);
+				$("#descripcion2").prop("disabled", false);
+
+				$("#idlocal2").val($("#idlocal2 option:first").val());
+				$("#idlocal2").selectpicker('refresh');
+
+				$("#sunat").val("");
+
+				$("#btnSunat").prop("disabled", false);
+				$("#btnGuardarCliente").prop("disabled", false);
+			}
+		}
+	});
+}
+
+function agregarClienteManual() {
+	limpiarModalClientes();
+	$("#sunat").val("");
+	$('#myModal3').modal('hide');
+	$('#myModal4').modal('show');
+	$("#local_ruc3").prop("disabled", true);
+}
+
+function habilitarTodoModalCliente() {
+	$("#tipo_documento").prop("disabled", true);
+	$("#num_documento").prop("disabled", true);
+	$("#nombre").prop("disabled", true);
+	$("#direccion").prop("disabled", true);
+	$("#telefono").prop("disabled", true);
+	$("#email").prop("disabled", true);
+	$("#idlocal2").prop("disabled", true);
+	$("#local_ruc2").prop("disabled", true);
+	$("#descripcion2").prop("disabled", true);
+}
+
+function deshabilitarTodoModalCliente() {
+	$("#tipo_documento").prop("disabled", false);
+	$("#num_documento").prop("disabled", false);
+	$("#nombre").prop("disabled", false);
+	$("#direccion").prop("disabled", false);
+	$("#telefono").prop("disabled", false);
+	$("#email").prop("disabled", false);
+	$("#idlocal2").prop("disabled", false);
+	$("#local_ruc2").prop("disabled", false);
+	$("#descripcion2").prop("disabled", false);
+}
+
+// CLIENTES NUEVOS (POR SI NO ENCUENTRA LA SUNAT)
+
+function limpiarModalClientes2() {
+	$("#idpersonal3").val("");
+	$("#nombre2").val("");
+	$("#tipo_documento2").val("");
+	$("#num_documento2").val("");
+	$("#direccion2").val("");
+	$("#telefono2").val("");
+	$("#email2").val("");
+	$("#descripcion3").val("");
+
+	$("#idlocal3").val($("#idlocal3 option:first").val());
+	$("#idlocal3").selectpicker('refresh');
+
+	$("#btnGuardarCliente2").prop("disabled", false);
+
+	actualizarRUC3();
+}
+
+function guardaryeditar3(e) {
+	e.preventDefault();
+	$("#btnGuardarCliente2").prop("disabled", true);
+	var formData = new FormData($("#formulario3")[0]);
+
+	$.ajax({
+		url: "../ajax/personales.php?op=guardaryeditar",
+		type: "POST",
+		data: formData,
+		contentType: false,
+		processData: false,
+
+		success: function (datos) {
+			datos = limpiarCadena(datos);
+			if (!datos) {
+				console.log("No se recibieron datos del servidor.");
+				$("#btnGuardarCliente2").prop("disabled", false);
+				return;
+			} else if (datos == "El número de documento que ha ingresado ya existe.") {
+				bootbox.alert(datos);
+				$("#btnGuardarCliente2").prop("disabled", false);
+				return;
+			} else {
+				bootbox.alert(datos);
+				$('#myModal4').modal('hide');
+				let idlocal = $("#idlocal").val();
+				actualizarPersonales(idlocal);
+				limpiarModalClientes2();
+			}
+		}
+	});
 }
 
 function actualizarPersonales(idlocal) {
@@ -180,16 +573,19 @@ function actualizarPersonales(idlocal) {
 							select.append('<option value="' + opcion.id + '">' + opcion.nombre + '</option>');
 						});
 						select.selectpicker('refresh');
+						select.closest('.form-group').find('input[type="text"]').attr('onkeydown', 'checkEnter(event)');
 					} else if (idlocal == 0) {
 						select.empty();
 						select.html('<option value="0">- Seleccione -</option>');
 						select.selectpicker('refresh');
 						deshabilitarPersonales();
 						select.selectpicker('refresh');
+						select.closest('.form-group').find('input[type="text"]').attr('onkeydown', 'checkEnter(event)');
 					} else {
 						select.empty();
 						select.html('<option value="0">- Seleccione -</option>');
 						select.selectpicker('refresh');
+						select.closest('.form-group').find('input[type="text"]').attr('onkeydown', 'checkEnter(event)');
 					}
 				}
 			}
@@ -239,6 +635,8 @@ function limpiar() {
 	$("#form_codigo_barra").show();
 	$('#tblarticulos button').removeAttr('disabled');
 	actualizarRUC();
+	actualizarRUC2();
+	actualizarRUC3();
 }
 
 function mostrarform(flag) {

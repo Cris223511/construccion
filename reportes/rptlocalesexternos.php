@@ -34,13 +34,10 @@ if (!isset($_SESSION["nombre"])) {
     $locales = new LocalExterno();
 
     $idusuario = $_SESSION["idusuario"];
+    $idlocalSession = $_SESSION["idlocal"];
     $cargo = $_SESSION["cargo"];
 
-    if ($cargo == "superadmin") {
-      $rspta = $locales->listar();
-    } else {
-      $rspta = $locales->listarPorUsuario($idusuario);
-    }
+    $rspta = $locales->listar($idlocalSession);
 
     $pdf->SetWidths(array(40, 110, 40));
 

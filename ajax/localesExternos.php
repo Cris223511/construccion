@@ -24,6 +24,7 @@ if (!isset($_SESSION["nombre"])) {
 
 		// Variables de sesión a utilizar.
 		$idusuario = $_SESSION["idusuario"];
+		$idlocalSession = $_SESSION["idlocal"];
 		$cargo = $_SESSION["cargo"];
 
 		$idlocal = isset($_POST["idlocal"]) ? limpiarCadena($_POST["idlocal"]) : "";
@@ -77,18 +78,10 @@ if (!isset($_SESSION["nombre"])) {
 				$fecha_inicio = $_GET["fecha_inicio"];
 				$fecha_fin = $_GET["fecha_fin"];
 
-				if ($cargo == "superadmin" || $cargo == "admin") {
-					if ($fecha_inicio == "" && $fecha_fin == "") {
-						$rspta = $locales->listar();
-					} else {
-						$rspta = $locales->listarPorFecha($fecha_inicio, $fecha_fin);
-					}
+				if ($fecha_inicio == "" && $fecha_fin == "") {
+					$rspta = $locales->listar($idlocalSession);
 				} else {
-					if ($fecha_inicio == "" && $fecha_fin == "") {
-						$rspta = $locales->listarPorUsuario($idusuario);
-					} else {
-						$rspta = $locales->listarPorUsuarioFecha($idusuario, $fecha_inicio, $fecha_fin);
-					}
+					$rspta = $locales->listarPorFecha($idlocalSession, $fecha_inicio, $fecha_fin);
 				}
 
 				$data = array();
@@ -156,7 +149,7 @@ if (!isset($_SESSION["nombre"])) {
 
 				while ($reg = $rspta->fetch_object()) {
 					$cargo_detalle = "";
-					
+
 					switch ($reg->cargo) {
 						case 'superadmin':
 							$cargo_detalle = "Superadministrador";

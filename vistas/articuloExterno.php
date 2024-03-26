@@ -193,19 +193,19 @@ if (!isset($_SESSION["nombre"])) {
                     </div>
                     <div class="form-group col-lg-4 col-md-12">
                       <label>Categoría(*):</label>
-                      <select id="idcategoria" name="idcategoria" class="form-control selectpicker" data-live-search="true" required>
+                      <select id="idcategoria" name="idcategoria" class="form-control selectpicker" data-live-search="true" data-size="5" required>
                         <option value="">- Seleccione -</option>
                       </select>
                     </div>
                     <div class="form-group col-lg-4 col-md-12">
                       <label>Marca(*):</label>
-                      <select id="idmarca" name="idmarca" class="form-control selectpicker" data-live-search="true" required>
+                      <select id="idmarca" name="idmarca" class="form-control selectpicker" data-live-search="true" data-size="5" required>
                         <option value="">- Seleccione -</option>
                       </select>
                     </div>
                     <div class="form-group col-lg-4 col-md-12">
                       <label>Unidad de medida:</label>
-                      <select id="idmedida" name="idmedida" class="form-control selectpicker" data-live-search="true">
+                      <select id="idmedida" name="idmedida" class="form-control selectpicker" data-live-search="true" data-size="5">
                         <option value="">- Seleccione -</option>
                       </select>
                     </div>
@@ -273,6 +273,48 @@ if (!isset($_SESSION["nombre"])) {
         </div>
       </section>
     </div>
+
+    <!-- Form categoría -->
+    <form name="formularioCategoria" id="formularioCategoria" method="POST" style="display: none;">
+      <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+        <label>Nombre(*):</label>
+        <input type="hidden" name="idcategoria" id="idcategoria2">
+        <input type="text" class="form-control" name="titulo" id="titulo2" maxlength="50" placeholder="Nombre" required>
+      </div>
+      <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+        <label>Descripción:</label>
+        <input type="text" class="form-control" name="descripcion" id="descripcion2" maxlength="256" placeholder="Descripción">
+      </div>
+    </form>
+    <!-- Fin form categoría -->
+
+    <!-- Form marcas -->
+    <form name="formularioMarcas" id="formularioMarcas" method="POST" style="display: none;">
+      <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <label>Marca(*):</label>
+        <input type="hidden" name="idmarca" id="idmarca3">
+        <input type="text" class="form-control" name="titulo" id="titulo3" maxlength="50" placeholder="Nombre de la marca" required>
+      </div>
+      <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <label>Descripción:</label>
+        <textarea type="text" class="form-control" name="descripcion" id="descripcion3" maxlength="150" rows="4" placeholder="Descripción"></textarea>
+      </div>
+    </form>
+    <!-- Fin form marcas -->
+
+    <!-- Form medidas -->
+    <form name="formularioMedidas" id="formularioMedidas" method="POST" style="display: none;">
+      <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <label>Medida(*):</label>
+        <input type="hidden" name="idmedida" id="idmedida4">
+        <input type="text" class="form-control" name="titulo" id="titulo4" maxlength="50" placeholder="Nombre de la medida" required>
+      </div>
+      <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <label>Descripción:</label>
+        <textarea type="text" class="form-control" name="descripcion" id="descripcion4" maxlength="150" rows="4" placeholder="Descripción"></textarea>
+      </div>
+    </form>
+    <!-- Fin form medidas -->
   <?php
   } else {
     require 'noacceso.php';
