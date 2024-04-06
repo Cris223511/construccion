@@ -16,7 +16,7 @@ if (!isset($_SESSION["nombre"])) {
 
     //Establecemos los datos de la empresa
     $logo = $rspta["imagen"];
-    $ext_logo = strtolower(end(explode('.', $rspta["imagen"])));
+    $ext_logo = strtolower(pathinfo($rspta["imagen"], PATHINFO_EXTENSION));
     $empresa = $rspta["titulo"];
     $documento = ($rspta["ruc"] == '') ? 'Sin registrar' : $rspta["ruc"];
     $direccion = ($rspta["direccion"] == '') ? 'Sin registrar' : $rspta["direccion"];
