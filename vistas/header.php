@@ -8,6 +8,10 @@ $local_login = $_SESSION['local'];
 ?>
 
 <style>
+  .content-wrapper {
+    min-height: 719px !important;
+  }
+
   .skin-blue-light .main-header .navbar .sidebar-toggle {
     transition: .3s ease all;
   }
@@ -130,6 +134,10 @@ $local_login = $_SESSION['local'];
     padding-right: 0 !important
   }
 
+  textarea {
+    resize: none !important;
+  }
+
   .table-responsive {
     border: none !important;
   }
@@ -142,6 +150,11 @@ $local_login = $_SESSION['local'];
   .box {
     box-shadow: none !important;
     border-top: 3px #002a8e solid !important;
+  }
+
+  #formularioregistros textarea.form-control {
+    height: fit-content !important;
+    align-content: start !important;
   }
 </style>
 
@@ -246,7 +259,7 @@ $local_login = $_SESSION['local'];
               <ul class="treeview-menu">
                 <li id="lArticulos"><a href="articulo.php"><i class="fa fa-circle-o"></i> Productos</a></li>
             ';
-            if ($_SESSION['cargo'] == "superadmin") {
+            if ($_SESSION["cargo"] == "superadmin" || $_SESSION["cargo"] == "mirador") {
               echo '<li id="lArticuloExterno"><a href="articuloExterno.php"><i class="fa fa-circle-o"></i> Productos externos</a></li>';
             }
             echo '<li id="lCategorias"><a href="categoria.php"><i class="fa fa-circle-o"></i> Categorías</a></li>

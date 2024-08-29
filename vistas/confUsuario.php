@@ -13,7 +13,7 @@ if (!isset($_SESSION["nombre"])) {
     <style>
       .marco {
         background-color: white;
-        border-top: 3px #3686b4 solid;
+        border-top: 3px #002a8e solid;
       }
     </style>
     <div class="content-wrapper">
@@ -31,9 +31,9 @@ if (!isset($_SESSION["nombre"])) {
               <div class="panel-body marco" id="formularioregistros">
                 <form name="formulario" id="formulario" method="POST" enctype="multipart/form-data">
                   <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                    <label>Nombres y apellidos(*):</label>
+                    <label>Nombres(*):</label>
                     <input type="hidden" name="idusuario" id="idusuario">
-                    <input type="text" class="form-control" name="nombre" id="nombre" maxlength="50" placeholder="Nombres y apellidos" required>
+                    <input type="text" class="form-control" name="nombre" id="nombre" maxlength="60" placeholder="Nombres y apellidos" required>
                   </div>
                   <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
                     <label>Tipo Documento(*):</label>

@@ -17,9 +17,11 @@ if (!isset($_SESSION["nombre"])) {
             <div class="box">
               <div class="box-header with-border">
                 <h1 class="box-title">Proveedores
-                  <button class="btn btn-bcp" id="btnagregar" onclick="mostrarform(true)">
-                    <i class="fa fa-plus-circle"></i> Agregar
-                  </button>
+                  <?php if ($_SESSION["cargo"] != "mirador") { ?>
+                    <button class="btn btn-bcp" id="btnagregar" onclick="mostrarform(true)">
+                      <i class="fa fa-plus-circle"></i> Agregar
+                    </button>
+                  <?php } ?>
                   <a href="../reportes/rptproveedores.php" target="_blank">
                     <button class="btn btn-secondary" style="color: black !important;">
                       <i class="fa fa-clipboard"></i> Reporte

@@ -48,7 +48,7 @@ if (!isset($_SESSION["nombre"])) {
 
     while ($reg = $rspta->fetch_object()) {
       $tipo = $reg->tipo;
-      $codigo = $reg->codigo;
+      $codigo = (($reg->codigo != "") ? $reg->codigo : "Sin registrar.");
       $proveedor = $reg->proveedor;
       $estado = $reg->estado;
 

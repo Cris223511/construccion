@@ -127,7 +127,7 @@ class LocalExterno
 					u.estado
 				FROM usuario u
 				LEFT JOIN locales l ON u.idlocal = l.idlocal
-				WHERE u.idlocal = '$idlocal' AND l.idlocal <> '$idlocal' AND u.eliminado = '0' ORDER BY u.idusuario DESC";
+				WHERE u.idlocal = '$idlocal' AND u.eliminado = '0' ORDER BY u.idusuario DESC";
 		return ejecutarConsulta($sql);
 	}
 

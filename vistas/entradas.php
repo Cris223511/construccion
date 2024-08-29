@@ -15,11 +15,26 @@ if (!isset($_SESSION["nombre"])) {
         margin-top: 15px;
       }
 
+      #label2 {
+        display: block;
+      }
+
       @media (max-width: 991px) {
         .botonArt {
           display: flex;
           justify-content: center;
         }
+      }
+
+      @media (max-width: 767px) {
+        #label2 {
+          display: none;
+        }
+      }
+
+      tbody td,
+      tfoot tr th {
+        white-space: nowrap !important;
       }
     </style>
 
@@ -30,14 +45,16 @@ if (!isset($_SESSION["nombre"])) {
             <div class="box">
               <div class="box-header with-border">
                 <h1 class="box-title">Entradas
-                  <button class="btn btn-bcp" id="btnagregar" onclick="mostrarform(true)">
-                    <i class="fa fa-plus-circle"></i> Nueva entrada
-                  </button>
-                  <a href="agregarArt1.php">
-                    <button class="btn btn-success" id="btnInsertarArt">
-                      <i class="fa fa-plus-circle"></i> Nuevos productos
+                  <?php if ($_SESSION["cargo"] != "mirador") { ?>
+                    <button class="btn btn-bcp" id="btnagregar" onclick="mostrarform(true)">
+                      <i class="fa fa-plus-circle"></i> Nueva entrada
                     </button>
-                  </a>
+                    <a href="agregarArt1.php">
+                      <button class="btn btn-success" id="btnInsertarArt">
+                        <i class="fa fa-plus-circle"></i> Nuevos productos
+                      </button>
+                    </a>
+                  <?php } ?>
                   <a href="articulo.php">
                     <button class="btn btn-warning" id="btnInsertarArt">
                       <i class="fa fa-sign-in"></i> Ver productos
@@ -75,7 +92,9 @@ if (!isset($_SESSION["nombre"])) {
                     <thead>
                       <th>Opciones</th>
                       <th style="white-space: nowrap;">Fecha y hora</th>
+                      <th>Ubicación del producto</th>
                       <th>Ubicación del local</th>
+                      <th>Total compra</th>
                       <th>Tipo</th>
                       <th>Proveedor</th>
                       <th style="white-space: nowrap;">N° de documento</th>
@@ -88,7 +107,9 @@ if (!isset($_SESSION["nombre"])) {
                     <tfoot>
                       <th>Opciones</th>
                       <th>Fecha y hora</th>
+                      <th>Ubicación del producto</th>
                       <th>Ubicación del local</th>
+                      <th>Total compra</th>
                       <th>Tipo</th>
                       <th>Proveedor</th>
                       <th>N° de documento</th>
@@ -101,10 +122,10 @@ if (!isset($_SESSION["nombre"])) {
               </div>
               <div class="panel-body" id="formularioregistros" style="background-color: #ecf0f5 !important; padding-left: 0 !important; padding-right: 0 !important;">
                 <form name="formulario" id="formulario" method="POST">
-                  <div class="form-group col-lg-12 col-md-12 col-sm-12" style="background-color: white; border-top: 3px #3686b4 solid; padding: 20px;">
+                  <div class="form-group col-lg-12 col-md-12 col-sm-12" style="background-color: white; border-top: 3px #002a8e solid; padding: 20px;">
                     <div class="form-group col-lg-6 col-md-6 col-sm-12">
-                      <label>Ubicación del producto(*):</label>
-                      <input type="text" class="form-control" name="ubicacion" id="ubicacion" maxlength="50" placeholder="Ingrese la ubicación." autocomplete="off">
+                      <label>Ubicación del producto:</label>
+                      <input type="text" class="form-control" name="ubicacion" id="ubicacion" maxlength="50" placeholder="Ingrese la ubicación del producto." autocomplete="off">
                     </div>
                     <div class="form-group col-lg-6 col-md-6 col-sm-12">
                       <label>Fecha y hora(*):</label>
@@ -121,7 +142,7 @@ if (!isset($_SESSION["nombre"])) {
                       <input type="number" class="form-control" id="local_ruc" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="11" placeholder="RUC del local" disabled>
                     </div>
                     <div class="form-group col-lg-4 col-md-4 col-md-12">
-                      <label>Tipo(*):</label>
+                      <label>Tipo:</label>
                       <select id="idtipo" name="idtipo" class="form-control selectpicker" data-size="5" data-live-search="true" required>
                         <option value="">- Seleccione -</option>
                       </select>
@@ -138,7 +159,7 @@ if (!isset($_SESSION["nombre"])) {
                     </div>
                     <div class="form-group col-lg-12 col-md-12 col-md-12">
                       <label>Descripción:</label>
-                      <textarea class="form-control" name="descripcion" id="descripcion" cols="30" rows="5" placeholder="Ingrese una descripción." style="resize: none;"></textarea>
+                      <textarea class="form-control" name="descripcion" id="descripcion" maxlength="10000" cols="30" rows="5" placeholder="Ingrese una descripción." style="resize: none;"></textarea>
                     </div>
                   </div>
                   <div class="form-group col-lg-12 col-md-12 col-sm-12" style="background-color: white !important; padding: 20px !important;">
@@ -196,39 +217,63 @@ if (!isset($_SESSION["nombre"])) {
             <table id="tblarticulos" class="table table-striped table-bordered table-condensed table-hover w-100" style="width: 100% !important">
               <thead>
                 <th>Opciones</th>
-                <th>IMAGEN</th>
-                <th>NOMBRE</th>
-                <th style="white-space: nowrap;">U. MEDIDA</th>
-                <th>CATEGORÍA</th>
-                <th>MARCA</th>
-                <th style="white-space: nowrap;">STOCK NORMAL</th>
-                <th style="white-space: nowrap;">STOCK MÍNIMO</th>
-                <th>Ubicación DEL LOCAL</th>
-                <th style="white-space: nowrap;">C. PRODUCTO</th>
-                <th style="white-space: nowrap;">C. DE BARRA</th>
-                <th style="white-space: nowrap;">AGREGADO POR</th>
-                <th>CARGO</th>
-                <th style="white-space: nowrap;">FECHA Y HORA</th>
-                <th>ESTADO</th>
+                <th>Imagen</th>
+                <th>Nombre</th>
+                <th style="white-space: nowrap;">U. medida</th>
+                <th style="width: 20%; min-width: 300px;">Descripción</th>
+                <th>Categoría</th>
+                <th>Marca</th>
+                <th style="white-space: nowrap;">Ubicación del local</th>
+                <th style="white-space: nowrap;">Stock normal</th>
+                <th style="white-space: nowrap;">Stock mínimo</th>
+                <th style="white-space: nowrap;">P. Compra</th>
+                <th style="white-space: nowrap;">P. Compra Mayor</th>
+                <th style="white-space: nowrap;">C. producto</th>
+                <th style="white-space: nowrap;">C. de barra</th>
+                <th style="width: 20%; min-width: 200px;">Talla</th>
+                <th style="width: 20%; min-width: 200px;">Color</th>
+                <th>Peso</th>
+                <th style="white-space: nowrap;">Fecha emisión</th>
+                <th style="white-space: nowrap;">Fecha vencimiento</th>
+                <th style="width: 20%; min-width: 200px;">Nota 1</th>
+                <th style="width: 20%; min-width: 200px;">Nota 2</th>
+                <th style="width: 20%; min-width: 200px;">Nota 3 (IMEI)</th>
+                <th style="width: 20%; min-width: 200px;">Nota 4 (Serial)</th>
+                <th style="white-space: nowrap;">Agregado por</th>
+                <th>Cargo</th>
+                <th style="white-space: nowrap;">Fecha y hora</th>
+                <th>Estado</th>
               </thead>
               <tbody>
               </tbody>
               <tfoot>
                 <th>Opciones</th>
-                <TH>IMAGEN</TH>
-                <TH>NOMBRE</TH>
-                <TH>U. MEDIDA</TH>
-                <TH>CATEGORÍA</TH>
-                <TH>MARCA</TH>
-                <TH>STOCK NORMAL</TH>
-                <TH>STOCK MÍNIMO</TH>
-                <TH>UBICACIÓN DEL LOCAL</TH>
-                <TH>C. PRODUCTO</TH>
-                <TH>C. DE BARRA</TH>
-                <TH>AGREGADO POR</TH>
-                <TH>CARGO</TH>
-                <TH>FECHA Y HORA</TH>
-                <TH>ESTADO</TH>
+                <th>Imagen</th>
+                <th>Nombre</th>
+                <th>U. medida</th>
+                <th>Descripción</th>
+                <th>Categoría</th>
+                <th>Marca</th>
+                <th>Ubicación del local</th>
+                <th>Stock normal</th>
+                <th>Stock mínimo</th>
+                <th>P. Compra</th>
+                <th>P. Compra Mayor</th>
+                <th>C. producto</th>
+                <th>C. de barra</th>
+                <th>Talla</th>
+                <th>Color</th>
+                <th>Peso</th>
+                <th>Fecha emisión</th>
+                <th>Fecha vencimiento</th>
+                <th>Nota 1</th>
+                <th>Nota 2</th>
+                <th>Nota 3 (IMEI)</th>
+                <th>Nota 4 (Serial)</th>
+                <th>Agregado por</th>
+                <th>Cargo</th>
+                <th>Fecha y hora</th>
+                <th>Estado</th>
               </tfoot>
             </table>
           </div>
@@ -290,7 +335,7 @@ if (!isset($_SESSION["nombre"])) {
               </div>
               <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <label>Descripción:</label>
-                <input type="text" class="form-control" name="descripcion" id="descripcion2" maxlength="50" placeholder="Ingrese la descripción del proveedor." autocomplete="off" disabled>
+                <input type="text" class="form-control" name="descripcion" id="descripcion2" maxlength="10000" placeholder="Ingrese la descripción del proveedor." autocomplete="off" disabled>
               </div>
 
               <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-bottom: 0 !important; padding: 0 !important;">
@@ -347,7 +392,7 @@ if (!isset($_SESSION["nombre"])) {
               </div>
               <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <label>Descripción:</label>
-                <input type="text" class="form-control" name="descripcion" id="descripcion3" maxlength="50" placeholder="Ingrese la descripción del proveedor." autocomplete="off">
+                <input type="text" class="form-control" name="descripcion" id="descripcion3" maxlength="10000" placeholder="Ingrese la descripción del proveedor." autocomplete="off">
               </div>
 
               <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-bottom: 0 !important; padding: 0 !important;">
@@ -370,7 +415,7 @@ if (!isset($_SESSION["nombre"])) {
       </div>
       <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <label>Descripción:</label>
-        <textarea type="text" class="form-control" name="descripcion" id="descripcion3" maxlength="150" rows="4" placeholder="Descripción"></textarea>
+        <textarea type="text" class="form-control" name="descripcion" id="descripcion3" maxlength="10000" rows="4" placeholder="Descripción"></textarea>
       </div>
     </form>
     <!-- Fin form tipos -->

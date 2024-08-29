@@ -52,7 +52,7 @@ if (!isset($_SESSION["nombre"])) {
       $nombre = $reg->nombre;
       $categoria = $reg->categoria;
       $local = $reg->local;
-      $codigo_barra = $reg->codigo;
+      $codigo_barra = (($reg->codigo != "") ? $reg->codigo : "Sin registrar.");
       $codigo_producto = $reg->codigo_producto;
       $stock = $reg->stock;
       $stock_minimo = $reg->stock_minimo;

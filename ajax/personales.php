@@ -98,6 +98,8 @@ if (!isset($_SESSION["nombre"])) {
 						return $buttonType;
 					} elseif ($cargo == "superadmin" || ($cargo == "usuario" && $idusuario == $_SESSION["idusuario"])) {
 						return $buttonType;
+					} elseif ($cargo == "mirador") {
+						return '';
 					} else {
 						return '';
 					}
@@ -116,11 +118,14 @@ if (!isset($_SESSION["nombre"])) {
 						case 'usuario':
 							$cargo_detalle = "Usuario";
 							break;
+						case 'mirador':
+							$cargo_detalle = "Mirador";
+							break;
 						default:
 							break;
 					}
 
-					$telefono = ($reg->telefono == '') ? 'Sin registrar' : number_format($reg->telefono, 0, '', ' ');
+					$telefono = ($reg->telefono == '') ? 'Sin registrar.' : number_format($reg->telefono, 0, '', ' ');
 
 					$data[] = array(
 						"0" => '<div style="display: flex; flex-wrap: nowrap; gap: 3px">' .
@@ -132,11 +137,11 @@ if (!isset($_SESSION["nombre"])) {
 						"1" => $reg->fecha,
 						"2" => ucwords($reg->nombre),
 						"3" => $reg->local,
-						"4" => ($reg->tipo_documento == '') ? 'Sin registrar' : $reg->tipo_documento,
-						"5" => ($reg->num_documento == '') ? 'Sin registrar' : $reg->num_documento,
-						"6" => ($reg->direccion == '') ? 'Sin registrar' : $reg->direccion,
+						"4" => ($reg->tipo_documento == '') ? 'Sin registrar.' : $reg->tipo_documento,
+						"5" => ($reg->num_documento == '') ? 'Sin registrar.' : $reg->num_documento,
+						"6" => ($reg->direccion == '') ? 'Sin registrar.' : $reg->direccion,
 						"7" => $telefono,
-						"8" => ($reg->email == '') ? 'Sin registrar' : $reg->email,
+						"8" => ($reg->email == '') ? 'Sin registrar.' : $reg->email,
 						"9" => $reg->usuario,
 						"10" => $cargo_detalle,
 						"11" => ($reg->estado == 'activado') ? '<span class="label bg-green">Activado</span>' :

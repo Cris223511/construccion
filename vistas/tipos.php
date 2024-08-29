@@ -17,9 +17,11 @@ if (!isset($_SESSION["nombre"])) {
             <div class="box">
               <div class="box-header with-border">
                 <h1 class="box-title">Tipos
-                  <button class="btn btn-bcp" id="btnagregar" onclick="mostrarform(true)">
-                    <i class="fa fa-plus-circle"></i> Agregar
-                  </button>
+                  <?php if ($_SESSION["cargo"] != "mirador") { ?>
+                    <button class="btn btn-bcp" id="btnagregar" onclick="mostrarform(true)">
+                      <i class="fa fa-plus-circle"></i> Agregar
+                    </button>
+                  <?php } ?>
                   <a href="../reportes/rpttipos.php" target="_blank">
                     <button class="btn btn-secondary" style="color: black !important;">
                       <i class="fa fa-clipboard"></i> Reporte
@@ -81,7 +83,7 @@ if (!isset($_SESSION["nombre"])) {
                   </div>
                   <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
                     <label>Descripción:</label>
-                    <textarea type="text" class="form-control" name="descripcion" id="descripcion" maxlength="150" rows="4" placeholder="Ingrese una descripción."></textarea>
+                    <textarea type="text" class="form-control" name="descripcion" id="descripcion" maxlength="10000" rows="4" placeholder="Ingrese una descripción."></textarea>
                   </div>
                   <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
                     <button class="btn btn-warning" onclick="cancelarform()" type="button"><i class="fa fa-arrow-circle-left"></i> Cancelar</button>

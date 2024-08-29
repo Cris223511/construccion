@@ -28,31 +28,33 @@ class Consultas
 
     public function salidasultimos_12meses()
     {
+        ejecutarConsulta("SET lc_time_names = 'es_ES'");
         $sql = "SELECT DATE_FORMAT(fecha_hora,'%M') AS fecha,COUNT(*) AS total FROM salidas GROUP BY MONTH(fecha_hora) ORDER BY fecha_hora ASC LIMIT 0,10";
         return ejecutarConsulta($sql);
     }
 
-    public function totalentradahoyUsuario($idusuario)
+    public function totalentradahoyUsuario($idlocal)
     {
-        $sql = "SELECT COUNT(*) AS cantidad FROM entradas WHERE idusuario = '$idusuario'";
+        $sql = "SELECT COUNT(*) AS cantidad FROM entradas WHERE idlocal = '$idlocal'";
         return ejecutarConsulta($sql);
     }
 
-    public function totalsalidahoyUsuario($idusuario)
+    public function totalsalidahoyUsuario($idlocal)
     {
-        $sql = "SELECT COUNT(*) AS cantidad FROM salidas WHERE idusuario = '$idusuario'";
+        $sql = "SELECT COUNT(*) AS cantidad FROM salidas WHERE idlocal = '$idlocal'";
         return ejecutarConsulta($sql);
     }
 
-    public function entradasultimos_10diasUsuario($idusuario)
+    public function entradasultimos_10diasUsuario($idlocal)
     {
-        $sql = "SELECT CONCAT(DAY(fecha_hora),'-',MONTH(fecha_hora)) AS fecha,COUNT(*) AS total FROM entradas WHERE idusuario = '$idusuario' GROUP BY fecha_hora ORDER BY fecha_hora ASC LIMIT 0,10";
+        $sql = "SELECT CONCAT(DAY(fecha_hora),'-',MONTH(fecha_hora)) AS fecha,COUNT(*) AS total FROM entradas WHERE idlocal = '$idlocal' GROUP BY fecha_hora ORDER BY fecha_hora ASC LIMIT 0,10";
         return ejecutarConsulta($sql);
     }
 
-    public function salidasultimos_12mesesUsuario($idusuario)
+    public function salidasultimos_12mesesUsuario($idlocal)
     {
-        $sql = "SELECT DATE_FORMAT(fecha_hora,'%M') AS fecha,COUNT(*) AS total FROM salidas WHERE idusuario = '$idusuario' GROUP BY MONTH(fecha_hora) ORDER BY fecha_hora ASC LIMIT 0,10";
+        ejecutarConsulta("SET lc_time_names = 'es_ES'");
+        $sql = "SELECT DATE_FORMAT(fecha_hora,'%M') AS fecha,COUNT(*) AS total FROM salidas WHERE idlocal = '$idlocal' GROUP BY MONTH(fecha_hora) ORDER BY fecha_hora ASC LIMIT 0,10";
         return ejecutarConsulta($sql);
     }
 }

@@ -18,10 +18,10 @@ if (!isset($_SESSION["nombre"])) {
     $logo = $rspta["imagen"];
     $ext_logo = strtolower(pathinfo($rspta["imagen"], PATHINFO_EXTENSION));
     $empresa = $rspta["titulo"];
-    $documento = ($rspta["ruc"] == '') ? 'Sin registrar' : $rspta["ruc"];
-    $direccion = ($rspta["direccion"] == '') ? 'Sin registrar' : $rspta["direccion"];
-    $telefono = ($rspta["telefono"] == '') ? 'Sin registrar' : number_format($rspta["telefono"], 0, '', ' ');
-    $email = ($rspta["email"] == '') ? 'Sin registrar' : $rspta["email"];
+    $documento = ($rspta["ruc"] == '') ? 'Sin registrar.' : $rspta["ruc"];
+    $direccion = ($rspta["direccion"] == '') ? 'Sin registrar.' : $rspta["direccion"];
+    $telefono = ($rspta["telefono"] == '') ? 'Sin registrar.' : number_format($rspta["telefono"], 0, '', ' ');
+    $email = ($rspta["email"] == '') ? 'Sin registrar.' : $rspta["email"];
 
     require_once "../modelos/Entradas.php";
     $entrada = new Entrada();

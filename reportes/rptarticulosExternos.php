@@ -7,7 +7,7 @@ if (strlen(session_id()) < 1)
 if (!isset($_SESSION["nombre"])) {
   echo 'Debe ingresar al sistema correctamente para visualizar el reporte';
 } else {
-  if ($_SESSION['almacen'] == 1 && $_SESSION["cargo"] == "superadmin") {
+  if ($_SESSION['almacen'] == 1 && ($_SESSION["cargo"] == "superadmin" || $_SESSION["cargo"] == "mirador")) {
 
     require('PDF_MC_Table.php');
 
@@ -52,7 +52,7 @@ if (!isset($_SESSION["nombre"])) {
       $nombre = $reg->nombre;
       $categoria = $reg->categoria;
       $local = $reg->local;
-      $codigo_barra = $reg->codigo;
+      $codigo_barra = (($reg->codigo != "") ? $reg->codigo : "Sin registrar.");
       $codigo_producto = $reg->codigo_producto;
       $stock = $reg->stock;
       $stock_minimo = $reg->stock_minimo;

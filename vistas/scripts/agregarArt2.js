@@ -256,9 +256,6 @@ function mostrarform(flag) {
 		$("#formularioregistros").show();
 		$("#btnGuardar").prop("disabled", false);
 		$("#btnagregar").hide();
-		$(".caja1").hide();
-		$(".caja2").removeClass("col-lg-10 col-md-8 col-sm-12").addClass("col-lg-12 col-md-12 col-sm-12");
-		$(".botones").removeClass("col-lg-10 col-md-8 col-sm-12").addClass("col-lg-12 col-md-12 col-sm-12");
 		$("#btnDetalles1").show();
 		$("#btnDetalles2").hide();
 		$("#frmDetalles").hide();
@@ -267,9 +264,6 @@ function mostrarform(flag) {
 		$(".listadoregistros").show();
 		$("#formularioregistros").hide();
 		$("#btnagregar").show();
-		$(".caja1").show();
-		$(".caja2").removeClass("col-lg-12 col-md-12 col-sm-12").addClass("col-lg-10 col-md-8 col-sm-12");
-		$(".botones").removeClass("col-lg-12 col-md-12 col-sm-12").addClass("col-lg-10 col-md-8 col-sm-12");
 		$("#btnDetalles1").show();
 		$("#btnDetalles2").hide();
 		$("#frmDetalles").hide();
@@ -379,10 +373,6 @@ function guardaryeditar(e) {
 
 function mostrar(idarticulo) {
 	mostrarform(true);
-
-	$(".caja1").show();
-	$(".caja2").removeClass("col-lg-12 col-md-12 col-sm-12").addClass("col-lg-10 col-md-8 col-sm-12");
-	$(".botones").removeClass("col-lg-12 col-md-12 col-sm-12").addClass("col-lg-10 col-md-8 col-sm-12");
 
 	$.post("../ajax/articulo.php?op=mostrar", { idarticulo: idarticulo }, function (data, status) {
 		data = JSON.parse(data);
@@ -550,7 +540,7 @@ function escanear() {
 		inputStream: {
 			name: "Live",
 			type: "LiveStream",
-			target: document.querySelector('#camera')    // Or '#yourElement' (optional)
+			target: document.querySelector('#camera')
 		},
 		decoder: {
 			readers: ["code_128_reader"]

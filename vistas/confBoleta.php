@@ -8,12 +8,12 @@ if (!isset($_SESSION["nombre"])) {
 } else {
   require 'header.php';
 
-  if ($_SESSION['perfilu'] == 1) {
+  if ($_SESSION['perfilu'] == 1 && ($_SESSION['cargo'] == "superadmin" || $_SESSION['cargo'] == "admin")) {
 ?>
     <style>
       .marco {
         background-color: white;
-        border-top: 3px #3686b4 solid;
+        border-top: 3px #002a8e solid;
       }
     </style>
 

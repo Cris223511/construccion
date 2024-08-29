@@ -91,8 +91,8 @@ class LocalDisponible
 				  l.estado
 				FROM locales l 
 				LEFT JOIN usuario u ON l.idusuario = u.idusuario 
-				WHERE (NOT EXISTS (SELECT 1 FROM usuario WHERE idlocal = l.idlocal))
-				AND l.eliminado = '0'
+				WHERE ((NOT EXISTS (SELECT 1 FROM usuario WHERE idlocal = l.idlocal)) AND l.eliminado = '0')
+				OR l.idusuario = '0' AND l.eliminado = '0'
 				ORDER BY l.idlocal DESC";
 
 		return ejecutarConsulta($sql);
@@ -112,10 +112,10 @@ class LocalDisponible
 				  l.estado
 				FROM locales l 
 				LEFT JOIN usuario u ON l.idusuario = u.idusuario 
-				WHERE (NOT EXISTS (SELECT 1 FROM usuario WHERE idlocal = l.idlocal))
-				AND l.eliminado = '0'
+				WHERE ((NOT EXISTS (SELECT 1 FROM usuario WHERE idlocal = l.idlocal)) AND l.eliminado = '0')
+				OR l.idusuario = '0' AND l.eliminado = '0'
 				AND l.estado = 'activado'
-            	ORDER BY l.idlocal DESC";
+				ORDER BY l.idlocal DESC";
 
 		return ejecutarConsulta($sql);
 	}

@@ -51,8 +51,8 @@ function init() {
 		$('#idcategoria').closest('.form-group').find('input[type="text"]').attr('onkeydown', 'agregarCategoria(event)');
 		$('#idcategoria').closest('.form-group').find('input[type="text"]').attr('maxlength', '40');
 
-		$('#idmarca').closest('.form-group').find('input[type="text"]').attr('onkeydown', 'agregarMarca(event)');
-		$('#idmarca').closest('.form-group').find('input[type="text"]').attr('maxlength', '40');
+		$('#idmarcas').closest('.form-group').find('input[type="text"]').attr('onkeydown', 'agregarMarca(event)');
+		$('#idmarcas').closest('.form-group').find('input[type="text"]').attr('maxlength', '40');
 
 		$('#idmedida').closest('.form-group').find('input[type="text"]').attr('onkeydown', 'agregarMedida(event)');
 		$('#idmedida').closest('.form-group').find('input[type="text"]').attr('maxlength', '40');
@@ -62,7 +62,7 @@ function init() {
 }
 
 function listarTodosActivos(selectId) {
-	$.post("../ajax/articulo.php?op=listarTodosActivos", function (data) {
+	$.post("../ajax/articuloExterno.php?op=listarTodosActivos", function (data) {
 		const obj = JSON.parse(data);
 
 		const select = $("#" + selectId);
@@ -73,7 +73,7 @@ function listarTodosActivos(selectId) {
 			select.html('<option value="">- Seleccione -</option>');
 			obj[atributo].forEach(function (opcion) {
 				if (atributo !== "almacen") {
-					select.append('<option value="' + opcion.id + '">' + opcion.titulo + '</option>');
+					select.append('<option value="' + opcion.id + '">' + opcion.nombre + '</option>');
 				}
 			});
 			select.selectpicker('refresh');
@@ -126,7 +126,7 @@ function agregarCategoria(e) {
 }
 
 function agregarMarca(e) {
-	let inputValue = $('#idmarca').closest('.form-group').find('input[type="text"]');
+	let inputValue = $('#idmarcas').closest('.form-group').find('input[type="text"]');
 
 	if (e.key === "Enter") {
 		if ($('.no-results').is(':visible')) {
@@ -152,8 +152,8 @@ function agregarMarca(e) {
 						return;
 					} else {
 						// bootbox.alert(datos);
-						listarTodosActivos("idmarca");
-						$("#idmarca3").val("");
+						listarTodosActivos("idmarcas");
+						$("#idmarcas3").val("");
 						$("#titulo3").val("");
 						$("#descripcion3").val("");
 					}
@@ -224,10 +224,21 @@ function limpiar() {
 	$("#casillero").val("");
 	$("#stock").val("");
 	$("#stock_minimo").val("");
+	$("#precio_compra").val("");
+	$("#precio_compra_mayor").val("");
 	$("#imagenmuestra").attr("src", "");
 	$("#imagenmuestra").hide();
 	$("#imagenactual").val("");
 	$("#imagen").val("");
+	$("#talla").val("");
+	$("#color").val("");
+	$("#peso").val("");
+	$("#fecha_emision").val("");
+	$("#fecha_vencimiento").val("");
+	$("#nota_1").val("");
+	$("#nota_2").val("");
+	$("#imei").val("");
+	$("#serial").val("");
 	$("#print").hide();
 	$("#idarticulo").val("");
 
@@ -254,9 +265,6 @@ function mostrarform(flag) {
 		$("#formularioregistros").show();
 		$("#btnGuardar").prop("disabled", false);
 		$("#btnagregar").hide();
-		$(".caja1").hide();
-		$(".caja2").removeClass("col-lg-10 col-md-8 col-sm-12").addClass("col-lg-12 col-md-12 col-sm-12");
-		$(".botones").removeClass("col-lg-10 col-md-8 col-sm-12").addClass("col-lg-12 col-md-12 col-sm-12");
 		$("#btnDetalles1").show();
 		$("#btnDetalles2").hide();
 		$("#frmDetalles").hide();
@@ -265,9 +273,6 @@ function mostrarform(flag) {
 		$(".listadoregistros").show();
 		$("#formularioregistros").hide();
 		$("#btnagregar").show();
-		$(".caja1").show();
-		$(".caja2").removeClass("col-lg-12 col-md-12 col-sm-12").addClass("col-lg-10 col-md-8 col-sm-12");
-		$(".botones").removeClass("col-lg-12 col-md-12 col-sm-12").addClass("col-lg-10 col-md-8 col-sm-12");
 		$("#btnDetalles1").show();
 		$("#btnDetalles2").hide();
 		$("#frmDetalles").hide();
@@ -332,7 +337,7 @@ function listar() {
 			"iDisplayLength": 5,//Paginación
 			"order": [],
 			"createdRow": function (row, data, dataIndex) {
-				$(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(3), td:eq(4), td:eq(5), td:eq(6), td:eq(7), td:eq(8), td:eq(9), td:eq(10), td:eq(11, td:eq(12), td:eq(13), td:eq(14)').addClass('nowrap-cell');
+				$(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(3), td:eq(4), td:eq(5), td:eq(6), td:eq(7), td:eq(8), td:eq(9), td:eq(10), td:eq(11, td:eq(12), td:eq(13), td:eq(14), td:eq(15), td:eq(16), td:eq(17), td:eq(18), td:eq(19), td:eq(20), td:eq(21), td:eq(22)').addClass('nowrap-cell');
 			}
 		}).DataTable();
 }
@@ -343,24 +348,30 @@ function guardaryeditar(e) {
 
 	var codigoBarra = $("#codigo").val();
 
-	var formatoValido = /^[0-9]{1} [0-9]{2} [0-9]{4} [0-9]{1} [0-9]{4} [0-9]{1}$/.test(codigoBarra);
+	// var formatoValido = /^[0-9]{1} [0-9]{2} [0-9]{4} [0-9]{1} [0-9]{4} [0-9]{1}$/.test(codigoBarra);
 
-	if (!formatoValido && codigoBarra != "") {
-		bootbox.alert("El formato del código de barra no es válido. El formato correcto es: X XX XXXX X XXXX X");
-		$("#btnGuardar").prop("disabled", false);
-		return;
-	}
+	// if (!formatoValido && codigoBarra != "") {
+	// 	bootbox.alert("El formato del código de barra no es válido. El formato correcto es: X XX XXXX X XXXX X");
+	// 	$("#btnGuardar").prop("disabled", false);
+	// 	return;
+	// }
 
-	var stock = parseFloat($("#stock").val());
-	var stock_minimo = parseFloat($("#stock_minimo").val());
+	// var stock = parseFloat($("#stock").val());
+	// var stock_minimo = parseFloat($("#stock_minimo").val());
 
-	if (stock_minimo > stock) {
-		bootbox.alert("El stock mínimo no puede ser mayor que el stock normal.");
-		return;
-	}
+	// if (stock_minimo > stock) {
+	// 	bootbox.alert("El stock mínimo no puede ser mayor que el stock normal.");
+	// 	return;
+	// }
 
 	$("#btnGuardar").prop("disabled", true);
 	var formData = new FormData($("#formulario")[0]);
+
+	let detalles = frmDetallesVisible() ? obtenerDetalles() : { talla: '', color: '', peso: '0.00', casillero: '', fecha_emision: '', fecha_vencimiento: '', nota_1: '', nota_2: '', codigo: '' };
+
+	for (let key in detalles) {
+		formData.append(key, detalles[key]);
+	}
 
 	$.ajax({
 		url: "../ajax/articuloExterno.php?op=guardaryeditar",
@@ -383,12 +394,43 @@ function guardaryeditar(e) {
 	});
 }
 
+function obtenerDetalles() {
+	let detalles = {
+		talla: $("#talla").val(),
+		color: $("#color").val(),
+		peso: $("#peso").val(),
+		casillero: $("#casillero").val(),
+		fecha_emision: $("#fecha_emision").val(),
+		fecha_vencimiento: $("#fecha_vencimiento").val(),
+		nota_1: $("#nota_1").val(),
+		nota_2: $("#nota_2").val(),
+		imei: $("#imei").val(),
+		serial: $("#serial").val(),
+		codigo: $("#codigo").val()
+	};
+
+	if (!detalles.talla) detalles.talla = '';
+	if (!detalles.color) detalles.color = '';
+	if (!detalles.peso) detalles.peso = '0.00';
+	if (!detalles.casillero) detalles.casillero = '0.00';
+	if (!detalles.fecha_emision) detalles.fecha_emision = '';
+	if (!detalles.fecha_vencimiento) detalles.fecha_vencimiento = '';
+	if (!detalles.nota_1) detalles.nota_1 = '';
+	if (!detalles.nota_2) detalles.nota_2 = '';
+	if (!detalles.imei) detalles.imei = '';
+	if (!detalles.serial) detalles.serial = '';
+	if (!detalles.codigo) detalles.codigo = '';
+
+	return detalles;
+}
+
+function frmDetallesVisible() {
+	return $("#frmDetalles").is(":visible");
+}
+
 function mostrar(idarticulo) {
 	mostrarform(true);
-
-	$(".caja1").show();
-	$(".caja2").removeClass("col-lg-12 col-md-12 col-sm-12").addClass("col-lg-10 col-md-8 col-sm-12");
-	$(".botones").removeClass("col-lg-12 col-md-12 col-sm-12").addClass("col-lg-10 col-md-8 col-sm-12");
+	frmDetalles(true);
 
 	$(".btn1").show();
 	$(".btn2").hide();
@@ -410,11 +452,22 @@ function mostrar(idarticulo) {
 		$("#nombre").val(data.nombre);
 		$("#stock").val(data.stock);
 		$("#stock_minimo").val(data.stock_minimo);
+		$("#precio_compra").val(data.precio_compra);
+		$("#precio_compra_mayor").val(data.precio_compra_mayor);
+		$("#talla").val(data.talla);
+		$("#color").val(data.color);
+		$("#peso").val(data.peso);
 		$("#descripcion").val(data.descripcion);
 		$("#casillero").val(data.casillero);
 		$("#imagenmuestra").show();
 		$("#imagenmuestra").attr("src", "../files/articulos/" + data.imagen);
 		$("#imagenactual").val(data.imagen);
+		$("#imei").val(data.imei);
+		$("#serial").val(data.serial);
+		data.fecha_emision_formateada != "0000-00-00" ? $("#fecha_emision").val(data.fecha_emision_formateada) : null;
+		data.fecha_vencimiento_formateada != "0000-00-00" ? $("#fecha_vencimiento").val(data.fecha_vencimiento_formateada) : null;
+		$("#nota_1").val(data.nota_1);
+		$("#nota_2").val(data.nota_2);
 		$("#idarticulo").val(data.idarticulo);
 		generarbarcode(0);
 		actualizarRUC();
@@ -457,9 +510,8 @@ function eliminar(idarticulo) {
 	})
 }
 
-function convertirMayus() {
-	var inputCodigo = document.getElementById("codigo_producto");
-	inputCodigo.value = inputCodigo.value.toUpperCase();
+function convertirMayus(element) {
+	element.value = element.value.toUpperCase();
 }
 
 function resetear() {
@@ -543,7 +595,7 @@ function buscar(param) {
 			"iDisplayLength": 5,//Paginación
 			"order": [],
 			"createdRow": function (row, data, dataIndex) {
-				$(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(3), td:eq(4), td:eq(5), td:eq(6), td:eq(7), td:eq(8), td:eq(9), td:eq(10), td:eq(11, td:eq(12), td:eq(13), td:eq(14)').addClass('nowrap-cell');
+				$(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(3), td:eq(4), td:eq(5), td:eq(6), td:eq(7), td:eq(8), td:eq(9), td:eq(10), td:eq(11, td:eq(12), td:eq(13), td:eq(14), td:eq(15), td:eq(16), td:eq(17), td:eq(18), td:eq(19), td:eq(20), td:eq(21), td:eq(22)').addClass('nowrap-cell');
 			}
 		}).DataTable();
 }
@@ -559,7 +611,7 @@ function escanear() {
 		inputStream: {
 			name: "Live",
 			type: "LiveStream",
-			target: document.querySelector('#camera')    // Or '#yourElement' (optional)
+			target: document.querySelector('#camera')
 		},
 		decoder: {
 			readers: ["code_128_reader"]
@@ -600,18 +652,18 @@ function formatearNumero() {
 	var codigo = $("#codigo").val().replace(/\s/g, '').replace(/\D/g, '');
 	var formattedCode = '';
 
-	for (var i = 0; i < codigo.length; i++) {
-		if (i === 1 || i === 3 || i === 7 || i === 8 || i === 12 || i === 13) {
-			formattedCode += ' ';
-		}
+	// for (var i = 0; i < codigo.length; i++) {
+	// 	if (i === 1 || i === 3 || i === 7 || i === 8 || i === 12 || i === 13) {
+	// 		formattedCode += ' ';
+	// 	}
 
-		formattedCode += codigo[i];
-	}
+	// 	formattedCode += codigo[i];
+	// }
 
-	var maxLength = parseInt($("#codigo").attr("maxlength"));
-	if (formattedCode.length > maxLength) {
-		formattedCode = formattedCode.substring(0, maxLength);
-	}
+	// var maxLength = parseInt($("#codigo").attr("maxlength"));
+	// if (formattedCode.length > maxLength) {
+	// 	formattedCode = formattedCode.substring(0, maxLength);
+	// }
 
 	$("#codigo").val(codigo);
 	generarbarcode(0);
@@ -625,10 +677,10 @@ function borrar() {
 
 //función para generar el número aleatorio del código de barra
 function generar() {
-	var codigo = "7 75 ";
-	codigo += generarNumero(10000, 999) + " ";
-	codigo += Math.floor(Math.random() * 10) + " ";
-	codigo += generarNumero(100, 9) + " ";
+	var codigo = "775";
+	codigo += generarNumero(10000, 999) + "";
+	codigo += Math.floor(Math.random() * 10) + "";
+	codigo += generarNumero(100, 9) + "";
 	codigo += Math.floor(Math.random() * 10);
 	$("#codigo").val(codigo);
 	generarbarcode(1);
@@ -643,22 +695,24 @@ function generarNumero(max, min) {
 // Función para generar el código de barras
 function generarbarcode(param) {
 
-	if (param == 1) {
-		var codigo = $("#codigo").val().replace(/\s/g, '');
-		console.log(codigo.length);
+	// if (param == 1) {
+	// 	var codigo = $("#codigo").val().replace(/\s/g, '');
+	// 	console.log(codigo.length);
 
-		if (!/^\d+$/.test(codigo)) {
-			bootbox.alert("El código de barra debe contener solo números.");
-			return;
-		} else if (codigo.length !== 13) {
-			bootbox.alert("El código de barra debe tener 13 dígitos.");
-			return;
-		} else {
-			codigo = codigo.slice(0, 1) + " " + codigo.slice(1, 3) + " " + codigo.slice(3, 7) + " " + codigo.slice(7, 8) + " " + codigo.slice(8, 12) + " " + codigo.slice(12, 13);
-		}
-	} else {
-		var codigo = $("#codigo").val()
-	}
+	// 	if (!/^\d+$/.test(codigo)) {
+	// 		bootbox.alert("El código de barra debe contener solo números.");
+	// 		return;
+	// 	} else if (codigo.length !== 13) {
+	// 		bootbox.alert("El código de barra debe tener 13 dígitos.");
+	// 		return;
+	// 	} else {
+	// 		codigo = codigo.slice(0, 1) + " " + codigo.slice(1, 3) + " " + codigo.slice(3, 7) + " " + codigo.slice(7, 8) + " " + codigo.slice(8, 12) + " " + codigo.slice(12, 13);
+	// 	}
+	// } else {
+	// 	var codigo = $("#codigo").val()
+	// }
+
+	var codigo = $("#codigo").val().replace(/\s/g, '');
 
 	if (codigo != "") {
 		JsBarcode("#barcode", codigo);

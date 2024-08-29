@@ -40,6 +40,38 @@
     </script>
 
     <script>
+      $('#imagen, #imagen2').on('change', function() {
+        const file = this.files[0];
+        const maxSizeMB = 3;
+        const maxSizeBytes = maxSizeMB * 1024 * 1024;
+        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/bmp'];
+
+        // Validar tamaño
+        if (file.size > maxSizeBytes) {
+          bootbox.alert(`El archivo es demasiado grande. El tamaño máximo permitido es de ${maxSizeMB} MB.`);
+          $(this).val('');
+          $('#imagenmuestra').attr('src', '').hide();
+          return;
+        }
+
+        // Validar tipo
+        console.log("el file type es =) =>", file.type);
+        if (!allowedTypes.includes(file.type)) {
+          bootbox.alert('El archivo debe ser una imagen de tipo JPG, JPEG, PNG, JFIF o BMP.');
+          $(this).val('');
+          $('#imagenmuestra').attr('src', '').hide();
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          $('#imagenmuestra').attr('src', e.target.result).show();
+        };
+        reader.readAsDataURL(file);
+      });
+    </script>
+
+    <script>
       function capitalizarPalabras(palabra) {
         return palabra.charAt(0).toUpperCase() + palabra.slice(1);
       }
@@ -287,6 +319,11 @@
         if (modal.hasClass('bootbox') && modal.hasClass('bootbox-confirm')) {
           modal.find('.modal-footer .btn-default').text('Cancelar');
           modal.find('.modal-footer .btn-primary').text('Aceptar');
+        }
+
+        const okButton = modal.find('.modal-footer button[data-bb-handler="ok"]');
+        if (okButton.length) {
+          okButton.text('Aceptar').removeClass('btn-default').addClass('btn-bcp');
         }
       });
     </script>

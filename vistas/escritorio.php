@@ -12,7 +12,7 @@ if (!isset($_SESSION["nombre"])) {
     require_once "../modelos/Consultas.php";
     $consulta = new Consultas();
 
-    $idusuario = $_SESSION['idusuario'];
+    $idlocal = $_SESSION['idlocal'];
     $cargo = $_SESSION["cargo"];
 
     if ($cargo == "superadmin") {
@@ -21,10 +21,10 @@ if (!isset($_SESSION["nombre"])) {
       $entrada10 = $consulta->entradasultimos_10dias();
       $salidas12 = $consulta->salidasultimos_12meses();
     } else {
-      $rsptaE = $consulta->totalentradahoyUsuario($idusuario);
-      $rsptaS = $consulta->totalsalidahoyUsuario($idusuario);
-      $entrada10 = $consulta->entradasultimos_10diasUsuario($idusuario);
-      $salidas12 = $consulta->salidasultimos_12mesesUsuario($idusuario);
+      $rsptaE = $consulta->totalentradahoyUsuario($idlocal);
+      $rsptaS = $consulta->totalsalidahoyUsuario($idlocal);
+      $entrada10 = $consulta->entradasultimos_10diasUsuario($idlocal);
+      $salidas12 = $consulta->salidasultimos_12mesesUsuario($idlocal);
     }
 
     $regE = $rsptaE->fetch_object();

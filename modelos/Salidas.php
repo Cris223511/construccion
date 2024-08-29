@@ -7,7 +7,7 @@ class Salida
 	{
 	}
 
-	public function agregar($idlocal, $idusuario, $idtipo, $tipo_movimiento, $idmaquinaria, $idautorizado, $idrecibido, $idfinal, $codigo, $ubicacion, $descripcion, $idarticulo, $cantidad)
+	public function agregar($idlocal, $idusuario, $idtipo, $tipo_movimiento, $idmaquinaria, $idautorizado, $idrecibido, $codigo, $ubicacion, $descripcion, $impuesto, $total_compra, $idarticulo, $cantidad, $precio_compra)
 	{
 		// Primero, debemos verificar si hay suficiente stock para cada artículo
 		$error = $this->validarStock($idarticulo, $cantidad);
@@ -18,21 +18,37 @@ class Salida
 
 		date_default_timezone_set("America/Lima");
 		// Si no hay errores, continuamos con el registro de la entrada
-		$sql = "INSERT INTO salidas (idlocal,idusuario,idtipo,tipo_movimiento,idmaquinaria,idautorizado,idrecibido,idfinal,codigo,ubicacion,descripcion,fecha_hora,estado)
-            VALUES ('$idlocal','$idusuario','$idtipo','$tipo_movimiento','$idmaquinaria','$idautorizado','$idrecibido','$idfinal','$codigo','$ubicacion','$descripcion', SYSDATE(), 'activado')";
+		$sql = "INSERT INTO salidas (idlocal,idusuario,idtipo,tipo_movimiento,idmaquinaria,idautorizado,idrecibido,codigo,ubicacion,descripcion,fecha_hora,impuesto,total_compra,estado)
+				VALUES ('$idlocal','$idusuario','$idtipo','$tipo_movimiento','$idmaquinaria','$idautorizado','$idrecibido','$codigo','$ubicacion','$descripcion', SYSDATE(),'$impuesto','$total_compra','activado')";
 		$idsalidanew = ejecutarConsulta_retornarID($sql);
 
 		$num_elementos = 0;
 		$sw = true;
 
 		while ($num_elementos < count($idarticulo)) {
-			$sql_detalle = "INSERT INTO detalle_salida(idsalida,idarticulo,cantidad) VALUES ('$idsalidanew', '$idarticulo[$num_elementos]','$cantidad[$num_elementos]')";
+			// Consulta para obtener el valor del campo 'titulo' de la tabla 'medidas' para el artículo actual
+			$sql_medida = "SELECT m.titulo FROM medidas m INNER JOIN articulo a ON a.idmedida = m.idmedida WHERE a.idarticulo = '$idarticulo[$num_elementos]'";
+			$resultado = ejecutarConsultaSimpleFila($sql_medida);
+
+			if ($resultado['titulo'] == 'Paquetes') {
+				$actualizar_art = "UPDATE articulo SET precio_compra_mayor='$precio_compra[$num_elementos]' WHERE idarticulo='$idarticulo[$num_elementos]'";
+			} else {
+				$actualizar_art = "UPDATE articulo SET precio_compra='$precio_compra[$num_elementos]' WHERE idarticulo='$idarticulo[$num_elementos]'";
+			}
+
+			ejecutarConsulta($actualizar_art) or $sw = false;
+
+			// Inserción del detalle de salida
+			$sql_detalle = "INSERT INTO detalle_salida(idsalida,idarticulo,cantidad,precio_compra) 
+							VALUES ('$idsalidanew', '$idarticulo[$num_elementos]','$cantidad[$num_elementos]','$precio_compra[$num_elementos]')";
 			ejecutarConsulta($sql_detalle) or $sw = false;
-			$num_elementos = $num_elementos + 1;
+
+			$num_elementos++;
 		}
 
 		return $sw;
 	}
+
 
 	public function verificarCodigo($codigo, $idlocal)
 	{
@@ -85,37 +101,37 @@ class Salida
 
 	public function listar()
 	{
-		$sql = "SELECT s.idsalida,s.idusuario,u.nombre as usuario,u.cargo as cargo,lo.titulo as local, t.titulo as tipo,pea.nombre AS autorizado, per.nombre AS recibido, pef.nombre AS final,s.codigo,s.tipo_movimiento,s.ubicacion,s.descripcion,s.descripcion,DATE_FORMAT(s.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,s.estado FROM salidas s LEFT JOIN locales lo ON s.idlocal=lo.idlocal LEFT JOIN tipos t ON s.idtipo=t.idtipo LEFT JOIN maquinarias ma ON s.idmaquinaria=ma.idmaquinaria LEFT JOIN personales pea ON s.idautorizado=pea.idpersonal LEFT JOIN personales per ON s.idrecibido=per.idpersonal LEFT JOIN personales pef ON s.idfinal=pef.idpersonal LEFT JOIN usuario u ON s.idusuario=u.idusuario ORDER BY s.idsalida DESC";
+		$sql = "SELECT s.idsalida,s.idusuario,u.nombre as usuario,u.cargo as cargo,lo.titulo as local, t.titulo as tipo,pea.nombre AS autorizado, per.nombre AS recibido,s.codigo,s.tipo_movimiento,s.ubicacion,s.descripcion,s.descripcion,DATE_FORMAT(s.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,s.total_compra,s.impuesto,s.estado FROM salidas s LEFT JOIN locales lo ON s.idlocal=lo.idlocal LEFT JOIN tipos t ON s.idtipo=t.idtipo LEFT JOIN maquinarias ma ON s.idmaquinaria=ma.idmaquinaria LEFT JOIN personales pea ON s.idautorizado=pea.idpersonal LEFT JOIN personales per ON s.idrecibido=per.idpersonal LEFT JOIN usuario u ON s.idusuario=u.idusuario ORDER BY s.idsalida DESC";
 		return ejecutarConsulta($sql);
 	}
 
 	public function listarPorFecha($fecha_inicio, $fecha_fin)
 	{
-		$sql = "SELECT s.idsalida,s.idusuario,u.nombre as usuario,u.cargo as cargo,lo.titulo as local, t.titulo as tipo,pea.nombre AS autorizado, per.nombre AS recibido, pef.nombre AS final,s.codigo,s.tipo_movimiento,s.ubicacion,s.descripcion,s.descripcion,DATE_FORMAT(s.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,s.estado FROM salidas s LEFT JOIN locales lo ON s.idlocal=lo.idlocal LEFT JOIN tipos t ON s.idtipo=t.idtipo LEFT JOIN maquinarias ma ON s.idmaquinaria=ma.idmaquinaria LEFT JOIN personales pea ON s.idautorizado=pea.idpersonal LEFT JOIN personales per ON s.idrecibido=per.idpersonal LEFT JOIN personales pef ON s.idfinal=pef.idpersonal LEFT JOIN usuario u ON s.idusuario=u.idusuario WHERE DATE(s.fecha_hora) >= '$fecha_inicio' AND DATE(s.fecha_hora) <= '$fecha_fin' ORDER BY s.idsalida DESC";
+		$sql = "SELECT s.idsalida,s.idusuario,u.nombre as usuario,u.cargo as cargo,lo.titulo as local, t.titulo as tipo,pea.nombre AS autorizado, per.nombre AS recibido,s.codigo,s.tipo_movimiento,s.ubicacion,s.descripcion,s.descripcion,DATE_FORMAT(s.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,s.total_compra,s.impuesto,s.estado FROM salidas s LEFT JOIN locales lo ON s.idlocal=lo.idlocal LEFT JOIN tipos t ON s.idtipo=t.idtipo LEFT JOIN maquinarias ma ON s.idmaquinaria=ma.idmaquinaria LEFT JOIN personales pea ON s.idautorizado=pea.idpersonal LEFT JOIN personales per ON s.idrecibido=per.idpersonal LEFT JOIN usuario u ON s.idusuario=u.idusuario WHERE DATE(s.fecha_hora) >= '$fecha_inicio' AND DATE(s.fecha_hora) <= '$fecha_fin' ORDER BY s.idsalida DESC";
 		return ejecutarConsulta($sql);
 	}
 
 	public function listarPorUsuario($idlocalSession)
 	{
-		$sql = "SELECT s.idsalida,s.idusuario,u.nombre as usuario,u.cargo as cargo,lo.titulo as local, t.titulo as tipo,pea.nombre AS autorizado, per.nombre AS recibido, pef.nombre AS final,s.codigo,s.tipo_movimiento,s.ubicacion,s.descripcion,s.descripcion,DATE_FORMAT(s.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,s.estado FROM salidas s LEFT JOIN locales lo ON s.idlocal=lo.idlocal LEFT JOIN tipos t ON s.idtipo=t.idtipo LEFT JOIN maquinarias ma ON s.idmaquinaria=ma.idmaquinaria LEFT JOIN personales pea ON s.idautorizado=pea.idpersonal LEFT JOIN personales per ON s.idrecibido=per.idpersonal LEFT JOIN personales pef ON s.idfinal=pef.idpersonal LEFT JOIN usuario u ON s.idusuario=u.idusuario WHERE s.idlocal = '$idlocalSession' ORDER BY s.idsalida DESC";
+		$sql = "SELECT s.idsalida,s.idusuario,u.nombre as usuario,u.cargo as cargo,lo.titulo as local, t.titulo as tipo,pea.nombre AS autorizado, per.nombre AS recibido,s.codigo,s.tipo_movimiento,s.ubicacion,s.descripcion,s.descripcion,DATE_FORMAT(s.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,s.total_compra,s.impuesto,s.estado FROM salidas s LEFT JOIN locales lo ON s.idlocal=lo.idlocal LEFT JOIN tipos t ON s.idtipo=t.idtipo LEFT JOIN maquinarias ma ON s.idmaquinaria=ma.idmaquinaria LEFT JOIN personales pea ON s.idautorizado=pea.idpersonal LEFT JOIN personales per ON s.idrecibido=per.idpersonal LEFT JOIN usuario u ON s.idusuario=u.idusuario WHERE s.idlocal = '$idlocalSession' ORDER BY s.idsalida DESC";
 		return ejecutarConsulta($sql);
 	}
 
 	public function listarPorUsuarioFecha($idlocalSession, $fecha_inicio, $fecha_fin)
 	{
-		$sql = "SELECT s.idsalida,s.idusuario,u.nombre as usuario,u.cargo as cargo,lo.titulo as local, t.titulo as tipo,pea.nombre AS autorizado, per.nombre AS recibido, pef.nombre AS final,s.codigo,s.tipo_movimiento,s.ubicacion,s.descripcion,s.descripcion,DATE_FORMAT(s.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,s.estado FROM salidas s LEFT JOIN locales lo ON s.idlocal=lo.idlocal LEFT JOIN tipos t ON s.idtipo=t.idtipo LEFT JOIN maquinarias ma ON s.idmaquinaria=ma.idmaquinaria LEFT JOIN personales pea ON s.idautorizado=pea.idpersonal LEFT JOIN personales per ON s.idrecibido=per.idpersonal LEFT JOIN personales pef ON s.idfinal=pef.idpersonal LEFT JOIN usuario u ON s.idusuario=u.idusuario WHERE s.idlocal = '$idlocalSession' AND DATE(s.fecha_hora) >= '$fecha_inicio' AND DATE(s.fecha_hora) <= '$fecha_fin' ORDER BY s.idsalida DESC";
+		$sql = "SELECT s.idsalida,s.idusuario,u.nombre as usuario,u.cargo as cargo,lo.titulo as local, t.titulo as tipo,pea.nombre AS autorizado, per.nombre AS recibido,s.codigo,s.tipo_movimiento,s.ubicacion,s.descripcion,s.descripcion,DATE_FORMAT(s.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,s.total_compra,s.impuesto,s.estado FROM salidas s LEFT JOIN locales lo ON s.idlocal=lo.idlocal LEFT JOIN tipos t ON s.idtipo=t.idtipo LEFT JOIN maquinarias ma ON s.idmaquinaria=ma.idmaquinaria LEFT JOIN personales pea ON s.idautorizado=pea.idpersonal LEFT JOIN personales per ON s.idrecibido=per.idpersonal LEFT JOIN usuario u ON s.idusuario=u.idusuario WHERE s.idlocal = '$idlocalSession' AND DATE(s.fecha_hora) >= '$fecha_inicio' AND DATE(s.fecha_hora) <= '$fecha_fin' ORDER BY s.idsalida DESC";
 		return ejecutarConsulta($sql);
 	}
 
 	public function listarCabecera($idsalida)
 	{
-		$sql = "SELECT s.idsalida,s.tipo_movimiento,ma.idmaquinaria, lo.titulo as local, pea.idpersonal AS idautorizado, u.idusuario, ma.titulo AS maquinaria, ma.descripcion, u.nombre AS usuario, pea.nombre AS autorizado, per.nombre AS recibido, pef.nombre AS final, u.tipo_documento, u.num_documento, u.direccion, u.email, u.direccion, u.telefono, s.codigo,DATE_FORMAT(s.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha FROM salidas s LEFT JOIN locales AS lo ON s.idlocal=lo.idlocal LEFT JOIN maquinarias ma ON s.idmaquinaria=ma.idmaquinaria LEFT JOIN usuario u ON s.idusuario=u.idusuario LEFT JOIN personales pea ON s.idautorizado=pea.idpersonal LEFT JOIN personales per ON s.idrecibido=per.idpersonal LEFT JOIN personales pef ON s.idfinal=pef.idpersonal WHERE s.idsalida = '$idsalida' ORDER BY s.idsalida DESC";
+		$sql = "SELECT s.idsalida,s.idusuario,u.nombre as usuario,u.cargo as cargo,u.tipo_documento, u.num_documento, u.direccion, u.email, u.direccion, u.telefono, lo.titulo as local, t.titulo as tipo,pea.nombre AS autorizado, per.nombre AS recibido,ma.titulo AS maquinaria, ma.descripcion,s.codigo,s.tipo_movimiento,s.ubicacion,s.descripcion,s.descripcion,DATE_FORMAT(s.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,s.total_compra,s.impuesto,s.estado FROM salidas s LEFT JOIN locales lo ON s.idlocal=lo.idlocal LEFT JOIN tipos t ON s.idtipo=t.idtipo LEFT JOIN maquinarias ma ON s.idmaquinaria=ma.idmaquinaria LEFT JOIN personales pea ON s.idautorizado=pea.idpersonal LEFT JOIN personales per ON s.idrecibido=per.idpersonal LEFT JOIN usuario u ON s.idusuario=u.idusuario WHERE s.idsalida = '$idsalida' ORDER BY s.idsalida DESC";
 		return ejecutarConsulta($sql);
 	}
 
 	public function listarDetalle($idsalida)
 	{
-		$sql = "SELECT de.idsalida, de.idarticulo, a.nombre AS articulo, c.titulo AS categoria, ma.titulo AS marca, me.titulo AS medida, a.codigo, a.codigo_producto, a.stock, a.stock_minimo, a.imagen, de.cantidad
+		$sql = "SELECT de.idsalida, de.idarticulo, a.nombre AS articulo, c.titulo AS categoria, ma.titulo AS marca, me.titulo AS medida, a.codigo, a.codigo_producto, a.stock, a.stock_minimo, a.imagen, de.cantidad, de.precio_compra, (de.cantidad * de.precio_compra) as subtotal
 				FROM detalle_salida de
 				LEFT JOIN articulo a ON de.idarticulo = a.idarticulo
 				LEFT JOIN categoria c ON a.idcategoria = c.idcategoria
@@ -165,9 +181,7 @@ class Salida
 	{
 		$sql = "SELECT 'autorizado' AS tabla, pe.idpersonal AS id, pe.nombre, u.nombre AS usuario, NULL AS ruc FROM personales pe LEFT JOIN usuario u ON pe.idusuario = u.idusuario WHERE pe.idlocal='$idlocal' AND pe.estado='activado' AND pe.eliminado='0'
 			UNION ALL
-			SELECT 'recibido' AS tabla, pe.idpersonal AS id, pe.nombre, u.nombre AS usuario, NULL AS ruc FROM personales pe LEFT JOIN usuario u ON pe.idusuario = u.idusuario WHERE pe.idlocal='$idlocal' AND pe.estado='activado' AND pe.eliminado='0'
-			UNION ALL
-			SELECT 'final' AS tabla, pe.idpersonal AS id, pe.nombre, u.nombre AS usuario, NULL AS ruc FROM personales pe LEFT JOIN usuario u ON pe.idusuario = u.idusuario WHERE pe.idlocal='$idlocal' AND pe.estado='activado' AND pe.eliminado='0'";
+			SELECT 'recibido' AS tabla, pe.idpersonal AS id, pe.nombre, u.nombre AS usuario, NULL AS ruc FROM personales pe LEFT JOIN usuario u ON pe.idusuario = u.idusuario WHERE pe.idlocal='$idlocal' AND pe.estado='activado' AND pe.eliminado='0'";
 
 		return ejecutarConsulta($sql);
 	}

@@ -84,17 +84,6 @@ if (!isset($_SESSION["nombre"])) {
 
 				$data = array();
 
-				function mostrarBoton($reg, $cargo, $idusuario, $buttonType)
-				{
-					if ($reg != "superadmin" && $cargo == "admin") {
-						return $buttonType;
-					} elseif ($cargo == "superadmin" || ($cargo == "usuario" && $idusuario == $_SESSION["idusuario"])) {
-						return $buttonType;
-					} else {
-						return '';
-					}
-				}
-
 				while ($reg = $rspta->fetch_object()) {
 					$cargo_detalle = "";
 
@@ -108,21 +97,22 @@ if (!isset($_SESSION["nombre"])) {
 						case 'usuario':
 							$cargo_detalle = "Usuario";
 							break;
+						case 'mirador':
+							$cargo_detalle = "Mirador";
+							break;
 						default:
 							break;
 					}
 
-					$reg->descripcion = (strlen($reg->descripcion) > 70) ? substr($reg->descripcion, 0, 70) . "..." : $reg->descripcion;
-
 					$data[] = array(
-						"0" => '<div style="display: flex; flex-wrap: nowrap; gap: 3px; justify-content: center;">' .
+						"0" => ($cargo != "mirador") ? ('<div style="display: flex; flex-wrap: nowrap; gap: 3px; justify-content: center;">' .
 							'<button class="btn btn-warning" style="margin-right: 3px;" onclick="mostrar(' . $reg->idlocal . ')"><i class="fa fa-pencil"></i></button>' .
 							'<button class="btn btn-bcp" style="margin-right: 3px; height: 35px;" onclick="mostrar2(' . $reg->idlocal . ')"><i class="fa fa-eye"></i></button>' .
 							'<a data-toggle="modal" href="#myModal"><button class="btn btn-bcp" style="margin-right: 3px; height: 35px;" onclick="trabajadores(' . $reg->idlocal . ',\'' . $reg->titulo . '\')"><i class="fa fa-user"></i></button></a>' .
-							'</div>',
+							'</div>') : ('<div style="display: flex; flex-wrap: nowrap; gap: 3px; justify-content: center;"><button class="btn btn-bcp" style="margin-right: 3px; height: 35px;" onclick="mostrar2(' . $reg->idlocal . ')"><i class="fa fa-eye"></i></button><a data-toggle="modal" href="#myModal"><button class="btn btn-bcp" style="margin-right: 3px; height: 35px;" onclick="trabajadores(' . $reg->idlocal . ',\'' . $reg->titulo . '\')"><i class="fa fa-user"></i></button></a></div>'),
 						"1" => $reg->titulo,
 						"2" => "N° " . $reg->local_ruc,
-						"3" => ($reg->descripcion == '') ? 'Sin registrar.' : $reg->descripcion,
+						"3" => "<textarea type='text' class='form-control' rows='2' style='background-color: white !important; cursor: default; height: 60px !important;'' readonly>" . (($reg->descripcion == '') ? 'Sin registrar.' : $reg->descripcion) . "</textarea>",
 						"4" => $reg->fecha,
 						"5" => ($reg->estado == 'activado') ? '<span class="label bg-green">Activado</span>' :
 							'<span class="label bg-red">Desactivado</span>'
@@ -159,11 +149,14 @@ if (!isset($_SESSION["nombre"])) {
 						case 'usuario':
 							$cargo_detalle = "Usuario";
 							break;
+						case 'mirador':
+							$cargo_detalle = "Mirador";
+							break;
 						default:
 							break;
 					}
 
-					$telefono = ($reg->telefono == '') ? 'Sin registrar' : number_format($reg->telefono, 0, '', ' ');
+					$telefono = ($reg->telefono == '') ? 'Sin registrar.' : number_format($reg->telefono, 0, '', ' ');
 
 					$data[] = array(
 						"0" => $reg->login,

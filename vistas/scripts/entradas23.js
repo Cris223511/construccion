@@ -613,7 +613,6 @@ function mostrar(identrada) {
 			nowrapCell();
 		})
 	})
-
 }
 
 function desactivar(identrada) {
@@ -714,7 +713,7 @@ function agregarDetalle(idarticulo, articulo, categoria, marca, medida, stock, s
 			'<td><input type="hidden" name="idarticulo[]" value="' + idarticulo + '">' + articulo + '</td>' +
 			'<td>' + categoria + '</td>' +
 			'<td>' + marca + '</td>' +
-			'<td><input type="number" name="cantidad[]" id="cantidad[]" lang="en-US" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="6" onkeydown="evitarNegativo(event)" onpaste="return false;" onDrop="return false;" required min="1" value="' + cantidad + '"></td>' +
+			'<td><input type="number" name="cantidad[]" id="cantidad[]" lang="en-US" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="6" onkeydown="evitarNegativo(event)" onpaste="return false;" onDrop="return false;" required step="any" min="0.1" value="' + cantidad + '"></td>' +
 			'<td>' + medida + '</td>' +
 			'<td>' + stock + '</td>' +
 			'<td>' + stock_minimo + '</td>' +

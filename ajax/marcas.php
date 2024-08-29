@@ -70,19 +70,12 @@ if (!isset($_SESSION["nombre"])) {
 				$fecha_inicio = $_GET["fecha_inicio"];
 				$fecha_fin = $_GET["fecha_fin"];
 
-				if ($cargo == "superadmin" || $cargo == "admin" || $cargo == "usuario") {
-					if ($fecha_inicio == "" && $fecha_fin == "") {
-						$rspta = $marcas->listar();
-					} else {
-						$rspta = $marcas->listarPorFecha($fecha_inicio, $fecha_fin);
-					}
+				if ($fecha_inicio == "" && $fecha_fin == "") {
+					$rspta = $marcas->listar();
 				} else {
-					if ($fecha_inicio == "" && $fecha_fin == "") {
-						$rspta = $marcas->listarPorUsuario($idusuario);
-					} else {
-						$rspta = $marcas->listarPorUsuarioFecha($idusuario, $fecha_inicio, $fecha_fin);
-					}
+					$rspta = $marcas->listarPorFecha($fecha_inicio, $fecha_fin);
 				}
+
 
 				$data = array();
 
@@ -92,6 +85,8 @@ if (!isset($_SESSION["nombre"])) {
 						return $buttonType;
 					} elseif ($cargo == "superadmin" || ($cargo == "usuario" && $idusuario == $_SESSION["idusuario"])) {
 						return $buttonType;
+					} elseif ($cargo == "mirador") {
+						return '';
 					} else {
 						return '';
 					}
@@ -110,21 +105,22 @@ if (!isset($_SESSION["nombre"])) {
 						case 'usuario':
 							$cargo_detalle = "Usuario";
 							break;
+						case 'mirador':
+							$cargo_detalle = "Mirador";
+							break;
 						default:
 							break;
 					}
-					$reg->descripcion = (strlen($reg->descripcion) > 70) ? substr($reg->descripcion, 0, 70) . "..." : $reg->descripcion;
 
 					$data[] = array(
 						"0" => '<div style="display: flex; flex-wrap: nowrap; gap: 3px">' .
 							mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-warning" style="margin-right: 3px; height: 35px;" onclick="mostrar(' . $reg->idmarca . ')"><i class="fa fa-pencil"></i></button>') .
 							(($reg->estado == 'activado') ?
-								(mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-danger" style="margin-right: 3px; height: 35px;" onclick="desactivar(' . $reg->idmarca . ')"><i class="fa fa-close"></i></button>')) :
-								(mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-success" style="margin-right: 3px; width: 35px; height: 35px;" onclick="activar(' . $reg->idmarca . ')"><i style="margin-left: -2px" class="fa fa-check"></i></button>'))) .
+								(mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-danger" style="margin-right: 3px; height: 35px;" onclick="desactivar(' . $reg->idmarca . ')"><i class="fa fa-close"></i></button>')) : (mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-success" style="margin-right: 3px; width: 35px; height: 35px;" onclick="activar(' . $reg->idmarca . ')"><i style="margin-left: -2px" class="fa fa-check"></i></button>'))) .
 							mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-danger" style="height: 35px;" onclick="eliminar(' . $reg->idmarca . ')"><i class="fa fa-trash"></i></button>') .
 							'</div>',
 						"1" => $reg->titulo,
-						"2" => ($reg->descripcion == '') ? 'Sin registrar.' : $reg->descripcion,
+						"2" => "<textarea type='text' class='form-control' rows='2' style='background-color: white !important; cursor: default; height: 60px !important;'' readonly>" . (($reg->descripcion == '') ? 'Sin registrar.' : $reg->descripcion) . "</textarea>",
 						"3" => ucwords($reg->nombre),
 						"4" => ucwords($cargo_detalle),
 						"5" => $reg->fecha,

@@ -146,11 +146,14 @@ switch ($_GET["op"]) {
 						case 'usuario':
 							$cargo_detalle = "Usuario";
 							break;
+						case 'mirador':
+							$cargo_detalle = "Mirador";
+							break;
 						default:
 							break;
 					}
 
-					$telefono = ($reg->telefono == '') ? 'Sin registrar' : number_format($reg->telefono, 0, '', ' ');
+					$telefono = ($reg->telefono == '') ? 'Sin registrar.' : number_format($reg->telefono, 0, '', ' ');
 
 					$data[] = array(
 						"0" => '<div style="display: flex; flex-wrap: nowrap; gap: 3px">' .
@@ -203,6 +206,9 @@ switch ($_GET["op"]) {
 				case 'usuario':
 					$cargo_detalle = "Usuario";
 					break;
+				case 'mirador':
+					$cargo_detalle = "Mirador";
+					break;
 				default:
 					break;
 			}
@@ -230,6 +236,9 @@ switch ($_GET["op"]) {
 					break;
 				case 'usuario':
 					$cargo_detalle = "Usuario";
+					break;
+				case 'mirador':
+					$cargo_detalle = "Mirador";
 					break;
 				default:
 					break;
@@ -312,6 +321,9 @@ switch ($_GET["op"]) {
 					break;
 				case 'admin':
 					$_SESSION['cargo_detalle'] = "Administrador";
+					break;
+				case 'mirador':
+					$_SESSION['cargo_detalle'] = "Mirador";
 					break;
 				case 'usuario':
 					$_SESSION['cargo_detalle'] = "Usuario";

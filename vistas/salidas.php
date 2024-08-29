@@ -31,6 +31,11 @@ if (!isset($_SESSION["nombre"])) {
           display: none;
         }
       }
+
+      tbody td,
+      tfoot tr th {
+        white-space: nowrap !important;
+      }
     </style>
 
     <div class="content-wrapper">
@@ -40,19 +45,16 @@ if (!isset($_SESSION["nombre"])) {
             <div class="box">
               <div class="box-header with-border">
                 <h1 class="box-title">Salidas
-                  <button class="btn btn-bcp" id="btnagregar" onclick="mostrarform(true)">
-                    <i class="fa fa-plus-circle"></i> Nueva salida
-                  </button>
+                  <?php if ($_SESSION["cargo"] != "mirador") { ?>
+                    <button class="btn btn-bcp" id="btnagregar" onclick="mostrarform(true)">
+                      <i class="fa fa-plus-circle"></i> Nueva salida
+                    </button>
+                  <?php } ?>
                   <a href="articulo.php">
                     <button class="btn btn-warning" id="btnInsertarArt">
                       <i class="fa fa-sign-in"></i> Ver productos
                     </button>
                   </a>
-                  <!-- <a href="agregarArt2.php">
-                    <button class="btn btn-success" id="btnInsertarArt">
-                      <i class="fa fa-plus-circle"></i> Agregar Productos
-                    </button>
-                  </a> -->
                   <a href="../reportes/rptsalidas.php" target="_blank">
                     <button class="btn btn-secondary" style="color: black !important;">
                       <i class="fa fa-clipboard"></i> Reporte
@@ -86,11 +88,12 @@ if (!isset($_SESSION["nombre"])) {
                       <th>Opciones</th>
                       <th style="white-space: nowrap;">Fecha y hora</th>
                       <th>Ubicación del local</th>
-                      <th>Tipo</th>
                       <th style="white-space: nowrap;">N° de documento</th>
+                      <th>Total compra</th>
+                      <th>Tipo</th>
+                      <th>Tipo Movimiento</th>
                       <th style="white-space: nowrap;">Autorizado por</th>
                       <th style="white-space: nowrap;">Recibido por</th>
-                      <th style="white-space: nowrap;">Usuario final</th>
                       <th style="white-space: nowrap;">Entregado por</th>
                       <th>Cargo</th>
                       <th>Estado</th>
@@ -101,11 +104,12 @@ if (!isset($_SESSION["nombre"])) {
                       <th>Opciones</th>
                       <th>Fecha y hora</th>
                       <th>Ubicación del local</th>
-                      <th>Tipo</th>
                       <th>N° de documento</th>
+                      <th>Total compra</th>
+                      <th>Tipo</th>
+                      <th>Tipo Movimiento</th>
                       <th>Autorizado por</th>
                       <th>Recibido por</th>
-                      <th>Usuario final</th>
                       <th>Entregado por</th>
                       <th>Cargo</th>
                       <th>Estado</th>
@@ -115,10 +119,10 @@ if (!isset($_SESSION["nombre"])) {
               </div>
               <div class="panel-body" id="formularioregistros" style="background-color: #ecf0f5 !important; padding-left: 0 !important; padding-right: 0 !important;">
                 <form name="formulario" id="formulario" method="POST">
-                  <div class="form-group col-lg-12 col-md-12 col-sm-12" style="background-color: white; border-top: 3px #3686b4 solid; padding: 20px;">
+                  <div class="form-group col-lg-12 col-md-12 col-sm-12" style="background-color: white; border-top: 3px #002a8e solid; padding: 20px;">
                     <div class="form-group col-lg-6 col-md-6 col-sm-12">
-                      <label>Ubicación del producto(*):</label>
-                      <input type="text" class="form-control" name="ubicacion" id="ubicacion" maxlength="50" placeholder="Ingrese la ubicación." autocomplete="off">
+                      <label>Ubicación del producto:</label>
+                      <input type="text" class="form-control" name="ubicacion" id="ubicacion" maxlength="50" placeholder="Ingrese la ubicación del producto." autocomplete="off">
                     </div>
                     <div class="form-group col-lg-6 col-md-6 col-sm-12">
                       <label>Fecha y hora(*):</label>
@@ -135,8 +139,8 @@ if (!isset($_SESSION["nombre"])) {
                       <input type="number" class="form-control" id="local_ruc" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="11" placeholder="RUC del local" disabled>
                     </div>
                     <div class="form-group col-lg-6 col-md-6 col-sm-12">
-                      <label>Tipo(*):</label>
-                      <select id="idtipo" name="idtipo" class="form-control selectpicker" data-live-search="true" data-size="5" required>
+                      <label>Tipo:</label>
+                      <select id="idtipo" name="idtipo" class="form-control selectpicker" data-live-search="true" data-size="5">
                         <option value="">- Seleccione -</option>
                       </select>
                     </div>
@@ -150,55 +154,56 @@ if (!isset($_SESSION["nombre"])) {
 
                     </div>
                     <div class="form-group col-lg-6 col-md-6 col-sm-12">
-                      <label>Tipo de movimiento(*):</label>
-                      <select id="tipo_movimiento" name="tipo_movimiento" class="form-control selectpicker" onchange="evaluarMetodo()" required>
+                      <label>Tipo de movimiento:</label>
+                      <select id="tipo_movimiento" name="tipo_movimiento" class="form-control selectpicker" onchange="evaluarMetodo()">
                         <option value="">- Seleccione -</option>
                         <option value="personal">Personal</option>
                         <option value="maquinaria">Maquinaria</option>
                       </select>
                     </div>
                     <div class="form-group col-lg-6 col-md-6 col-sm-12" id="selectMaquinaria">
-                      <label>Maquinaria(*):</label>
-                      <select id="idmaquinaria" name="idmaquinaria" class="form-control selectpicker" data-live-search="true" data-size="5" required>
+                      <label>Maquinaria:</label>
+                      <select id="idmaquinaria" name="idmaquinaria" class="form-control selectpicker" data-live-search="true" data-size="5">
                         <option value="">- Seleccione -</option>
                       </select>
                     </div>
                     <div class="form-group col-lg-6 col-md-6 col-sm-12 selectPersonal">
-                      <label>Autorizado por(*):</label>
-                      <select id="idautorizado" name="idautorizado" class="form-control selectpicker" data-live-search="true" data-size="5" required>
+                      <label>Autorizado por:</label>
+                      <select id="idautorizado" name="idautorizado" class="form-control selectpicker" data-live-search="true" data-size="5">
                         <option value="0">- Seleccione -</option>
                       </select>
                     </div>
                     <!-- <div class="form-group col-lg-6 col-md-6 col-sm-12 selectPersonal">
-                      <label>Entregado por(*):</label>
-                      <select id="identregado" name="identregado" class="form-control selectpicker" data-live-search="true" data-size="5" required>
+                      <label>Entregado por:</label>
+                      <select id="identregado" name="identregado" class="form-control selectpicker" data-live-search="true" data-size="5">
                         <option value="0">- Seleccione -</option>
                       </select>
                     </div> -->
                     <div class="form-group col-lg-6 col-md-6 col-sm-12 selectPersonal">
-                      <label>Recibido por(*):</label>
-                      <select id="idrecibido" name="idrecibido" class="form-control selectpicker" data-live-search="true" data-size="5" required>
-                        <option value="0">- Seleccione -</option>
-                      </select>
-                    </div>
-                    <div class="form-group col-lg-6 col-md-6 col-sm-12 selectPersonal">
-                      <label>Usuario final(*):</label>
-                      <select id="idfinal" name="idfinal" class="form-control selectpicker" data-live-search="true" data-size="5" required>
+                      <label>Recibido por:</label>
+                      <select id="idrecibido" name="idrecibido" class="form-control selectpicker" data-live-search="true" data-size="5">
                         <option value="0">- Seleccione -</option>
                       </select>
                     </div>
                     <div class="form-group col-lg-12 col-md-12 col-md-12">
                       <label>Descripción:</label>
-                      <textarea class="form-control" name="descripcion" id="descripcion" cols="30" rows="5" placeholder="Ingrese una descripción." style="resize: none;"></textarea>
+                      <textarea class="form-control" name="descripcion" id="descripcion" maxlength="10000" cols="30" rows="5" placeholder="Ingrese una descripción." style="resize: none;"></textarea>
                     </div>
                   </div>
                   <div class="form-group col-lg-12 col-md-12 col-sm-12" style="background-color: white !important; padding: 20px !important;">
-                    <div class="form-group col-lg-6 col-md-6 col-sm-12 botonArt" id="botonArt">
+                    <div class="form-group col-lg-6 col-md-12 col-sm-12 botonArt" id="botonArt">
                       <a data-toggle="modal" href="#myModal">
                         <button id="btnAgregarArt" type="button" class="btn btn-secondary" style="color: black !important"> <span class="fa fa-plus"></span> Agregar Productos</button>
                       </a>
                     </div>
-                    <div class="form-group col-lg-4 col-md-6 col-sm-12" id="form_codigo_barra" style="float: right;">
+                    <div class="form-group col-lg-3 col-md-6 col-sm-6">
+                      <label>Impuesto:</label>
+                      <select name="impuesto" id="impuesto" class="form-control selectpicker" onchange="modificarSubototales();" required>
+                        <option value="0">0</option>
+                        <option value="18">18</option>
+                      </select>
+                    </div>
+                    <div class="form-group col-lg-3 col-md-6 col-sm-6" id="form_codigo_barra">
                       <label>Buscar por código de barra: <a data-toggle="popover" data-placement="top" title="Buscar por código de barra" data-content="Sólo se listan los productos que no están en stock." style="color: #418bb7; cursor: pointer;"><i class="fa fa-question-circle"></i></a></label>
                       <select id="idproducto" name="idproducto" class="form-control selectpicker" data-size="6" data-live-search="true" onchange="llenarTabla()">
                         <option value="">Busca un producto.</option>
@@ -208,19 +213,57 @@ if (!isset($_SESSION["nombre"])) {
                       <table id="detalles" class="table table-striped table-bordered table-condensed table-hover w-100" style="width: 100% !important">
                         <thead style="background-color:#A9D0F5">
                           <th>Opciones</th>
+                          <th>Imagen</th>
                           <th>Artículo</th>
                           <th>Categoría</th>
                           <th>Marca</th>
+                          <th style="white-space: nowrap;">Código de producto</th>
+                          <th style="white-space: nowrap;">Código de barra</th>
                           <th>Cantidad</th>
+                          <th>Precio compra</th>
                           <th style="white-space: nowrap;">Unidad de medida</th>
                           <th>Stock</th>
                           <th style="white-space: nowrap;">Stock mínimo</th>
-                          <th style="white-space: nowrap;">Código de producto</th>
-                          <th style="white-space: nowrap;">Código de barra</th>
-                          <th>Imagen</th>
+                          <th>Subtotal</th>
                         </thead>
                         <tbody>
                         </tbody>
+                        <tfoot>
+                          <tr>
+                            <th>IGV</th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th>
+                              <h4 id="igv">S/. 0.00</h4><input type="hidden" name="total_igv" id="total_igv">
+                            </th>
+                          </tr>
+                          <tr>
+                            <th>TOTAL</th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th>
+                              <h4 id="total">S/. 0.00</h4><input type="hidden" name="total_compra" id="total_compra">
+                            </th>
+                          </tr>
+                        </tfoot>
                       </table>
                     </div>
                   </div>
@@ -247,39 +290,63 @@ if (!isset($_SESSION["nombre"])) {
             <table id="tblarticulos" class="table table-striped table-bordered table-condensed table-hover w-100" style="width: 100% !important">
               <thead>
                 <th>Opciones</th>
-                <th>IMAGEN</th>
-                <th>NOMBRE</th>
-                <th style="white-space: nowrap;">U. MEDIDA</th>
-                <th>CATEGORÍA</th>
-                <th>MARCA</th>
-                <th style="white-space: nowrap;">STOCK NORMAL</th>
-                <th style="white-space: nowrap;">STOCK MÍNIMO</th>
-                <th>Ubicación DEL LOCAL</th>
-                <th style="white-space: nowrap;">C. PRODUCTO</th>
-                <th style="white-space: nowrap;">C. DE BARRA</th>
-                <th style="white-space: nowrap;">AGREGADO POR</th>
-                <th>CARGO</th>
-                <th style="white-space: nowrap;">FECHA Y HORA</th>
-                <th>ESTADO</th>
+                <th>Imagen</th>
+                <th>Nombre</th>
+                <th style="white-space: nowrap;">U. medida</th>
+                <th style="width: 20%; min-width: 300px;">Descripción</th>
+                <th>Categoría</th>
+                <th>Marca</th>
+                <th style="white-space: nowrap;">Ubicación del local</th>
+                <th style="white-space: nowrap;">Stock normal</th>
+                <th style="white-space: nowrap;">Stock mínimo</th>
+                <th style="white-space: nowrap;">P. Compra</th>
+                <th style="white-space: nowrap;">P. Compra Mayor</th>
+                <th style="white-space: nowrap;">C. producto</th>
+                <th style="white-space: nowrap;">C. de barra</th>
+                <th style="width: 20%; min-width: 200px;">Talla</th>
+                <th style="width: 20%; min-width: 200px;">Color</th>
+                <th>Peso</th>
+                <th style="white-space: nowrap;">Fecha emisión</th>
+                <th style="white-space: nowrap;">Fecha vencimiento</th>
+                <th style="width: 20%; min-width: 200px;">Nota 1</th>
+                <th style="width: 20%; min-width: 200px;">Nota 2</th>
+                <th style="width: 20%; min-width: 200px;">Nota 3 (IMEI)</th>
+                <th style="width: 20%; min-width: 200px;">Nota 4 (Serial)</th>
+                <th style="white-space: nowrap;">Agregado por</th>
+                <th>Cargo</th>
+                <th style="white-space: nowrap;">Fecha y hora</th>
+                <th>Estado</th>
               </thead>
               <tbody>
               </tbody>
               <tfoot>
                 <th>Opciones</th>
-                <TH>IMAGEN</TH>
-                <TH>NOMBRE</TH>
-                <TH>U. MEDIDA</TH>
-                <TH>CATEGORÍA</TH>
-                <TH>MARCA</TH>
-                <TH>STOCK NORMAL</TH>
-                <TH>STOCK MÍNIMO</TH>
-                <TH>UBICACIÓN DEL LOCAL</TH>
-                <TH>C. PRODUCTO</TH>
-                <TH>C. DE BARRA</TH>
-                <TH>AGREGADO POR</TH>
-                <TH>CARGO</TH>
-                <TH>FECHA Y HORA</TH>
-                <TH>ESTADO</TH>
+                <th>Imagen</th>
+                <th>Nombre</th>
+                <th>U. medida</th>
+                <th>Descripción</th>
+                <th>Categoría</th>
+                <th>Marca</th>
+                <th>Ubicación del local</th>
+                <th>Stock normal</th>
+                <th>Stock mínimo</th>
+                <th>P. Compra</th>
+                <th>P. Compra Mayor</th>
+                <th>C. producto</th>
+                <th>C. de barra</th>
+                <th>Talla</th>
+                <th>Color</th>
+                <th>Peso</th>
+                <th>Fecha emisión</th>
+                <th>Fecha vencimiento</th>
+                <th>Nota 1</th>
+                <th>Nota 2</th>
+                <th>Nota 3 (IMEI)</th>
+                <th>Nota 4 (Serial)</th>
+                <th>Agregado por</th>
+                <th>Cargo</th>
+                <th>Fecha y hora</th>
+                <th>Estado</th>
               </tfoot>
             </table>
           </div>
@@ -351,7 +418,7 @@ if (!isset($_SESSION["nombre"])) {
               </div>
               <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <label>Descripción:</label>
-                <input type="text" class="form-control" name="descripcion" id="descripcion2" maxlength="50" placeholder="Ingrese la descripción del personal." autocomplete="off" disabled>
+                <input type="text" class="form-control" name="descripcion" id="descripcion2" maxlength="10000" placeholder="Ingrese la descripción del personal." autocomplete="off" disabled>
               </div>
 
               <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-bottom: 0 !important; padding: 0 !important;">
@@ -418,7 +485,7 @@ if (!isset($_SESSION["nombre"])) {
               </div>
               <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <label>Descripción:</label>
-                <input type="text" class="form-control" name="descripcion" id="descripcion3" maxlength="50" placeholder="Ingrese la descripción del personal." autocomplete="off">
+                <input type="text" class="form-control" name="descripcion" id="descripcion3" maxlength="10000" placeholder="Ingrese la descripción del personal." autocomplete="off">
               </div>
 
               <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-bottom: 0 !important; padding: 0 !important;">
@@ -441,7 +508,7 @@ if (!isset($_SESSION["nombre"])) {
       </div>
       <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
         <label>Descripción:</label>
-        <input type="text" class="form-control" name="descripcion" id="descripcion2" maxlength="256" placeholder="Descripción">
+        <input type="text" class="form-control" name="descripcion" id="descripcion2" maxlength="10000" placeholder="Descripción">
       </div>
     </form>
     <!-- Fin form maquinarias -->
@@ -455,7 +522,7 @@ if (!isset($_SESSION["nombre"])) {
       </div>
       <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <label>Descripción:</label>
-        <textarea type="text" class="form-control" name="descripcion" id="descripcion3" maxlength="150" rows="4" placeholder="Descripción"></textarea>
+        <textarea type="text" class="form-control" name="descripcion" id="descripcion3" maxlength="10000" rows="4" placeholder="Descripción"></textarea>
       </div>
     </form>
     <!-- Fin form tipos -->

@@ -79,7 +79,7 @@ if (!isset($_SESSION["nombre"])) {
 								</thead>';
 
 				while ($reg = $rspta->fetch_object()) {
-					echo '<tr class="filas"><td></td><td>' . $reg->articulo . '</td><td>' . $reg->categoria . '</td><td>' . $reg->marca . '</td><td>' . $reg->cantidad . '</td><td>' . $reg->medida . '</td><td>' . $reg->stock . '</td><td>' . $reg->stock_minimo . '</td><td>' . $reg->codigo_producto . '</td><td>' . $reg->codigo . '</td><td><img src="../files/articulos/' . $reg->imagen . '" height="50px" width="50px"></td></tr>';
+					echo '<tr class="filas"><td></td><td>' . $reg->articulo . '</td><td>' . $reg->categoria . '</td><td>' . (($reg->marca != "") ? $reg->marca : "Sin registrar.") . '</td><td>' . $reg->cantidad . '</td><td>' . $reg->medida . '</td><td>' . $reg->stock . '</td><td>' . $reg->stock_minimo . '</td><td>' . $reg->codigo_producto . '</td><td>' . (($reg->codigo != "") ? $reg->codigo : "Sin registrar.") . '</td><td><img src="../files/articulos/' . $reg->imagen . '" height="50px" width="50px"></td></tr>';
 				}
 				break;
 
@@ -109,6 +109,8 @@ if (!isset($_SESSION["nombre"])) {
 						return $buttonType;
 					} elseif ($cargo == "superadmin" || ($cargo == "usuario" && $idusuario == $_SESSION["idusuario"])) {
 						return $buttonType;
+					} elseif ($cargo == "mirador") {
+						return '';
 					} else {
 						return '';
 					}
@@ -127,10 +129,12 @@ if (!isset($_SESSION["nombre"])) {
 						case 'usuario':
 							$cargo_detalle = "Usuario";
 							break;
+						case 'mirador':
+							$cargo_detalle = "Mirador";
+							break;
 						default:
 							break;
 					}
-					$reg->descripcion = (strlen($reg->descripcion) > 70) ? substr($reg->descripcion, 0, 70) . "..." : $reg->descripcion;
 
 					$data[] = array(
 						"0" => '<div style="display: flex; flex-wrap: nowrap; gap: 3px">' .
@@ -142,12 +146,13 @@ if (!isset($_SESSION["nombre"])) {
 							'</div>',
 						"1" => $reg->fecha,
 						"2" => $reg->local,
-						"3" => $reg->tipo,
-						"4" => $reg->proveedor,
-						"5" => "N° " . $reg->codigo,
-						"6" => $reg->usuario,
-						"7" => $cargo_detalle,
-						"8" => ($reg->estado == 'activado') ? '<span class="label bg-green">Activado</span>' :
+						"3" => ($reg->ubicacion == '' ? 'Sin registrar.' : $reg->ubicacion),
+						"4" => $reg->tipo,
+						"5" => $reg->proveedor,
+						"6" => "N° " . (($reg->codigo != "") ? $reg->codigo : "Sin registrar."),
+						"7" => $reg->usuario,
+						"8" => $cargo_detalle,
+						"9" => ($reg->estado == 'activado') ? '<span class="label bg-green">Activado</span>' :
 							'<span class="label bg-red">Desactivado</span>'
 					);
 				}
@@ -198,29 +203,44 @@ if (!isset($_SESSION["nombre"])) {
 						case 'usuario':
 							$cargo_detalle = "Usuario";
 							break;
+						case 'mirador':
+							$cargo_detalle = "Mirador";
+							break;
 						default:
 							break;
 					}
 
 					$data[] = array(
-						// "0" => ($reg->stock != '0') ? '<div style="display: flex; justify-content: center;"><button class="btn btn-warning" data-idarticulo="' . $reg->idarticulo . '" onclick="agregarDetalle(' . $reg->idarticulo . ',\'' . $reg->nombre . '\',\'' . $reg->codigo . '\'); disableButton(this);"><span class="fa fa-plus"></span></button></div>' : '',
-						"0" => '<div style="display: flex; justify-content: center;"><button class="btn btn-warning" style="height: 35px;" data-idarticulo="' . $reg->idarticulo . '" onclick="agregarDetalle(' . $reg->idarticulo . ',\'' . $reg->nombre . '\',\'' . $reg->categoria . '\',\'' . $reg->marca . '\',\'' . $reg->medida . '\',\'' . $reg->stock . '\',\'' . $reg->stock_minimo . '\',\'' . $reg->codigo_producto . '\',\'' . $reg->codigo . '\',\'' . $reg->imagen . '\'); disableButton(this);"><span class="fa fa-plus"></span></button></div>',
+						// "0" => ($reg->stock != '0') ? '<div style="display: flex; justify-content: center;"><button class="btn btn-warning" data-idarticulo="' . $reg->idarticulo . '" onclick="agregarDetalle(' . $reg->idarticulo . ',\'' . $reg->nombre . '\',\'' . (($reg->codigo != "") ? $reg->codigo : "Sin registrar.") . '\'); disableButton(this);"><span class="fa fa-plus"></span></button></div>' : '',
+						"0" => '<div style="display: flex; justify-content: center;"><button class="btn btn-warning" style="height: 35px;" data-idarticulo="' . $reg->idarticulo . '" onclick="agregarDetalle(' . $reg->idarticulo . ',\'' . $reg->nombre . '\',\'' . $reg->categoria . '\',\'' . (($reg->marca != "") ? $reg->marca : "Sin registrar.") . '\',\'' . $reg->medida . '\',\'' . $reg->stock . '\',\'' . $reg->stock_minimo . '\',\'' . $reg->codigo_producto . '\',\'' . (($reg->codigo != "") ? $reg->codigo : "Sin registrar.") . '\',\'' . $reg->imagen . '\'); disableButton(this);"><span class="fa fa-plus"></span></button></div>',
 						"1" => '<a href="../files/articulos/' . $reg->imagen . '" class="galleria-lightbox" style="z-index: 10000 !important;">
 									<img src="../files/articulos/' . $reg->imagen . '" height="50px" width="50px" class="img-fluid">
 								</a>',
 						"2" => $reg->nombre,
 						"3" => $reg->medida,
-						"4" => $reg->categoria,
-						"5" => $reg->marca,
-						"6" => ($reg->stock > 0 && $reg->stock < $reg->stock_minimo) ? '<span style="color: #Ea9900; font-weight: bold">' . $reg->stock . '</span>' : (($reg->stock != '0') ? '<span>' . $reg->stock . '</span>' : '<span style="color: red; font-weight: bold">' . $reg->stock . '</span>'),
-						"7" => $reg->stock_minimo,
-						"8" => $reg->local,
-						"9" => $reg->codigo_producto,
-						"10" => $reg->codigo,
-						"11" => $reg->usuario,
-						"12" => $cargo_detalle,
-						"13" => $reg->fecha,
-						"14" => ($reg->stock > 0 && $reg->stock < $reg->stock_minimo) ? '<span class="label bg-orange">agotandose</span>' : (($reg->stock != '0') ? '<span class="label bg-green">Disponible</span>' : '<span class="label bg-red">agotado</span>')
+						"4" => "<textarea type='text' class='form-control' rows='2' style='background-color: white !important; cursor: default; height: 60px !important;' readonly>" . (($reg->descripcion == '') ? 'Sin registrar.' : $reg->descripcion) . "</textarea>",
+						"5" => $reg->categoria,
+						"6" => (($reg->marca != "") ? $reg->marca : "Sin registrar."),
+						"7" => $reg->local,
+						"8" => ($reg->stock > 0 && $reg->stock < $reg->stock_minimo) ? '<span style="color: #Ea9900; font-weight: bold">' . $reg->stock . '</span>' : (($reg->stock != '0') ? '<span>' . $reg->stock . '</span>' : '<span style="color: red; font-weight: bold">' . $reg->stock . '</span>'),
+						"9" => $reg->stock_minimo,
+						"10" => "S/. " . number_format($reg->precio_compra, 2, '.', ','),
+						"11" => "S/. " . number_format($reg->precio_compra_mayor, 2, '.', ','),
+						"12" => $reg->codigo_producto,
+						"13" => (($reg->codigo != "") ? $reg->codigo : "Sin registrar."),
+						"14" => "<textarea type='text' class='form-control' rows='2' style='background-color: white !important; cursor: default; height: 60px !important;' readonly>" . (($reg->talla == "") ? 'Sin registrar.' : $reg->talla) . "</textarea>",
+						"15" => "<textarea type='text' class='form-control' rows='2' style='background-color: white !important; cursor: default; height: 60px !important;' readonly>" . (($reg->color == "") ? 'Sin registrar.' : $reg->color) . "</textarea>",
+						"16" => ($reg->peso != "") ? $reg->peso : "Sin registrar.",
+						"17" => ($reg->fecha_emision == '00-00-0000') ? 'Sin registrar.' : $reg->fecha_emision,
+						"18" => ($reg->fecha_vencimiento == '00-00-0000') ? 'Sin registrar.' : $reg->fecha_vencimiento,
+						"19" => "<textarea type='text' class='form-control' rows='2' style='background-color: white !important; cursor: default; height: 60px !important;' readonly>" . (($reg->nota_1 == "") ? 'Sin registrar.' : $reg->nota_1) . "</textarea>",
+						"20" => "<textarea type='text' class='form-control' rows='2' style='background-color: white !important; cursor: default; height: 60px !important;' readonly>" . (($reg->nota_2 == "") ? 'Sin registrar.' : $reg->nota_2) . "</textarea>",
+						"21" => "<textarea type='text' class='form-control' rows='2' style='background-color: white !important; cursor: default; height: 60px !important;' readonly>" . (($reg->imei == "") ? 'Sin registrar.' : $reg->imei) . "</textarea>",
+						"22" => "<textarea type='text' class='form-control' rows='2' style='background-color: white !important; cursor: default; height: 60px !important;' readonly>" . (($reg->serial == "") ? 'Sin registrar.' : $reg->serial) . "</textarea>",
+						"23" => $reg->usuario,
+						"24" => $cargo_detalle,
+						"25" => $reg->fecha,
+						"26" => ($reg->stock > 0 && $reg->stock < $reg->stock_minimo) ? '<span class="label bg-orange">agotandose</span>' : (($reg->stock != '0') ? '<span class="label bg-green">Disponible</span>' : '<span class="label bg-red">agotado</span>')
 					);
 				}
 				$results = array(
@@ -245,8 +265,8 @@ if (!isset($_SESSION["nombre"])) {
 
 				echo '<option value="">Busca un producto.</option>';
 				while ($reg = $rspta->fetch_object()) {
-					if (!empty($reg->codigo) && $reg->stock != '0') {
-						echo '<option value="' . $reg->idarticulo . '">' . $reg->codigo . ' - ' . $reg->nombre . '</option>';
+					if (!empty((($reg->codigo != "") ? $reg->codigo : "Sin registrar.")) && $reg->stock != '0') {
+						echo '<option value="' . $reg->idarticulo . '">' . (($reg->codigo != "") ? $reg->codigo : "Sin registrar.") . ' - ' . $reg->nombre . '</option>';
 					}
 				}
 				break;
@@ -265,12 +285,12 @@ if (!isset($_SESSION["nombre"])) {
 						'idarticulo' => $reg->idarticulo,
 						'articulo' => $reg->nombre,
 						'categoria' => $reg->categoria,
-						'marca' => $reg->marca,
+						'marca' => (($reg->marca != "") ? $reg->marca : "Sin registrar."),
 						'medida' => $reg->medida,
 						'stock' => $reg->stock,
 						'stock_minimo' => $reg->stock_minimo,
 						'codigo_producto' => $reg->codigo_producto,
-						'codigo' => $reg->codigo,
+						'codigo' => (($reg->codigo != "") ? $reg->codigo : "Sin registrar."),
 						'imagen' => $reg->imagen,
 					);
 					array_push($productos, $producto);

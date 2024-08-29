@@ -23,17 +23,14 @@ function desbloquearCampos() {
 function habilitarPersonales() {
 	$("#idautorizado").prop("disabled", false);
 	$("#idrecibido").prop("disabled", false);
-	$("#idfinal").prop("disabled", false);
 }
 
 function deshabilitarPersonales() {
 	$("#idautorizado").prop("disabled", true);
 	$("#idrecibido").prop("disabled", true);
-	$("#idfinal").prop("disabled", true);
 
 	$("#idautorizado").empty().append('<option value="0">- Seleccione -</option>');
 	$("#idrecibido").empty().append('<option value="0">- Seleccione -</option>');
-	$("#idfinal").empty().append('<option value="0">- Seleccione -</option>');
 }
 
 function convertirMayus() {
@@ -101,7 +98,7 @@ function init() {
 	$('[data-toggle="popover"]').popover();
 
 	$.post("../ajax/salidas.php?op=listarTodosActivos", function (data) {
-		console.log(data);
+		// console.log(data);
 		const obj = JSON.parse(data);
 		console.log(obj);
 
@@ -150,7 +147,6 @@ function init() {
 
 		$('#idautorizado').closest('.form-group').find('input[type="text"]').attr('onkeydown', 'checkEnter(event)');
 		$('#idrecibido').closest('.form-group').find('input[type="text"]').attr('onkeydown', 'checkEnter(event)');
-		$('#idfinal').closest('.form-group').find('input[type="text"]').attr('onkeydown', 'checkEnter(event)');
 
 		$('#idmaquinaria').closest('.form-group').find('input[type="text"]').attr('onkeydown', 'agregarMaquinaria(event)');
 		$('#idmaquinaria').closest('.form-group').find('input[type="text"]').attr('maxlength', '40');
@@ -558,7 +554,6 @@ function actualizarPersonales(idlocal) {
 			const selects = {
 				"idautorizado": $("#idautorizado"),
 				"idrecibido": $("#idrecibido"),
-				"idfinal": $("#idfinal"),
 			};
 
 			for (const selectId in selects) {
@@ -608,6 +603,8 @@ function limpiar() {
 	$("#ubicacion").val("");
 	$("#print").hide();
 	$("#idsalida").val("");
+	$("#impuesto").val("0");
+	$("#impuesto").selectpicker('refresh');
 
 	$(".selectPersonal").hide();
 	$("#selectMaquinaria").hide();
@@ -622,14 +619,17 @@ function limpiar() {
 	$("#idautorizado").selectpicker('refresh');
 	$("#idrecibido").val($("#idrecibido option:first").val());
 	$("#idrecibido").selectpicker('refresh');
-	$("#idfinal").val($("#idfinal option:first").val());
-	$("#idfinal").selectpicker('refresh');
 	$("#idmaquinaria").val($("#idmaquinaria option:first").val());
 	$("#idmaquinaria").selectpicker('refresh');
 
 	$(".filas").remove();
 	$('#myModal').modal('hide');
+
+	$("#total_compra").val("");
 	$("#btnAgregarArt").show();
+	$("#igv").html("S/. 0.00");
+	$("#total").html("S/. 0.00");
+
 	$("#btnGuardar").hide();
 	$("#botonArt").show();
 	$("#form_codigo_barra").show();
@@ -798,6 +798,14 @@ function guardaryeditar(e) {
 }
 
 function mostrar(idsalida) {
+	$("#form_codigo_barra").hide();
+	$("#btnAgregarArt").hide();
+	$("#btnCrearArt").hide();
+	$("#btnGuardar").hide();
+
+	$("#serie_comprobante").val("");
+	$("#num_proforma").val("");
+
 	$.post("../ajax/salidas.php?op=mostrar", { idsalida: idsalida }, function (data, status) {
 		data = JSON.parse(data);
 		mostrarform(true);
@@ -825,8 +833,6 @@ function mostrar(idsalida) {
 			$('#idautorizado').selectpicker('refresh');
 			$("#idrecibido").val(data.idrecibido);
 			$('#idrecibido').selectpicker('refresh');
-			$("#idfinal").val(data.idfinal);
-			$('#idfinal').selectpicker('refresh');
 			$("#idmaquinaria").val(data.idmaquinaria);
 			$('#idmaquinaria').selectpicker('refresh');
 
@@ -841,6 +847,11 @@ function mostrar(idsalida) {
 			$("#ubicacion").val(data.ubicacion);
 			$("#fecha_hora").val(data.fecha_hora);
 			$("#print").hide();
+
+			var impuesto = parseInt(data.impuesto);
+			$("#impuesto").val(impuesto);
+			$("#impuesto").selectpicker('refresh');
+
 			$("#idsalida").val(data.idsalida);
 
 			$("#botonArt").hide();
@@ -946,27 +957,30 @@ var detalles = 0;
 //$("#guardar").hide();
 $("#btnGuardar").hide();
 
-function agregarDetalle(idarticulo, articulo, categoria, marca, medida, stock, stock_minimo, codigo_producto, codigo, imagen) {
+function agregarDetalle(idarticulo, articulo, categoria, marca, medida, stock, stock_minimo, precio_compra, codigo_producto, codigo, imagen) {
 	var cantidad = 1;
 
 	if (idarticulo != "") {
+		var subtotal = cantidad * precio_compra;
 		var fila = '<tr class="filas" id="fila' + cont + '">' +
 			'<td><button type="button" class="btn btn-danger" onclick="eliminarDetalle(' + cont + ', ' + idarticulo + ')">X</button></td>' +
+			'<td><img src="../files/articulos/' + imagen + '" height="50px" width="50px"></td>' +
 			'<td><input type="hidden" name="idarticulo[]" value="' + idarticulo + '">' + articulo + '</td>' +
 			'<td>' + categoria + '</td>' +
 			'<td>' + marca + '</td>' +
-			'<td><input type="number" name="cantidad[]" id="cantidad[]" lang="en-US" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="6" onkeydown="evitarNegativo(event)" onpaste="return false;" onDrop="return false;" min="1" required value="' + cantidad + '"></td>' +
+			'<td>' + codigo_producto + '</td>' +
+			'<td>' + codigo + '</td>' +
+			'<td><input type="number" name="cantidad[]" id="cantidad[]" lang="en-US" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength); modificarSubototales();" maxlength="6" onkeydown="evitarNegativo(event)" onpaste="return false;" onDrop="return false;" step="any" min="0.1" required value="' + cantidad + '"></td>' +
+			'<td><input type="number" name="precio_compra[]" id="precio_compra[]" lang="en-US" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength); modificarSubototales();" maxlength="6" onkeydown="evitarNegativo(event)" onpaste="return false;" onDrop="return false;" step="any" min="0.1" required value="' + (precio_compra == '' ? parseFloat(0).toFixed(2) : precio_compra) + '"></td>' +
 			'<td>' + medida + '</td>' +
 			'<td>' + stock + '</td>' +
 			'<td>' + stock_minimo + '</td>' +
-			'<td>' + codigo_producto + '</td>' +
-			'<td>' + codigo + '</td>' +
-			'<td><img src="../files/articulos/' + imagen + '" height="50px" width="50px"></td>' +
+			'<td class="nowrap-cell"><span name="subtotal" id="subtotal' + cont + '">' + subtotal + '</span></td>' +
 			'</tr>';
 		cont++;
 		detalles = detalles + 1;
 		$('#detalles').append(fila);
-		evaluar();
+		modificarSubototales();
 		evitarCaracteresEspecialesCamposNumericos();
 		aplicarRestrictATodosLosInputs();
 		console.log("Deshabilito a: " + idarticulo + " =)");
@@ -976,6 +990,42 @@ function agregarDetalle(idarticulo, articulo, categoria, marca, medida, stock, s
 	}
 
 	nowrapCell();
+}
+
+function modificarSubototales() {
+	var cant = document.getElementsByName("cantidad[]");
+	var prec = document.getElementsByName("precio_compra[]");
+	var sub = document.getElementsByName("subtotal");
+
+	for (var i = 0; i < cant.length; i++) {
+		var inpC = cant[i];
+		var inpP = prec[i];
+		var inpS = sub[i];
+
+		inpS.value = (inpC.value * inpP.value);
+		document.getElementsByName("subtotal")[i].innerHTML = inpS.value.toFixed(2);
+	}
+	calcularTotales();
+}
+
+function calcularTotales() {
+	var sub = document.getElementsByName("subtotal");
+	var total = 0.0;
+	var igv = 0.0;
+
+	for (var i = 0; i < sub.length; i++) {
+		total += document.getElementsByName("subtotal")[i].value;
+	}
+
+	var impuesto = document.getElementById("impuesto").value;
+
+	igv = impuesto == 18 ? total * 0.18 : total * 0;
+	total = impuesto == 18 ? total + (total * 0.18) : total;
+
+	$("#igv").html("S/. " + igv.toFixed(2));
+	$("#total").html("S/. " + total.toFixed(2));
+	$("#total_compra").val(total.toFixed(2));
+	evaluar();
 }
 
 function llenarTabla() {
@@ -1009,13 +1059,13 @@ function llenarTabla() {
 			success: function (e) {
 				console.log(e);
 				$('#idproducto').prop("disabled", false);
-				console.log("Envío esto al servidor =>", e[0].idarticulo, e[0].articulo, e[0].categoria, e[0].marca, e[0].medida, e[0].stock, e[0].stock_minimo, e[0].codigo_producto, e[0].codigo, e[0].imagen);
+				console.log("Envío esto al servidor =>", e[0].idarticulo, e[0].articulo, e[0].categoria, e[0].marca, e[0].medida, e[0].stock, e[0].stock_minimo, e[0].precio_compra, e[0].codigo_producto, e[0].codigo, e[0].imagen);
 
 				// Resetear el valor del select
 				$('#idproducto').val($("#idproducto option:first").val());
 				$("#idproducto").selectpicker('refresh');
 
-				agregarDetalle(e[0].idarticulo, e[0].articulo, e[0].categoria, e[0].marca, e[0].medida, e[0].stock, e[0].stock_minimo, e[0].codigo_producto, e[0].codigo, e[0].imagen);
+				agregarDetalle(e[0].idarticulo, e[0].articulo, e[0].categoria, e[0].marca, e[0].medida, e[0].stock, e[0].stock_minimo, e[0].precio_compra, e[0].codigo_producto, e[0].codigo, e[0].imagen);
 
 				$('#tblarticulos button[data-idarticulo="' + idarticulo + '"]').attr('disabled', 'disabled');
 				console.log("Deshabilito a: " + idarticulo + " =)");
@@ -1050,15 +1100,12 @@ function evaluarMetodo() {
 	$("#idautorizado").selectpicker('refresh');
 	$("#idrecibido").val($("#idrecibido option:first").val());
 	$("#idrecibido").selectpicker('refresh');
-	$("#idfinal").val($("#idfinal option:first").val());
-	$("#idfinal").selectpicker('refresh');
 	$("#idmaquinaria").val($("#idmaquinaria option:first").val());
 	$("#idmaquinaria").selectpicker('refresh');
 
 	$("#idmaquinaria").attr("required", "required");
 	$("#idautorizado").attr("required", "required");
 	$("#idrecibido").attr("required", "required");
-	$("#idfinal").attr("required", "required");
 
 	if (tipoMovimiento === "personal") {
 		$(".selectPersonal").show();
@@ -1069,13 +1116,11 @@ function evaluarMetodo() {
 		$("#selectMaquinaria").show();
 		$("#idautorizado").removeAttr("required");
 		$("#idrecibido").removeAttr("required");
-		$("#idfinal").removeAttr("required");
 	}
 	else {
 		$("#idmaquinaria").attr("required", "required");
 		$("#idautorizado").attr("required", "required");
 		$("#idrecibido").attr("required", "required");
-		$("#idfinal").attr("required", "required");
 		$(".selectPersonal").hide();
 		$("#selectMaquinaria").hide();
 	}
