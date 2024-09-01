@@ -1,7 +1,6 @@
 var tabla;
 var tabla2;
 
-
 function nowrapCell() {
 	var detallesTable = document.getElementById("detalles");
 	var tdList = detallesTable.querySelectorAll("td");
@@ -270,7 +269,7 @@ function buscarSunat(e) {
 				console.log("No se recibieron datos del servidor.");
 				limpiarModalClientes();
 				return;
-			} else if (datos == "DNI no encontrado" || datos == "RUC no encontrado") {
+			} else if (datos == "DNI no valido" || datos == "RUC no valido" || datos == "Acaba de superar el límite de 1000 consultas a la SUNAT este mes") {
 				limpiarModalClientes();
 				bootbox.confirm({
 					message: datos + ", ¿deseas crear un proveedor manualmente?",
@@ -284,7 +283,7 @@ function buscarSunat(e) {
 					},
 					callback: function (result) {
 						if (result) {
-							(datos == "DNI no encontrado") ? $("#tipo_documento2").val("DNI") : $("#tipo_documento2").val("RUC");
+							(datos == "DNI no valido") ? $("#tipo_documento2").val("DNI") : $("#tipo_documento2").val("RUC");
 
 							$("#tipo_documento2").trigger("change");
 
@@ -304,16 +303,27 @@ function buscarSunat(e) {
 				const obj = JSON.parse(datos);
 				console.log(obj);
 
-				$("#nombre").val(obj.nombre);
+				if (obj.tipoDocumento == "1") {
+					var nombreCompleto = capitalizarTodasLasPalabras(obj.nombres + " " + obj.apellidoPaterno + " " + obj.apellidoMaterno);
+					var direccionCompleta = "";
+				} else {
+					var nombreCompleto = capitalizarTodasLasPalabras(obj.razonSocial);
+					var direccionCompleta = capitalizarTodasLasPalabras(obj.provincia + ", " + obj.distrito + ", " + obj.direccion);
+				}
+
+				console.log("Nombre completo es =) =>" + nombreCompleto);
+				console.log("Direccion completa es =) =>" + direccionCompleta);
+
+				$("#nombre").val(nombreCompleto);
 				$("#tipo_documento").val(obj.tipoDocumento == "1" ? "DNI" : "RUC");
 				$("#num_documento").val(obj.numeroDocumento);
-				$("#direccion").val(obj.direccion);
+				$("#direccion").val(direccionCompleta);
 				$("#telefono").val(obj.telefono);
 				$("#email").val(obj.email);
 
 				// Deshabilitar los campos solo si están vacíos
-				$("#nombre").prop("disabled", obj.hasOwnProperty("nombre") && obj.nombre !== "" ? true : false);
-				$("#direccion").prop("disabled", obj.hasOwnProperty("direccion") && obj.direccion !== "" ? true : false);
+				$("#nombre").prop("disabled", (obj.hasOwnProperty("nombres") || obj.hasOwnProperty("razonSocial")) && nombreCompleto !== "" ? true : false);
+				$("#direccion").prop("disabled", obj.hasOwnProperty("direccion") && direccionCompleta !== "" ? true : false);
 				$("#telefono").prop("disabled", obj.hasOwnProperty("telefono") && obj.telefono !== "" ? true : false);
 				$("#email").prop("disabled", obj.hasOwnProperty("email") && obj.email !== "" ? true : false);
 
@@ -413,6 +423,8 @@ function limpiar() {
 	$("#ubicacion").val("");
 	$("#print").hide();
 	$("#identrada").val("");
+	$("#impuesto").val("0");
+	$("#impuesto").selectpicker('refresh');
 
 	$("#idtipo").val($("#idtipo option:first").val());
 	$("#idtipo").selectpicker('refresh');
@@ -423,7 +435,19 @@ function limpiar() {
 
 	$(".filas").remove();
 	$('#myModal').modal('hide');
+	$("#btnGuardar").hide();
+	$("#botonArt").show();
+	$("#form_codigo_barra").show();
+	$('#tblarticulos button').removeAttr('disabled');
+
+	$(".filas").remove();
+	$('#myModal').modal('hide');
+
+	$("#total_compra").val("");
 	$("#btnAgregarArt").show();
+	$("#igv").html("S/. 0.00");
+	$("#total").html("S/. 0.00");
+
 	$("#btnGuardar").hide();
 	$("#botonArt").show();
 	$("#form_codigo_barra").show();
@@ -582,6 +606,11 @@ function guardaryeditar(e) {
 }
 
 function mostrar(identrada) {
+	$("#form_codigo_barra").hide();
+	$("#btnAgregarArt").hide();
+	$("#btnCrearArt").hide();
+	$("#btnGuardar").hide();
+
 	$.post("../ajax/entradas.php?op=mostrar", { identrada: identrada }, function (data, status) {
 		data = JSON.parse(data);
 		mostrarform(true);
@@ -601,6 +630,11 @@ function mostrar(identrada) {
 		$("#ubicacion").val(data.ubicacion);
 		$("#fecha_hora").val(data.fecha_hora);
 		$("#print").hide();
+
+		var impuesto = parseInt(data.impuesto);
+		$("#impuesto").val(impuesto);
+		$("#impuesto").selectpicker('refresh');
+
 		$("#identrada").val(data.identrada);
 
 		$("#botonArt").hide();
@@ -704,27 +738,31 @@ var detalles = 0;
 //$("#guardar").hide();
 $("#btnGuardar").hide();
 
-function agregarDetalle(idarticulo, articulo, categoria, marca, medida, stock, stock_minimo, codigo_producto, codigo, imagen) {
+function agregarDetalle(idarticulo, articulo, categoria, marca, medida, stock, stock_minimo, precio_compra, codigo_producto, codigo, imagen) {
 	var cantidad = 1;
 
 	if (idarticulo != "") {
+		var subtotal = cantidad * precio_compra;
 		var fila = '<tr class="filas" id="fila' + cont + '">' +
 			'<td><button type="button" class="btn btn-danger" onclick="eliminarDetalle(' + cont + ', ' + idarticulo + ')">X</button></td>' +
+			'<td><a href="../files/articulos/' + imagen + '" class="galleria-lightbox" style="z-index: 10000 !important;"><img src="../files/articulos/' + imagen + '" height="50px" width="50px" class="img-fluid"></a>' +
 			'<td><input type="hidden" name="idarticulo[]" value="' + idarticulo + '">' + articulo + '</td>' +
 			'<td>' + categoria + '</td>' +
 			'<td>' + marca + '</td>' +
-			'<td><input type="number" name="cantidad[]" id="cantidad[]" lang="en-US" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="6" onkeydown="evitarNegativo(event)" onpaste="return false;" onDrop="return false;" required step="any" min="0.1" value="' + cantidad + '"></td>' +
+			'<td>' + codigo_producto + '</td>' +
+			'<td>' + codigo + '</td>' +
+			'<td><input type="number" name="cantidad[]" id="cantidad[]" lang="en-US" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength); modificarSubototales();" maxlength="6" onkeydown="evitarNegativo(event)" onpaste="return false;" onDrop="return false;" step="any" min="0.1" required value="' + cantidad + '"></td>' +
+			'<td><input type="number" name="precio_compra[]" id="precio_compra[]" lang="en-US" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength); modificarSubototales();" maxlength="6" onkeydown="evitarNegativo(event)" onpaste="return false;" onDrop="return false;" step="any" min="0.1" required value="' + (precio_compra == '' ? parseFloat(0).toFixed(2) : precio_compra) + '"></td>' +
 			'<td>' + medida + '</td>' +
 			'<td>' + stock + '</td>' +
 			'<td>' + stock_minimo + '</td>' +
-			'<td>' + codigo_producto + '</td>' +
-			'<td>' + codigo + '</td>' +
-			'<td><img src="../files/articulos/' + imagen + '" height="50px" width="50px"></td>' +
+			'<td class="nowrap-cell"><span name="subtotal" id="subtotal' + cont + '">' + subtotal + '</span></td>' +
 			'</tr>';
 		cont++;
 		detalles = detalles + 1;
 		$('#detalles').append(fila);
-		evaluar();
+		modificarSubototales();
+		inicializeGLightbox();
 		evitarCaracteresEspecialesCamposNumericos();
 		aplicarRestrictATodosLosInputs();
 		console.log("Deshabilito a: " + idarticulo + " =)");
@@ -734,6 +772,42 @@ function agregarDetalle(idarticulo, articulo, categoria, marca, medida, stock, s
 	}
 
 	nowrapCell();
+}
+
+function modificarSubototales() {
+	var cant = document.getElementsByName("cantidad[]");
+	var prec = document.getElementsByName("precio_compra[]");
+	var sub = document.getElementsByName("subtotal");
+
+	for (var i = 0; i < cant.length; i++) {
+		var inpC = cant[i];
+		var inpP = prec[i];
+		var inpS = sub[i];
+
+		inpS.value = (inpC.value * inpP.value);
+		document.getElementsByName("subtotal")[i].innerHTML = inpS.value.toFixed(2);
+	}
+	calcularTotales();
+}
+
+function calcularTotales() {
+	var sub = document.getElementsByName("subtotal");
+	var total = 0.0;
+	var igv = 0.0;
+
+	for (var i = 0; i < sub.length; i++) {
+		total += document.getElementsByName("subtotal")[i].value;
+	}
+
+	var impuesto = document.getElementById("impuesto").value;
+
+	igv = impuesto == 18 ? total * 0.18 : total * 0;
+	total = impuesto == 18 ? total + (total * 0.18) : total;
+
+	$("#igv").html("S/. " + igv.toFixed(2));
+	$("#total").html("S/. " + total.toFixed(2));
+	$("#total_compra").val(total.toFixed(2));
+	evaluar();
 }
 
 function llenarTabla() {
@@ -760,20 +834,20 @@ function llenarTabla() {
 	} else {
 		$('#idproducto').prop("disabled", true);
 		$.ajax({
-			url: '../ajax/entradas.php?op=listarProductos',
+			url: '../ajax/salidas.php?op=listarProductos',
 			type: 'GET',
 			dataType: 'json',
 			data: { idarticulo: idarticulo },
 			success: function (e) {
 				console.log(e);
 				$('#idproducto').prop("disabled", false);
-				console.log("Envío esto al servidor =>", e[0].idarticulo, e[0].articulo, e[0].categoria, e[0].marca, e[0].medida, e[0].stock, e[0].stock_minimo, e[0].codigo_producto, e[0].codigo, e[0].imagen);
+				console.log("Envío esto al servidor =>", e[0].idarticulo, e[0].articulo, e[0].categoria, e[0].marca, e[0].medida, e[0].stock, e[0].stock_minimo, e[0].precio_compra, e[0].codigo_producto, e[0].codigo, e[0].imagen);
 
 				// Resetear el valor del select
 				$('#idproducto').val($("#idproducto option:first").val());
 				$("#idproducto").selectpicker('refresh');
 
-				agregarDetalle(e[0].idarticulo, e[0].articulo, e[0].categoria, e[0].marca, e[0].medida, e[0].stock, e[0].stock_minimo, e[0].codigo_producto, e[0].codigo, e[0].imagen);
+				agregarDetalle(e[0].idarticulo, e[0].articulo, e[0].categoria, e[0].marca, e[0].medida, e[0].stock, e[0].stock_minimo, e[0].precio_compra, e[0].codigo_producto, e[0].codigo, e[0].imagen);
 
 				$('#tblarticulos button[data-idarticulo="' + idarticulo + '"]').attr('disabled', 'disabled');
 				console.log("Deshabilito a: " + idarticulo + " =)");
@@ -792,8 +866,8 @@ function evaluar() {
 
 	}
 	else {
-		$("#btnGuardar").hide();
 		$("#btnGuardar").prop("disabled", false);
+		$("#btnGuardar").hide();
 
 		cont = 0;
 	}

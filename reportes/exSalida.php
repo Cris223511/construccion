@@ -92,7 +92,6 @@ if (!isset($_SESSION["nombre"])) {
     $y = 89;
 
     $rsptad = $salida->listarDetalle($_GET["id"]);
-    $total = 0;
 
     while ($regd = $rsptad->fetch_object()) {
       $line = array(
@@ -105,8 +104,6 @@ if (!isset($_SESSION["nombre"])) {
       );
       $size = $pdf->addLine($y, $line);
       $y   += $size + 2;
-
-      $total = $total + round($regd->cantidad);
     }
 
     $formatterES = new NumberFormatter("es-ES", NumberFormatter::SPELLOUT);

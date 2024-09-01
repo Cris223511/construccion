@@ -87,6 +87,12 @@
         e.classList.add('nowrap-cell');
       });
 
+      const thElementsNoUpper = document.querySelectorAll("#detalles th");
+
+      thElementsNoUpper.forEach((e) => {
+        e.classList.add('nowrap-cell');
+      });
+
       const boxTitle = document.querySelectorAll(".box-title");
 
       boxTitle.forEach((e) => {
@@ -137,7 +143,7 @@
       });
 
       $(document).on('draw.dt', function(e, settings) {
-        if ($(settings.nTable).is('#tbllistado') || $(settings.nTable).is('#tblarticulos')) {
+        if ($(settings.nTable).is('#tbllistado') || $(settings.nTable).is('#tblarticulos') || $(settings.nTable).is('#detalles')) {
           const table = $(settings.nTable).DataTable();
           if (table.rows({
               page: 'current'

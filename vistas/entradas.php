@@ -36,6 +36,11 @@ if (!isset($_SESSION["nombre"])) {
       tfoot tr th {
         white-space: nowrap !important;
       }
+
+      input[id="cantidad[]"],
+      input[id="precio_compra[]"] {
+        width: 150px;
+      }
     </style>
 
     <div class="content-wrapper">
@@ -92,12 +97,11 @@ if (!isset($_SESSION["nombre"])) {
                     <thead>
                       <th>Opciones</th>
                       <th style="white-space: nowrap;">Fecha y hora</th>
-                      <th>Ubicación del producto</th>
                       <th>Ubicación del local</th>
+                      <th style="white-space: nowrap;">N° de documento</th>
                       <th>Total compra</th>
                       <th>Tipo</th>
                       <th>Proveedor</th>
-                      <th style="white-space: nowrap;">N° de documento</th>
                       <th style="white-space: nowrap;">Agregado por</th>
                       <th>Cargo</th>
                       <th>Estado</th>
@@ -107,12 +111,11 @@ if (!isset($_SESSION["nombre"])) {
                     <tfoot>
                       <th>Opciones</th>
                       <th>Fecha y hora</th>
-                      <th>Ubicación del producto</th>
                       <th>Ubicación del local</th>
+                      <th>N° de documento</th>
                       <th>Total compra</th>
                       <th>Tipo</th>
                       <th>Proveedor</th>
-                      <th>N° de documento</th>
                       <th>Agregado por</th>
                       <th>Cargo</th>
                       <th>Estado</th>
@@ -143,7 +146,7 @@ if (!isset($_SESSION["nombre"])) {
                     </div>
                     <div class="form-group col-lg-4 col-md-4 col-md-12">
                       <label>Tipo:</label>
-                      <select id="idtipo" name="idtipo" class="form-control selectpicker" data-size="5" data-live-search="true" required>
+                      <select id="idtipo" name="idtipo" class="form-control selectpicker" data-size="5" data-live-search="true">
                         <option value="">- Seleccione -</option>
                       </select>
                     </div>
@@ -155,7 +158,7 @@ if (!isset($_SESSION["nombre"])) {
                     </div>
                     <div class="form-group col-lg-4 col-md-4 col-md-12">
                       <label>N° de documento(*):</label>
-                      <input type="text" class="form-control" name="codigo" id="codigo" maxlength="10" placeholder="Ingrese el N° de documento de la entrada." required onblur="convertirMayus()">
+                      <input type="text" class="form-control" name="codigo" id="codigo" maxlength="20" placeholder="Ingrese el N° de documento de la entrada." required oninput="convertirMayus()">
                     </div>
                     <div class="form-group col-lg-12 col-md-12 col-md-12">
                       <label>Descripción:</label>
@@ -163,13 +166,20 @@ if (!isset($_SESSION["nombre"])) {
                     </div>
                   </div>
                   <div class="form-group col-lg-12 col-md-12 col-sm-12" style="background-color: white !important; padding: 20px !important;">
-                    <div class="form-group col-lg-6 col-md-6 col-sm-12 botonArt" id="botonArt">
+                    <div class="form-group col-lg-6 col-md-12 col-sm-12 botonArt" id="botonArt">
                       <a data-toggle="modal" href="#myModal">
                         <button id="btnAgregarArt" type="button" class="btn btn-secondary" style="color: black !important"> <span class="fa fa-plus"></span> Agregar Productos</button>
                       </a>
                     </div>
-                    <div class="form-group col-lg-4 col-md-6 col-sm-12" id="form_codigo_barra" style="float: right;">
-                      <label>Buscar por código de barra: <a style="cursor: pointer;" data-toggle="popover" data-placement="top" title="Buscar por código de barra" data-content="Sólo se listan los productos que no están en stock." style="color: #418bb7"><i class="fa fa-question-circle"></i></a></label>
+                    <div class="form-group col-lg-3 col-md-6 col-sm-6">
+                      <label>Impuesto:</label>
+                      <select name="impuesto" id="impuesto" class="form-control selectpicker" onchange="modificarSubototales();" required>
+                        <option value="0">0</option>
+                        <option value="18">18</option>
+                      </select>
+                    </div>
+                    <div class="form-group col-lg-3 col-md-6 col-sm-6" id="form_codigo_barra">
+                      <label>Buscar por código de barra: <a data-toggle="popover" data-placement="top" title="Buscar por código de barra" data-content="Sólo se listan los productos que no están en stock." style="color: #418bb7; cursor: pointer;"><i class="fa fa-question-circle"></i></a></label>
                       <select id="idproducto" name="idproducto" class="form-control selectpicker" data-size="6" data-live-search="true" onchange="llenarTabla()">
                         <option value="">Busca un producto.</option>
                       </select>
@@ -178,19 +188,57 @@ if (!isset($_SESSION["nombre"])) {
                       <table id="detalles" class="table table-striped table-bordered table-condensed table-hover w-100" style="width: 100% !important">
                         <thead style="background-color:#A9D0F5">
                           <th>Opciones</th>
+                          <th>Imagen</th>
                           <th>Artículo</th>
                           <th>Categoría</th>
                           <th>Marca</th>
+                          <th style="white-space: nowrap;">Código de producto</th>
+                          <th style="white-space: nowrap;">Código de barra</th>
                           <th>Cantidad</th>
+                          <th>Precio compra</th>
                           <th style="white-space: nowrap;">Unidad de medida</th>
                           <th>Stock</th>
                           <th style="white-space: nowrap;">Stock mínimo</th>
-                          <th style="white-space: nowrap;">Código de producto</th>
-                          <th style="white-space: nowrap;">Código de barra</th>
-                          <th>Imagen</th>
+                          <th>Subtotal</th>
                         </thead>
                         <tbody>
                         </tbody>
+                        <tfoot>
+                          <tr>
+                            <th>IGV</th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th>
+                              <h4 id="igv">S/. 0.00</h4><input type="hidden" name="total_igv" id="total_igv">
+                            </th>
+                          </tr>
+                          <tr>
+                            <th>TOTAL</th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th>
+                              <h4 id="total">S/. 0.00</h4><input type="hidden" name="total_compra" id="total_compra">
+                            </th>
+                          </tr>
+                        </tfoot>
                       </table>
                     </div>
                   </div>

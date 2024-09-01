@@ -395,7 +395,7 @@ function buscarSunat(e) {
 				console.log("No se recibieron datos del servidor.");
 				limpiarModalClientes();
 				return;
-			} else if (datos == "DNI no encontrado" || datos == "RUC no encontrado") {
+			} else if (datos == "DNI no valido" || datos == "RUC no valido" || datos == "Acaba de superar el límite de 1000 consultas a la SUNAT este mes") {
 				limpiarModalClientes();
 				bootbox.confirm({
 					message: datos + ", ¿deseas crear un personal manualmente?",
@@ -409,7 +409,7 @@ function buscarSunat(e) {
 					},
 					callback: function (result) {
 						if (result) {
-							(datos == "DNI no encontrado") ? $("#tipo_documento2").val("DNI") : $("#tipo_documento2").val("RUC");
+							(datos == "DNI no valido") ? $("#tipo_documento2").val("DNI") : $("#tipo_documento2").val("RUC");
 
 							$("#tipo_documento2").trigger("change");
 
@@ -430,16 +430,27 @@ function buscarSunat(e) {
 				const obj = JSON.parse(datos);
 				console.log(obj);
 
-				$("#nombre").val(obj.nombre);
+				if (obj.tipoDocumento == "1") {
+					var nombreCompleto = capitalizarTodasLasPalabras(obj.nombres + " " + obj.apellidoPaterno + " " + obj.apellidoMaterno);
+					var direccionCompleta = "";
+				} else {
+					var nombreCompleto = capitalizarTodasLasPalabras(obj.razonSocial);
+					var direccionCompleta = capitalizarTodasLasPalabras(obj.provincia + ", " + obj.distrito + ", " + obj.direccion);
+				}
+
+				console.log("Nombre completo es =) =>" + nombreCompleto);
+				console.log("Direccion completa es =) =>" + direccionCompleta);
+
+				$("#nombre").val(nombreCompleto);
 				$("#tipo_documento").val(obj.tipoDocumento == "1" ? "DNI" : "RUC");
 				$("#num_documento").val(obj.numeroDocumento);
-				$("#direccion").val(obj.direccion);
+				$("#direccion").val(direccionCompleta);
 				$("#telefono").val(obj.telefono);
 				$("#email").val(obj.email);
 
 				// Deshabilitar los campos solo si están vacíos
-				$("#nombre").prop("disabled", obj.hasOwnProperty("nombre") && obj.nombre !== "" ? true : false);
-				$("#direccion").prop("disabled", obj.hasOwnProperty("direccion") && obj.direccion !== "" ? true : false);
+				$("#nombre").prop("disabled", (obj.hasOwnProperty("nombres") || obj.hasOwnProperty("razonSocial")) && nombreCompleto !== "" ? true : false);
+				$("#direccion").prop("disabled", obj.hasOwnProperty("direccion") && direccionCompleta !== "" ? true : false);
 				$("#telefono").prop("disabled", obj.hasOwnProperty("telefono") && obj.telefono !== "" ? true : false);
 				$("#email").prop("disabled", obj.hasOwnProperty("email") && obj.email !== "" ? true : false);
 
@@ -803,9 +814,6 @@ function mostrar(idsalida) {
 	$("#btnCrearArt").hide();
 	$("#btnGuardar").hide();
 
-	$("#serie_comprobante").val("");
-	$("#num_proforma").val("");
-
 	$.post("../ajax/salidas.php?op=mostrar", { idsalida: idsalida }, function (data, status) {
 		data = JSON.parse(data);
 		mostrarform(true);
@@ -964,7 +972,7 @@ function agregarDetalle(idarticulo, articulo, categoria, marca, medida, stock, s
 		var subtotal = cantidad * precio_compra;
 		var fila = '<tr class="filas" id="fila' + cont + '">' +
 			'<td><button type="button" class="btn btn-danger" onclick="eliminarDetalle(' + cont + ', ' + idarticulo + ')">X</button></td>' +
-			'<td><img src="../files/articulos/' + imagen + '" height="50px" width="50px"></td>' +
+			'<td><a href="../files/articulos/' + imagen + '" class="galleria-lightbox" style="z-index: 10000 !important;"><img src="../files/articulos/' + imagen + '" height="50px" width="50px" class="img-fluid"></a>' +
 			'<td><input type="hidden" name="idarticulo[]" value="' + idarticulo + '">' + articulo + '</td>' +
 			'<td>' + categoria + '</td>' +
 			'<td>' + marca + '</td>' +
@@ -981,6 +989,7 @@ function agregarDetalle(idarticulo, articulo, categoria, marca, medida, stock, s
 		detalles = detalles + 1;
 		$('#detalles').append(fila);
 		modificarSubototales();
+		inicializeGLightbox();
 		evitarCaracteresEspecialesCamposNumericos();
 		aplicarRestrictATodosLosInputs();
 		console.log("Deshabilito a: " + idarticulo + " =)");

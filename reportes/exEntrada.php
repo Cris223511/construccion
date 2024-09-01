@@ -55,50 +55,55 @@ if (!isset($_SESSION["nombre"])) {
     );
 
     $cols = array(
-      "CODIGO" => 30,
-      "NOMBRE" => 90,
-      "U. MEDIDA" => 40,
-      "CANTIDAD" => 30
+      "CODIGO" => 36,
+      "NOMBRE DE PRODUCTO" => 60,
+      "CANTIDAD" => 22,
+      "U. MEDIDA" => 25,
+      "P.U." => 25,
+      "SUBTOTAL" => 22
     );
 
     $pdf->addCols($cols);
 
     $cols = array(
       "CODIGO" => "L",
-      "NOMBRE" => "L",
-      "U. MEDIDA" => "C",
+      "NOMBRE DE PRODUCTO" => "L",
       "CANTIDAD" => "C",
+      "U. MEDIDA" => "C",
+      "P.U." => "C",
+      "SUBTOTAL" => "C"
     );
+
     $pdf->addLineFormat($cols);
     $y = 89;
 
     $rsptad = $entrada->listarDetalle($_GET["id"]);
-    $total = 0;
 
     while ($regd = $rsptad->fetch_object()) {
       $line = array(
         "CODIGO" => "$regd->codigo_producto",
-        "NOMBRE" => utf8_decode("$regd->articulo"),
+        "NOMBRE DE PRODUCTO" => utf8_decode("$regd->articulo"),
+        "CANTIDAD" => utf8_decode("$regd->cantidad"),
         "U. MEDIDA" => utf8_decode("$regd->medida"),
-        "CANTIDAD" => "$regd->cantidad"
+        "P.U." => utf8_decode("$regd->precio_compra"),
+        "SUBTOTAL" => number_format($regd->subtotal, 2)
       );
       $size = $pdf->addLine($y, $line);
       $y   += $size + 2;
-
-      $total = $total + round($regd->cantidad);
     }
 
     $formatterES = new NumberFormatter("es-ES", NumberFormatter::SPELLOUT);
-    $izquierda = intval(floor($total));
-    $derecha = intval(($total - floor($total)) * 100);
+    $izquierda = intval(floor($regv->total_compra));
+    $derecha = intval(($regv->total_compra - floor($regv->total_compra)) * 100);
 
-    $texto = $formatterES->format($izquierda) . " ARTÍCULOS EN TOTAL.";
+    $texto = $formatterES->format($izquierda) . " NUEVOS SOLES CON " . $formatterES->format($derecha) . " CÉNTIMOS";
     $textoEnMayusculas = mb_strtoupper($texto, 'UTF-8');
 
     $pdf->addCadreTVAs("---" . utf8_decode($textoEnMayusculas));
 
-    $pdf->addTVAs($total);
-    $pdf->addCadreEurosFrancs();
+    //Mostramos el impuesto
+    $pdf->addTVAs($regv->impuesto, $regv->total_compra, "S/ ");
+    $pdf->addCadreEurosFrancs(($regv->impuesto == "18.00") ? "IGV 0.18 %" : "IGV 0.00 %");
     $pdf->Output('Reporte de Entradas.pdf', 'I');
   } else {
     echo 'No tiene permiso para visualizar el reporte.';
