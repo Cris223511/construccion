@@ -51,8 +51,8 @@ function init() {
 		$('#idcategoria').closest('.form-group').find('input[type="text"]').attr('onkeydown', 'agregarCategoria(event)');
 		$('#idcategoria').closest('.form-group').find('input[type="text"]').attr('maxlength', '40');
 
-		$('#idmarcas').closest('.form-group').find('input[type="text"]').attr('onkeydown', 'agregarMarca(event)');
-		$('#idmarcas').closest('.form-group').find('input[type="text"]').attr('maxlength', '40');
+		$('#idmarca').closest('.form-group').find('input[type="text"]').attr('onkeydown', 'agregarMarca(event)');
+		$('#idmarca').closest('.form-group').find('input[type="text"]').attr('maxlength', '40');
 
 		$('#idmedida').closest('.form-group').find('input[type="text"]').attr('onkeydown', 'agregarMedida(event)');
 		$('#idmedida').closest('.form-group').find('input[type="text"]').attr('maxlength', '40');
@@ -126,7 +126,7 @@ function agregarCategoria(e) {
 }
 
 function agregarMarca(e) {
-	let inputValue = $('#idmarcas').closest('.form-group').find('input[type="text"]');
+	let inputValue = $('#idmarca').closest('.form-group').find('input[type="text"]');
 
 	if (e.key === "Enter") {
 		if ($('.no-results').is(':visible')) {
@@ -152,8 +152,8 @@ function agregarMarca(e) {
 						return;
 					} else {
 						// bootbox.alert(datos);
-						listarTodosActivos("idmarcas");
-						$("#idmarcas3").val("");
+						listarTodosActivos("idmarca");
+						$("#idmarca3").val("");
 						$("#titulo3").val("");
 						$("#descripcion3").val("");
 					}

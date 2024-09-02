@@ -457,7 +457,7 @@ if (!isset($_SESSION["nombre"])) {
     <!-- Form tipos -->
     <form name="formularioTipo" id="formularioTipo" method="POST" style="display: none;">
       <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
-        <label>Marca(*):</label>
+        <label>Marca:</label>
         <input type="hidden" name="idtipo" id="idtipo3">
         <input type="text" class="form-control" name="titulo" id="titulo3" maxlength="50" placeholder="Nombre del tipo." required>
       </div>

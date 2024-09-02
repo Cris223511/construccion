@@ -4,9 +4,14 @@ var tabla2;
 function nowrapCell() {
 	var detallesTable = document.getElementById("detalles");
 	var tdList = detallesTable.querySelectorAll("td");
+	var thList = detallesTable.querySelectorAll("th");
 
 	tdList.forEach(function (td) {
 		td.classList.add("nowrap-cell");
+	});
+
+	thList.forEach(function (th) {
+		th.classList.add("nowrap-cell");
 	});
 }
 
@@ -644,6 +649,7 @@ function mostrar(identrada) {
 		$.post("../ajax/entradas.php?op=listarDetalle&id=" + identrada, function (r) {
 			// console.log(r);
 			$("#detalles").html(r);
+			inicializeGLightbox();
 			nowrapCell();
 		})
 	})

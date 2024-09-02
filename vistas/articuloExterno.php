@@ -217,19 +217,19 @@ if (!isset($_SESSION["nombre"])) {
                       </div>
                       <div class="form-group col-lg-6 col-md-12">
                         <label>Unidad de medida(*):</label>
-                        <select id="idmedida" name="idmedida" class="form-control selectpicker" data-live-search="true" data-size="5">
+                        <select id="idmedida" name="idmedida" class="form-control selectpicker" data-live-search="true" data-size="5" required>
                           <option value="">- Seleccione -</option>
                         </select>
                       </div>
                       <div class="form-group col-lg-6 col-md-12">
-                        <label>Categoría(*):</label>
-                        <select id="idcategoria" name="idcategoria" class="form-control selectpicker" data-live-search="true" data-size="5" required>
+                        <label>Categoría:</label>
+                        <select id="idcategoria" name="idcategoria" class="form-control selectpicker" data-live-search="true" data-size="5">
                           <option value="">- Seleccione -</option>
                         </select>
                       </div>
                       <div class="form-group col-lg-6 col-md-12">
-                        <label>Marca(*):</label>
-                        <select id="idmarca" name="idmarca" class="form-control selectpicker" data-live-search="true" data-size="5" required>
+                        <label>Marca:</label>
+                        <select id="idmarca" name="idmarca" class="form-control selectpicker" data-live-search="true" data-size="5">
                           <option value="">- Seleccione -</option>
                         </select>
                       </div>
@@ -244,12 +244,12 @@ if (!isset($_SESSION["nombre"])) {
                         <input type="number" class="form-control" id="local_ruc" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="11" placeholder="RUC del local" disabled>
                       </div>
                       <div class="form-group col-lg-6 col-md-12">
-                        <label>Precio compra(*):</label>
-                        <input type="number" class="form-control" name="precio_compra" id="precio_compra" step="any" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="8" onkeydown="evitarNegativo(event)" onpaste="return false;" onDrop="return false;" step="any" min="0" placeholder="Ingrese el precio de compra." required>
+                        <label>Precio compra:</label>
+                        <input type="number" class="form-control" name="precio_compra" id="precio_compra" step="any" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="8" onkeydown="evitarNegativo(event)" onpaste="return false;" onDrop="return false;" step="any" min="0" placeholder="Ingrese el precio de compra.">
                       </div>
                       <div class="form-group col-lg-6 col-md-12">
-                        <label>Precio compra al mayor(*):</label>
-                        <input type="number" class="form-control" name="precio_compra_mayor" id="precio_compra_mayor" step="any" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="8" onkeydown="evitarNegativo(event)" onpaste="return false;" onDrop="return false;" step="any" min="0" placeholder="Ingrese el precio de compra al mayor." required>
+                        <label>Precio compra al mayor:</label>
+                        <input type="number" class="form-control" name="precio_compra_mayor" id="precio_compra_mayor" step="any" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="8" onkeydown="evitarNegativo(event)" onpaste="return false;" onDrop="return false;" step="any" min="0" placeholder="Ingrese el precio de compra al mayor.">
                       </div>
                       <div class="form-group col-lg-6 col-md-12">
                         <label>Stock(*):</label>
@@ -382,8 +382,8 @@ if (!isset($_SESSION["nombre"])) {
     <!-- Form marcas -->
     <form name="formularioMarcas" id="formularioMarcas" method="POST" style="display: none;">
       <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
-        <label>Marca(*):</label>
-        <input type="hidden" name="idmarcas" id="idmarcas3">
+        <label>Marca:</label>
+        <input type="hidden" name="idmarca" id="idmarca3">
         <input type="text" class="form-control" name="titulo" id="titulo3" maxlength="50" placeholder="Nombre de la marca" required>
       </div>
       <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">

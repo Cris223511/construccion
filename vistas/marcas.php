@@ -77,7 +77,7 @@ if (!isset($_SESSION["nombre"])) {
               <div class="panel-body" style="height: max-content;" id="formularioregistros">
                 <form name="formulario" id="formulario" method="POST">
                   <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                    <label>Marca(*):</label>
+                    <label>Marca:</label>
                     <input type="hidden" name="idmarca" id="idmarca">
                     <input type="text" class="form-control" name="titulo" id="titulo" maxlength="40" placeholder="Ingrese el nombre de la marca." autocomplete="off" required>
                   </div>

@@ -468,7 +468,7 @@ ALTER TABLE `articulo`
   ADD PRIMARY KEY (`idarticulo`),
   ADD KEY `fk_articulo_categoria_idx` (`idcategoria`),
   ADD KEY `idalmacen` (`idlocal`),
-  ADD KEY `idmarcas` (`idmarca`),
+  ADD KEY `idmarca` (`idmarca`),
   ADD KEY `idmarca` (`idmarca`),
   ADD KEY `idusuario` (`idusuario`),
   ADD KEY `idmedida` (`idmedida`),

@@ -191,13 +191,13 @@ if (!isset($_SESSION["nombre"])) {
                         <input type="text" class="form-control" name="casillero" id="casillero" maxlength="100" placeholder="Ingrese la ubicación del casillero." required>
                       </div>
                       <div class="form-group col-lg-4 col-md-12">
-                        <label>Categoría(*):</label>
+                        <label>Categoría:</label>
                         <select id="idcategoria" name="idcategoria" class="form-control selectpicker" data-live-search="true" data-size="5" required>
                           <option value="">- Seleccione -</option>
                         </select>
                       </div>
                       <div class="form-group col-lg-4 col-md-12">
-                        <label>Marca(*):</label>
+                        <label>Marca:</label>
                         <select id="idmarca" name="idmarca" class="form-control selectpicker" data-live-search="true" data-size="5" required>
                           <option value="">- Seleccione -</option>
                         </select>
@@ -298,7 +298,7 @@ if (!isset($_SESSION["nombre"])) {
     <!-- Form marcas -->
     <form name="formularioMarcas" id="formularioMarcas" method="POST" style="display: none;">
       <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
-        <label>Marca(*):</label>
+        <label>Marca:</label>
         <input type="hidden" name="idmarca" id="idmarca3">
         <input type="text" class="form-control" name="titulo" id="titulo3" maxlength="50" placeholder="Nombre de la marca" required>
       </div>
