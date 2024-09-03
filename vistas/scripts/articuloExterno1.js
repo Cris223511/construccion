@@ -72,7 +72,7 @@ function listarTodosActivos(selectId) {
 			select.empty();
 			select.html('<option value="">- Seleccione -</option>');
 			obj[atributo].forEach(function (opcion) {
-				if (atributo !== "almacen") {
+				if (atributo !== "local") {
 					select.append('<option value="' + opcion.id + '">' + opcion.titulo + '</option>');
 				}
 			});

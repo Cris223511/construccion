@@ -19,12 +19,12 @@ if (!isset($_SESSION["nombre"])) {
       $rsptaE = $consulta->totalentradahoy();
       $rsptaS = $consulta->totalsalidahoy();
       $entrada10 = $consulta->entradasultimos_10dias();
-      $salidas12 = $consulta->salidasultimos_12meses();
+      $salidas12 = $consulta->salidasultimos_10dias();
     } else {
       $rsptaE = $consulta->totalentradahoyUsuario($idlocal);
       $rsptaS = $consulta->totalsalidahoyUsuario($idlocal);
       $entrada10 = $consulta->entradasultimos_10diasUsuario($idlocal);
-      $salidas12 = $consulta->salidasultimos_12mesesUsuario($idlocal);
+      $salidas12 = $consulta->salidasultimos_10diasUsuario($idlocal);
     }
 
     $regE = $rsptaE->fetch_object();
@@ -99,7 +99,7 @@ if (!isset($_SESSION["nombre"])) {
                 <div class="col-lg-6 col-md-6 col-sm-12">
                   <div class="box box-primary">
                     <div class="box-header with-border">
-                      Entradas en los últimos 10 días
+                      Entradas en los últimos 30 días
                     </div>
                     <div class="box-body">
                       <canvas id="entradas" width="400" height="300"></canvas>
@@ -109,7 +109,7 @@ if (!isset($_SESSION["nombre"])) {
                 <div class="col-lg-6 col-md-6 col-sm-12">
                   <div class="box box-primary">
                     <div class="box-header with-border">
-                      Salidas en los últimos 12 meses
+                      Salidas en los últimos 30 días
                     </div>
                     <div class="box-body">
                       <canvas id="salidas" width="400" height="300"></canvas>
@@ -132,7 +132,7 @@ if (!isset($_SESSION["nombre"])) {
         data: {
           labels: [<?php echo $fechasE; ?>],
           datasets: [{
-            label: 'Entradas en los últimos 10 días',
+            label: 'Entradas en los últimos 30 días',
             data: [<?php echo $totalesE; ?>],
             backgroundColor: [
               'rgba(255, 99, 132, 0.2)',
@@ -178,7 +178,7 @@ if (!isset($_SESSION["nombre"])) {
         data: {
           labels: [<?php echo $fechasS; ?>],
           datasets: [{
-            label: 'Salidas en los últimos 12 meses',
+            label: 'Salidas en los últimos 30 días',
             data: [<?php echo $totalesS; ?>],
             backgroundColor: [
               'rgba(255, 99, 132, 0.2)',

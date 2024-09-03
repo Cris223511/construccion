@@ -345,6 +345,36 @@ $local_login = $_SESSION['local'];
           }
           ?>
 
+          <?php
+          if ($_SESSION['reporteP'] == 1) {
+            echo '<li id="mReporteP" class="treeview">
+              <a href="productosmasdevuelto.php">
+                <i class="fa fa-bar-chart"></i> <span>Almacén de devolución</span>
+              </a>
+            </li>';
+          }
+          ?>
+
+          <?php
+          if ($_SESSION['solicitud'] == 1) {
+            echo '<li id="mSolicitud" class="treeview">
+              <a href="solicitudes.php">
+                <i class="fa fa-paper-plane"></i> <span>Solicitudes</span>
+              </a>
+            </li>';
+          }
+          ?>
+
+          <?php
+          if ($_SESSION['devolucion'] == 1) {
+            echo '<li id="mDevolucion" class="treeview">
+              <a href="devoluciones.php">
+                <i class="fa fa-truck"></i> <span>Devoluciones</span>
+              </a>
+            </li>';
+          }
+          ?>
+
           <li>
             <a href="ayuda.php">
               <i class="fa fa-plus-square"></i> <span>Ayuda</span>

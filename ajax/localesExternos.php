@@ -111,6 +111,12 @@ if (!isset($_SESSION["nombre"])) {
 						case 'mirador':
 							$cargo_detalle = "Mirador";
 							break;
+						case 'almacenero':
+							$cargo_detalle = "Almacenero";
+							break;
+						case 'encargado':
+							$cargo_detalle = "Encargado";
+							break;
 						default:
 							break;
 					}
@@ -163,6 +169,12 @@ if (!isset($_SESSION["nombre"])) {
 							break;
 						case 'mirador':
 							$cargo_detalle = "Mirador";
+							break;
+						case 'almacenero':
+							$cargo_detalle = "Almacenero";
+							break;
+						case 'encargado':
+							$cargo_detalle = "Encargado";
 							break;
 						default:
 							break;

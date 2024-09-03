@@ -44,7 +44,7 @@ CREATE TABLE `articulo` (
   `descripcion` varchar(50) NOT NULL,
   `imagen` varchar(50) DEFAULT NULL,
   `precio_compra` decimal(11,2) NOT NULL,
-  `precio_venta` decimal(11,2) NOT NULL,
+  `precio_compra` decimal(11,2) NOT NULL,
   `estado` tinyint(1) NOT NULL,
   `eliminado` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
@@ -53,7 +53,7 @@ CREATE TABLE `articulo` (
 -- Volcado de datos para la tabla `articulo`
 --
 
-INSERT INTO `articulo` (`idarticulo`, `idusuario`, `idcategoria`, `idlocal`, `idmarca`, `idmedida`, `idtipo`, `codigo`, `codigo_producto`, `nombre`, `stock`, `stock_minimo`, `peso`, `descripcion`, `imagen`, `precio_compra`, `precio_venta`, `estado`, `eliminado`) VALUES
+INSERT INTO `articulo` (`idarticulo`, `idusuario`, `idcategoria`, `idlocal`, `idmarca`, `idmedida`, `idtipo`, `codigo`, `codigo_producto`, `nombre`, `stock`, `stock_minimo`, `peso`, `descripcion`, `imagen`, `precio_compra`, `precio_compra`, `estado`, `eliminado`) VALUES
 (1, 1, 1, 1, 2, 2, 1, '7 75 6631 5 0049 8', '2344232348567', 'RETEN DE EMBOLO', 20, 10, 14.16, 'producto a vender', '1627845886.png', 90.00, 110.00, 1, 0),
 (2, 1, 2, 2, 1, 1, 2, '7 75 5328 6 0088 1', '2345345893452', 'RETEN DE EMBOLO', 43, 10, 7.54, 'producto a vender', '1157835826.png', 82.60, 94.30, 1, 0),
 (3, 1, 1, 2, 2, 2, 1, '7 75 9222 9 0033 9', '6645456821243', 'RETEN DE EMBOLO', 0, 10, 9.81, 'producto a vender', '1627845886.png', 92.73, 100.10, 1, 0);

@@ -149,6 +149,12 @@ switch ($_GET["op"]) {
 						case 'mirador':
 							$cargo_detalle = "Mirador";
 							break;
+						case 'almacenero':
+							$cargo_detalle = "Almacenero";
+							break;
+						case 'encargado':
+							$cargo_detalle = "Encargado";
+							break;
 						default:
 							break;
 					}
@@ -209,6 +215,12 @@ switch ($_GET["op"]) {
 				case 'mirador':
 					$cargo_detalle = "Mirador";
 					break;
+				case 'almacenero':
+					$cargo_detalle = "Almacenero";
+					break;
+				case 'encargado':
+					$cargo_detalle = "Encargado";
+					break;
 				default:
 					break;
 			}
@@ -239,6 +251,12 @@ switch ($_GET["op"]) {
 					break;
 				case 'mirador':
 					$cargo_detalle = "Mirador";
+					break;
+				case 'almacenero':
+					$cargo_detalle = "Almacenero";
+					break;
+				case 'encargado':
+					$cargo_detalle = "Encargado";
 					break;
 				default:
 					break;
@@ -328,6 +346,12 @@ switch ($_GET["op"]) {
 				case 'usuario':
 					$_SESSION['cargo_detalle'] = "Usuario";
 					break;
+				case 'almacenero':
+					$_SESSION['cargo_detalle'] = "Almacenero";
+					break;
+				case 'encargado':
+					$_SESSION['cargo_detalle'] = "Encargado";
+					break;
 				default:
 					break;
 			}
@@ -345,6 +369,9 @@ switch ($_GET["op"]) {
 			in_array(4, $valores) ? $_SESSION['almacen'] = 1 : $_SESSION['almacen'] = 0;
 			in_array(5, $valores) ? $_SESSION['entradas'] = 1 : $_SESSION['entradas'] = 0;
 			in_array(6, $valores) ? $_SESSION['salidas'] = 1 : $_SESSION['salidas'] = 0;
+			in_array(7, $valores) ? $_SESSION['reporteP'] = 1 : $_SESSION['reporteP'] = 0;
+			in_array(8, $valores) ? $_SESSION['solicitud'] = 1 : $_SESSION['solicitud'] = 0;
+			in_array(9, $valores) ? $_SESSION['devolucion'] = 1 : $_SESSION['devolucion'] = 0;
 		}
 		echo json_encode($fetch);
 		break;
