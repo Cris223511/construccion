@@ -308,7 +308,7 @@ class PDF_Invoice extends FPDF
 		$y1     = 39;
 		$this->SetXY($r1, $y1);
 		$this->SetFont("Arial", "B", 10);
-		$this->MultiCell(60, 4, "ENCARGADO:");
+		$this->MultiCell(60, 4, "ENCARGADO DEL PEDIDO:");
 		$this->SetXY($r1, $y1 + 5);
 		$this->SetFont("Arial", "", 10);
 		$this->MultiCell(150, 4, $cliente);

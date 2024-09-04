@@ -66,10 +66,10 @@ if (!isset($_SESSION["nombre"])) {
     //Establecemos las columnas que va a tener la sección donde mostramos los detalles de la solicitud
     $cols = array(
       "CODIGO" => 34,
-      "DESCRIPCION" => 80,
+      "NOMBRE DE PRODUCTO" => 80,
       "CANTIDAD" => 28,
       "C. PRESTADA" => 28,
-      "P.V." => 20
+      "P.C." => 20
     );
 
     $pdf->addCols($cols);
@@ -78,7 +78,7 @@ if (!isset($_SESSION["nombre"])) {
       "NOMBRE DE PRODUCTO" => "L",
       "CANTIDAD" => "C",
       "C. PRESTADA" => "C",
-      "P.V." => "C"
+      "P.C." => "C"
     );
 
     $pdf->addLineFormat($cols);
@@ -98,7 +98,7 @@ if (!isset($_SESSION["nombre"])) {
         "NOMBRE DE PRODUCTO" => utf8_decode("$regd->nombre"),
         "CANTIDAD" => "$regd->cantidad",
         "C. PRESTADA" => "$regd->cantidad_prestada",
-        "P.V." => $regd->precio_compra == '' ? "0.00" : $regd->precio_compra
+        "P.C." => $regd->precio_compra == '' ? "0.00" : $regd->precio_compra
       );
       $size = $pdf->addLine($y, $line);
       $y   += $size + 2;
