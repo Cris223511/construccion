@@ -66,9 +66,9 @@ class Consultas
     {
         $sql = "SELECT 
 				  a.idcategoria as idcategoria,
-				  c.nombre as categoria,
-				  m.nombre as marca,
-				  al.ubicacion as local,
+				  c.titulo as categoria,
+				  m.titulo as marca,
+				  al.titulo as local,
 				  a.codigo as codigo,
 				  a.codigo_producto as codigo_producto,
 				  a.nombre as nombre,
@@ -76,12 +76,13 @@ class Consultas
 				  a.descripcion as descripcion,
 				  a.imagen as imagen,
 				  COUNT(dd.idarticulo) as cantidad,
+				  dd.cantidad_devuelta as cantidad_devuelta,
 				  DATE_FORMAT(dd.fecha_hora, '%d-%m-%Y %H:%i:%s') AS fecha
 				FROM detalle_devolucion dd
 				LEFT JOIN articulo a ON dd.idarticulo = a.idarticulo
 				LEFT JOIN categoria c ON a.idcategoria = c.idcategoria
 				LEFT JOIN locales al ON a.idlocal = al.idlocal
-				LEFT JOIN marcas m ON a.idmarcas = m.idmarcas
+				LEFT JOIN marcas m ON a.idmarca = m.idmarca
 				LEFT JOIN devolucion d ON dd.iddevolucion = d.iddevolucion
 				WHERE d.opcion = 1
 				AND a.eliminado = '0'
@@ -95,9 +96,9 @@ class Consultas
     {
         $sql = "SELECT 
 				  a.idcategoria as idcategoria,
-				  c.nombre as categoria,
-				  m.nombre as marca,
-				  al.ubicacion as local,
+				  c.titulo as categoria,
+				  m.titulo as marca,
+				  al.titulo as local,
 				  a.codigo as codigo,
 				  a.codigo_producto as codigo_producto,
 				  a.nombre as nombre,
@@ -105,12 +106,13 @@ class Consultas
 				  a.descripcion as descripcion,
 				  a.imagen as imagen,
 				  COUNT(dd.idarticulo) as cantidad,
+				  dd.cantidad_devuelta as cantidad_devuelta,
 				  DATE_FORMAT(dd.fecha_hora, '%d-%m-%Y %H:%i:%s') AS fecha
 				FROM detalle_devolucion dd
 				LEFT JOIN articulo a ON dd.idarticulo = a.idarticulo
 				LEFT JOIN categoria c ON a.idcategoria = c.idcategoria
 				LEFT JOIN locales al ON a.idlocal = al.idlocal
-				LEFT JOIN marcas m ON a.idmarcas = m.idmarcas
+				LEFT JOIN marcas m ON a.idmarca = m.idmarca
 				LEFT JOIN devolucion d ON dd.iddevolucion = d.iddevolucion
 				WHERE d.opcion = 2
 				AND a.eliminado = '0'

@@ -1,5 +1,22 @@
 var tabla;
 
+function nowrapCell() {
+	var detallesTables = document.querySelectorAll("#detalles, #detalles2, #detalles3");
+
+	detallesTables.forEach(function (detallesTable) {
+		var tdList = detallesTable.querySelectorAll("td");
+		var thList = detallesTable.querySelectorAll("th");
+
+		tdList.forEach(function (td) {
+			td.classList.add("nowrap-cell");
+		});
+
+		thList.forEach(function (th) {
+			th.classList.add("nowrap-cell");
+		});
+	});
+}
+
 //Función que se ejecuta al inicio
 function init() {
 	limpiar();
@@ -18,7 +35,9 @@ function init() {
 	$('[data-toggle="popover"]').popover();
 
 	//Cargamos los items al select cliente
-	$.post("../ajax/devoluciones.php?op=selectAlmacenero", function (r) {
+	$.post("../ajax/usuario.php?op=selectUsuarios", function (r) {
+		$("#idencargado").html(r);
+		$('#idencargado').selectpicker('refresh');
 		$("#idalmacenero").html(r);
 		$('#idalmacenero').selectpicker('refresh');
 		$("#idalmacenero2").html(r);
@@ -27,7 +46,7 @@ function init() {
 		$('#idalmacenero3').selectpicker('refresh');
 	});
 
-	$('#mDevolucion').addClass("treeview active");
+	$('#mPrestamo').addClass("treeview active");
 	$('#lDevolucion').addClass("active");
 }
 
@@ -39,6 +58,7 @@ function limpiar() {
 	$("#codigo_pedido").val("");
 	$("#telefono").val("");
 	$("#empresa").val("");
+	$("#destino").val("");
 
 	$("#idalmacenero2").val($("#idalmacenero2 option:first").val());
 	$("#idalmacenero2").selectpicker('refresh');
@@ -46,11 +66,14 @@ function limpiar() {
 	$("#codigo_pedido2").val("");
 	$("#telefono2").val("");
 	$("#empresa2").val("");
+	$("#destino2").val("");
 
 	$(".filas").remove();
 	$("input[name='opcion']").prop("checked", false);
 
 	$('#tblarticulos button').removeAttr('disabled');
+
+	nowrapCell();
 }
 
 function ocultarModal() {
@@ -206,10 +229,29 @@ function guardaryeditar3(e) {
 
 function guardaryeditar4(e) {
 	e.preventDefault();
+
+	var opcionSeleccionada = $('input[name="opcion"]:checked').val();
+
+	if (opcionSeleccionada === "1") {
+		var todosCompletos = true;
+
+		$('#detalles3 tbody tr').each(function () {
+			var estado = $(this).find('td').eq(9).text().trim();
+			if (estado === 'Incompleto') {
+				todosCompletos = false;
+				return false;
+			}
+		});
+
+		if (!todosCompletos) {
+			bootbox.alert("Uno o más artículos aún no están completos. Para aceptar la devolución al <strong>almacén de origen</strong>, el emisor debe haber solicitado devolver <strong>toda la cantidad prestada</strong>.");
+			return;
+		}
+	}
+
 	$('input[name="cantidad_devuelta[]"]').prop('disabled', false);
 
 	var formData = new FormData($("#formulario4")[0]);
-	var opcionSeleccionada = $('input[name="opcion"]:checked').val();
 	formData.append('opcion', opcionSeleccionada);
 
 	$('input[name="cantidad_devuelta[]"]').prop('disabled', true);
@@ -239,11 +281,19 @@ function guardaryeditar4(e) {
 	});
 }
 
-
 function verificarCantidades() {
 	const filas = document.querySelectorAll('.filas');
+	let incompletoEncontrado = false;
 
 	filas.forEach(fila => {
+		const estado = fila.querySelector('td:last-child span'); // Seleccionamos el span que contiene el estado
+
+		// Verificamos si el estado es "Incompleto" basándonos en la clase
+		if (estado && estado.classList.contains('bg-orange')) {
+			incompletoEncontrado = true; // Marcamos que encontramos al menos una fila incompleta
+		}
+
+		// Si la cantidad prestada es igual a la cantidad devuelta, deshabilitamos el campo
 		const tdCantidadPrestada = fila.querySelector('td[data-cantidadprestada]');
 		const tdCantidadDevuelta = fila.querySelector('td[data-cantidaddevuelta]');
 		const campoInput = fila.querySelector('input[data-cantidaddevolver]');
@@ -251,17 +301,21 @@ function verificarCantidades() {
 		const cantidadPrestadaValor = tdCantidadPrestada.textContent.trim();
 		const cantidadDevueltaValor = tdCantidadDevuelta.textContent.trim();
 
+		// Si cantidad prestada y devuelta son iguales, bloqueamos el input
 		if (cantidadPrestadaValor === cantidadDevueltaValor) {
 			campoInput.readOnly = true;
 			campoInput.value = '0';
 			campoInput.style.backgroundColor = '#eee';
 			campoInput.style.borderColor = '#d2d6de';
-
-			$("#btnGuardar3").hide();
-		} else {
-			$("#btnGuardar3").show();
 		}
 	});
+
+	// Si hay al menos una fila con estado "Incompleto", ocultamos el botón Guardar
+	if (!incompletoEncontrado) {
+		$("#btnGuardar3").hide();
+	} else {
+		$("#btnGuardar3").show();
+	}
 }
 
 function mostrar(iddevolucion) {
@@ -278,16 +332,20 @@ function mostrar(iddevolucion) {
 		$("#iddevolucion").val(data.iddevolucion);
 		$("#idalmacenero").val(data.idalmacenero);
 		$("#idalmacenero").selectpicker('refresh');
+		$("#idencargado").val(data.idencargado);
+		$("#idencargado").selectpicker('refresh');
 
 		$("#codigo_pedido").val(data.codigo_pedido);
 		$("#telefono").val(data.telefono);
 		$("#empresa").val(data.empresa);
+		$("#destino").val(data.destino);
 		$('[data-toggle="popover"]').popover();
 	});
 
 	$.post("../ajax/devoluciones.php?op=listarDetalle&id=" + iddevolucion, function (r) {
 		$("#detalles").html(r);
 		$('[data-toggle="popover"]').popover();
+		nowrapCell();
 	});
 }
 
@@ -307,12 +365,14 @@ function mostrar2(iddevolucion) {
 		$("#codigo_pedido2").val(data.codigo_pedido);
 		$("#telefono2").val(data.telefono);
 		$("#empresa2").val(data.empresa);
+		$("#destino2").val(data.destino);
 		$('[data-toggle="popover"]').popover();
 	});
 
 	$.post("../ajax/devoluciones.php?op=listarDetalle2&id=" + iddevolucion, function (r) {
 		$("#btnGuardar3").show();
 		$("#detalles2").html(r);
+		nowrapCell();
 		verificarCantidades();
 		$('[data-toggle="popover"]').popover();
 	});
@@ -336,6 +396,7 @@ function mostrar3(iddevolucion) {
 		$("#codigo_pedido3").val(data.codigo_pedido);
 		$("#telefono3").val(data.telefono);
 		$("#empresa3").val(data.empresa);
+		$("#destino3").val(data.destino);
 
 		$("input[name='opcion'][value='" + data.opcion + "']").prop("checked", true);
 		$('[data-toggle="popover"]').popover();
@@ -348,6 +409,7 @@ function mostrar3(iddevolucion) {
 
 			$("#detalles3").html(r);
 			$('[data-toggle="popover"]').popover();
+			nowrapCell();
 		});
 	});
 

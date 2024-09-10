@@ -7,21 +7,25 @@ if (!isset($_SESSION["nombre"])) {
   header("Location: ../vistas/login.html"); //Validamos el acceso solo a los usuarios logueados al sistema.
 } else {
   //Validamos el acceso solo al usuario logueado y autorizado.
-  if ($_SESSION['solicitud'] == 1) {
+  if ($_SESSION['prestamo'] == 1) {
     require_once "../modelos/Solicitudes.php";
 
     $solicitud = new Solicitud();
 
     $idencargado = $_SESSION["idusuario"];
+    $idalmacenero = $_SESSION["idusuario"];
+
     $cargo = $_SESSION["cargo"];
 
     $idsolicitud = isset($_POST["idsolicitud"]) ? limpiarCadena($_POST["idsolicitud"]) : "";
-    $idalmacenero = isset($_POST["idalmacenero"]) ? limpiarCadena($_POST["idalmacenero"]) : "";
-    $idalmaceneroActual = $_SESSION["idusuario"];
     $codigo_pedido = isset($_POST["codigo_pedido"]) ? limpiarCadena($_POST["codigo_pedido"]) : "";
     $telefono = isset($_POST["telefono"]) ? limpiarCadena($_POST["telefono"]) : "";
     $comentario = isset($_POST["comentario"]) ? limpiarCadena($_POST["comentario"]) : "";
     $empresa = isset($_POST["empresa"]) ? limpiarCadena($_POST["empresa"]) : "";
+    $destino = isset($_POST["destino"]) ? limpiarCadena($_POST["destino"]) : "";
+
+    $emisor = isset($_POST["emisor"]) ? limpiarCadena($_POST["emisor"]) : "";
+    $receptor = isset($_POST["receptor"]) ? limpiarCadena($_POST["receptor"]) : "";
 
     switch ($_GET["op"]) {
       case 'guardaryeditar':
@@ -30,7 +34,8 @@ if (!isset($_SESSION["nombre"])) {
           if ($codigoPedidoExiste) {
             echo "El número correlativo que ha ingresado ya existe.";
           } else {
-            $rspta = $solicitud->insertar($idencargado, $codigo_pedido, $telefono, $empresa, $_POST["idarticulo"], $_POST["cantidad"]);
+            ($emisor != "") ? ($idencargado = $emisor) : ($idencargado = $idencargado);
+            $rspta = $solicitud->insertar($idencargado, $codigo_pedido, $telefono, $empresa, $destino, $_POST["idarticulo"], $_POST["cantidad"], $_POST["precio_compra"]);
             echo $rspta ? "Solicitud registrada" : "Una de las cantidades superan a la cantidad o stock del artículo.";
           }
         } else {
@@ -38,8 +43,23 @@ if (!isset($_SESSION["nombre"])) {
         break;
 
       case 'actualizarSolicitud':
-        $rspta = $solicitud->actualizarSolicitud($idalmaceneroActual, $idsolicitud, $_POST["idarticulo"], $_POST["cantidad_prestada"]);
+        ($receptor != "") ? ($idalmacenero = $receptor) : ($idalmacenero = $idalmacenero);
+        $rspta = $solicitud->actualizarSolicitud($idalmacenero, $idsolicitud, $_POST["idarticulo"], $_POST["cantidad_prestada"]);
         echo $rspta ? "Préstamos de artículos actualizados correctamente" : "Una de las cantidades a prestar superan a la cantidad solicitada del artículo.";
+        break;
+
+      case 'probarDatos':
+        // Recibe los datos enviados por AJAX
+        $idalmacenero = $_SESSION["idusuario"];
+        $idsolicitud = isset($_POST["idsolicitud"]) ? limpiarCadena($_POST["idsolicitud"]) : "";
+        $idarticulo = isset($_POST["idarticulo"]) ? $_POST["idarticulo"] : array();
+        $cantidad_prestada = isset($_POST["cantidad_prestada"]) ? $_POST["cantidad_prestada"] : array();
+
+        // Aquí llamarías a tu función del modelo para obtener los datos necesarios
+        $datos = $solicitud->obtenerDatosParaPrueba($idalmacenero, $idsolicitud, $idarticulo, $cantidad_prestada);
+
+        // Enviar los datos como un objeto JSON
+        echo json_encode($datos);
         break;
 
       case 'anular':
@@ -100,15 +120,16 @@ if (!isset($_SESSION["nombre"])) {
         $estado = '';
 
         echo '<thead style="background-color:#A9D0F5">
-                                    <th>Opciones</th>
-                                    <th>Artículo</th>
-                                    <th>Categoría</th>
-                                    <th>Marca</th>
-									<th>Local</th>
-                                    <th>Cantidad Solicitada <a href="#" data-toggle="popover" data-placement="top" title="Cantidad Solicitada" data-content="Es la cantidad solicitada a prestar." style="color: #002a8e"><i class="fa fa-question-circle"></i></a></th>
-                                    <th>Cantidad Prestada <a href="#" data-toggle="popover" data-placement="top" title="Cantidad Prestada" data-content="Es la cantidad que el almacenero prestó." style="color: #002a8e"><i class="fa fa-question-circle"></i></a></th>
-									<th>Estado</th>
-                                </thead>';
+                <th>Opciones</th>
+                <th>Artículo</th>
+                <th>Categoría</th>
+                <th>Marca</th>
+                <th>Local</th>
+                <th>Precio compra</th>
+                <th>Cantidad Solicitada <a href="#" data-toggle="popover" data-placement="top" title="Cantidad Solicitada" data-content="Es la cantidad solicitada a prestar." style="color: #002a8e"><i class="fa fa-question-circle"></i></a></th>
+                <th>Cantidad Prestada <a href="#" data-toggle="popover" data-placement="top" title="Cantidad Prestada" data-content="Es la cantidad que el almacenero prestó." style="color: #002a8e"><i class="fa fa-question-circle"></i></a></th>
+                <th>Estado</th>
+              </thead>';
 
         while ($reg = $rspta->fetch_object()) {
           if ($reg->cantidad == $reg->cantidad_prestada) {
@@ -117,7 +138,7 @@ if (!isset($_SESSION["nombre"])) {
             $estado = '<span class="label bg-orange">Incompleto</span>';
           }
 
-          echo '<tr class="filas"><td></td><td>' . $reg->nombre . '</td><td>' . $reg->categoria . '</td><td>' . $reg->marca . '</td><td>' . $reg->local . '</td><td>' . $reg->cantidad . '</td><td>' . $reg->cantidad_prestada . '</td><td>' . $estado . '</td></tr>';
+          echo '<tr class="filas"><td></td><td>' . $reg->nombre . '</td><td>' . (($reg->categoria != "") ? $reg->categoria : "Sin registrar.") . '</td><td>' . (($reg->marca != "") ? $reg->marca : "Sin registrar.") . '</td><td>' . $reg->local . '</td><td>' . "<nav>S/. " . number_format($reg->precio_compra, 2) . "</nav>" . '</td><td>' . $reg->cantidad . '</td><td>' . $reg->cantidad_prestada . '</td><td>' . $estado . '</td></tr>';
         }
         break;
 
@@ -136,9 +157,10 @@ if (!isset($_SESSION["nombre"])) {
 										<th>Categoría</th>
 										<th>Marca</th>
 										<th>Local</th>
+										<th>Precio compra</th>
 										<th>Cantidad Solicitada <a href="#" data-toggle="popover" data-placement="top" title="Cantidad Solicitada" data-content="Es la cantidad solicitada a prestar." style="color: #002a8e"><i class="fa fa-question-circle"></i></a></th>
-										<th>Cantidad Prestada <a href="#" data-toggle="popover" data-placement="top" title="Cantidad Prestada" data-content="Es la cantidad que el almacenero prestó." style="color: #002a8e"><i class="fa fa-question-circle"></i></a></th>
-										<th>Cantidad a Prestar <a href="#" data-toggle="popover" data-placement="top" title="Cantidad a Prestar" data-content="Digita la cantidad que deseas prestar al encargado (no debe superar la cantidad solicitada)." style="color: #002a8e"><i class="fa fa-question-circle"></i></a></th>
+										<th>Cantidad Prestada <a href="#" data-toggle="popover" data-placement="top" title="Cantidad Prestada" data-content="Es la cantidad que el receptor de pedido prestó." style="color: #002a8e"><i class="fa fa-question-circle"></i></a></th>
+										<th>Cantidad a Prestar <a href="#" data-toggle="popover" data-placement="top" title="Cantidad a Prestar" data-content="Digita la cantidad que deseas prestar al emisor de pedido (no debe superar la cantidad solicitada)." style="color: #002a8e"><i class="fa fa-question-circle"></i></a></th>
 										<th>Estado</th>
 									</thead>';
 
@@ -150,7 +172,7 @@ if (!isset($_SESSION["nombre"])) {
             $estado = '<span class="label bg-orange">Incompleto</span>';
           }
 
-          echo '<tr class="filas"><td></td><td><input type="hidden" name="idarticulo[]" value="' . $reg->idarticulo . '">' . $reg->nombre . '</td><td>' . $reg->categoria . '</td><td>' . $reg->marca . '</td><td>' . $reg->local . '</td><td data-cantidadsolicitada="' . $iterador . '">' . $reg->cantidad . '</td><td data-cantidadprestada="' . $iterador . '">' . $reg->cantidad_prestada . '</td><td><input type="number" data-cantidadprestar="' . $iterador . '" name="cantidad_prestada[]" id="cantidad_prestada[]" step="any" value="0" min="0.1" required></td><td>' . $estado . '</td></tr>';
+          echo '<tr class="filas"><td></td><td><input type="hidden" name="idarticulo[]" value="' . $reg->idarticulo . '">' . $reg->nombre . '</td><td>' .  (($reg->categoria != "") ? $reg->categoria : "Sin registrar.") . '</td><td>' .  (($reg->marca != "") ? $reg->marca : "Sin registrar.") . '</td><td>' . $reg->local . '</td><td>' . "<nav>S/. " . number_format($reg->precio_compra, 2) . "</nav>" . '</td><td data-cantidadsolicitada="' . $iterador . '">' . $reg->cantidad . '</td><td data-cantidadprestada="' . $iterador . '">' . $reg->cantidad_prestada . '</td><td><input type="number" data-cantidadprestar="' . $iterador . '" name="cantidad_prestada[]" id="cantidad_prestada[]" step="any" value="0" min="0.1" required></td><td>' . $estado . '</td></tr>';
           $iterador = $iterador + 1;
         }
         break;
@@ -162,7 +184,7 @@ if (!isset($_SESSION["nombre"])) {
           $rspta = $solicitud->listarUsuario($idencargado);
         //Vamos a declarar un array
         $data = array();
-
+        #002a8e
         $url = '../reportes/exFacturaSolicitud.php?id=';
 
         while ($reg = $rspta->fetch_object()) {
@@ -175,11 +197,11 @@ if (!isset($_SESSION["nombre"])) {
             case 'admin':
               $cargo_pedido = "Administrador";
               break;
-            case 'usuario':
-              $cargo_pedido = "Usuario";
+            case 'cliente':
+              $cargo_pedido = "Cliente";
               break;
-            case 'mirador':
-              $cargo_pedido = "Mirador";
+            case 'vendedor':
+              $cargo_pedido = "Vendedor";
               break;
             case 'almacenero':
               $cargo_pedido = "Almacenero";
@@ -188,42 +210,67 @@ if (!isset($_SESSION["nombre"])) {
               $cargo_pedido = "Encargado";
               break;
             default:
-              break;
           }
+
+          $cargo_despacho = "";
+
+          switch ($reg->cargo_despacho) {
+            case 'superadmin':
+              $cargo_despacho = "Superadministrador";
+              break;
+            case 'admin':
+              $cargo_despacho = "Administrador";
+              break;
+            case 'cliente':
+              $cargo_despacho = "Cliente";
+              break;
+            case 'vendedor':
+              $cargo_despacho = "Vendedor";
+              break;
+            case 'almacenero':
+              $cargo_despacho = "Almacenero";
+              break;
+            case 'encargado':
+              $cargo_despacho = "Encargado";
+              break;
+            default:
+          }
+
+          $reg->telefono = ($reg->telefono == '') ? 'Sin registrar' : number_format($reg->telefono, 0, '', ' ');
+          $reg->destino = ($reg->destino == '') ? 'Sin registrar' : ($reg->destino);
+          $reg->empresa = ($reg->empresa == '') ? 'Sin registrar' : ($reg->empresa);
 
           $data[] = array(
             "0" => '<div style="display: flex; flex-wrap: nowrap; gap: 3px">' .
               (($reg->estado == 'Recibido') ?
-                ('<a data-toggle="modal" href="#myModal2" title="Mirar detalles de solicitud" style="color: black"><button class="btn btn-secondary" onclick="mostrar(' . $reg->idsolicitud . ')"><i class="fa fa-eye"></i></button></a>' .
-                  (($_SESSION['cargo'] == 'encargado') ? ('<button class="btn btn-secondary" title="Anular solicitud" style="color: black" onclick="anular(' . $reg->idsolicitud . ')"><i class="fa fa-close"></i></button>') : '') .
-                  (($_SESSION['cargo'] == 'superadmin') || ($_SESSION['cargo'] == 'admin' || $_SESSION['cargo'] == 'almacenero') ? ('<button class="btn btn-secondary" title="Rechazar solicitud" style="color: black" onclick="rechazar(' . $reg->idsolicitud . ')"><i class="fa fa-times-circle"></i></button>') : '') .
-                  (($_SESSION['cargo'] == 'superadmin') || ($_SESSION['cargo'] == 'admin' || $_SESSION['cargo'] == 'encargado') ? ('<button class="btn btn-secondary" title="Eliminar solicitud" style="color: black" onclick="eliminar(' . $reg->idsolicitud . ')"><i class="fa fa-trash"></i></button>') : '') .
-                  (($_SESSION['cargo'] == 'superadmin') || ($_SESSION['cargo'] == 'admin' || $_SESSION['cargo'] == 'encargado' || $_SESSION['cargo'] == 'almacenero') ? ('<a data-toggle="modal" href="#myModal3" title="Enviar comentario" style="color: black"><button class="btn btn-secondary" onclick="mostrarComentario(' . $reg->idsolicitud . ')"><i class="fa fa-commenting"></i></button></a>') : '') .
-                  (($_SESSION['cargo'] == 'superadmin') || ($_SESSION['cargo'] == 'admin' || $_SESSION['cargo'] == 'almacenero') ? ('<a data-toggle="modal" href="#myModal4" title="Aceptar solicitud" style="color: black"><button class="btn btn-secondary" onclick="mostrar2(' . $reg->idsolicitud . ')"><i class="fa fa-retweet"></i></button></a>') : '') .
-                  '<a target="_blank" href="' . $url . $reg->idsolicitud . '"> <button class="btn btn-secondary" style="color: black;"><i class="fa fa-file"></i></button></a>')
+                ('<a data-toggle="modal" href="#myModal2" title="Mirar detalles de solicitud"><button style="height: 34px;" class="btn btn-bcp" onclick="mostrar(' . $reg->idsolicitud . ')"><i class="fa fa-eye"></i></button></a>' .
+                  (($_SESSION['cargo'] == 'encargado') ? ('<button style="height: 34px;" class="btn btn-danger" title="Anular solicitud" onclick="anular(' . $reg->idsolicitud . ')"><i class="fa fa-close"></i></button>') : '') .
+                  (($_SESSION['cargo'] == 'superadmin') || ($_SESSION['cargo'] == 'admin' || $_SESSION['cargo'] == 'almacenero') ? ('<button style="height: 34px;" class="btn btn-danger" title="Rechazar solicitud" onclick="rechazar(' . $reg->idsolicitud . ')"><i class="fa fa-times-circle"></i></button>') : '') .
+                  (($_SESSION['cargo'] == 'superadmin') || ($_SESSION['cargo'] == 'admin' || $_SESSION['cargo'] == 'encargado') ? ('<button style="height: 34px;" class="btn btn-danger" title="Eliminar solicitud" onclick="eliminar(' . $reg->idsolicitud . ')"><i class="fa fa-trash"></i></button>') : '') .
+                  (($_SESSION['cargo'] == 'superadmin') || ($_SESSION['cargo'] == 'admin' || $_SESSION['cargo'] == 'encargado' || $_SESSION['cargo'] == 'almacenero') ? ('<a data-toggle="modal" href="#myModal3" title="Enviar comentario"><button style="height: 34px;" class="btn btn-info" onclick="mostrarComentario(' . $reg->idsolicitud . ')"><i class="fa fa-commenting"></i></button></a>') : '') .
+                  (($_SESSION['cargo'] == 'superadmin') || ($_SESSION['cargo'] == 'admin' || $_SESSION['cargo'] == 'almacenero') ? ('<a data-toggle="modal" href="#myModal4" title="Aceptar solicitud"><button style="height: 34px;" class="btn btn-warning" onclick="mostrar2(' . $reg->idsolicitud . ')"><i class="fa fa-retweet"></i></button></a>') : ''))
                 : (($reg->estado == 'Pendiente') ?
-                  (('<a data-toggle="modal" href="#myModal2" title="Mirar detalles de solicitud" style="color: black"><button class="btn btn-secondary" onclick="mostrar(' . $reg->idsolicitud . ')"><i class="fa fa-eye"></i></button></a>' .
-                    (($_SESSION['cargo'] == 'superadmin') || ($_SESSION['cargo'] == 'admin' || $_SESSION['cargo'] == 'almacenero') ? ('<button class="btn btn-secondary" title="Rechazar solicitud" style="color: black" onclick="rechazar(' . $reg->idsolicitud . ')"><i class="fa fa-times-circle"></i></button>') : '') .
-                    (($_SESSION['cargo'] == 'superadmin') || ($_SESSION['cargo'] == 'admin' || $_SESSION['cargo'] == 'encargado') ? ('<button class="btn btn-secondary" title="Eliminar solicitud" style="color: black" onclick="eliminar(' . $reg->idsolicitud . ')"><i class="fa fa-trash"></i></button>') : '') .
-                    (($_SESSION['cargo'] == 'superadmin') || ($_SESSION['cargo'] == 'admin' || $_SESSION['cargo'] == 'encargado' || $_SESSION['cargo'] == 'almacenero') ? ('<a data-toggle="modal" href="#myModal3" title="Enviar comentario" style="color: black"><button class="btn btn-secondary" onclick="mostrarComentario(' . $reg->idsolicitud . ')"><i class="fa fa-commenting"></i></button></a>') : '') .
-                    (($_SESSION['cargo'] == 'superadmin') || ($_SESSION['cargo'] == 'admin' || $_SESSION['cargo'] == 'almacenero') ? ('<a data-toggle="modal" href="#myModal4" title="Aceptar solicitud" style="color: black"><button class="btn btn-secondary" onclick="mostrar2(' . $reg->idsolicitud . ')"><i class="fa fa-retweet"></i></button></a>') : '') .
-                    '<a target="_blank" href="' . $url . $reg->idsolicitud . '"> <button class="btn btn-secondary" style="color: black;"><i class="fa fa-file"></i></button></a>'))
+                  (('<a data-toggle="modal" href="#myModal2" title="Mirar detalles de solicitud"><button style="height: 34px;" class="btn btn-bcp" onclick="mostrar(' . $reg->idsolicitud . ')"><i class="fa fa-eye"></i></button></a>' .
+                    (($_SESSION['cargo'] == 'superadmin') || ($_SESSION['cargo'] == 'admin' || $_SESSION['cargo'] == 'almacenero') ? ('<button style="height: 34px;" class="btn btn-danger" title="Rechazar solicitud" onclick="rechazar(' . $reg->idsolicitud . ')"><i class="fa fa-times-circle"></i></button>') : '') .
+                    (($_SESSION['cargo'] == 'superadmin') || ($_SESSION['cargo'] == 'admin' || $_SESSION['cargo'] == 'encargado' || $_SESSION['cargo'] == 'almacenero') ? ('<a data-toggle="modal" href="#myModal3" title="Enviar comentario"><button style="height: 34px;" class="btn btn-info" onclick="mostrarComentario(' . $reg->idsolicitud . ')"><i class="fa fa-commenting"></i></button></a>') : '') .
+                    (($_SESSION['cargo'] == 'superadmin') || ($_SESSION['cargo'] == 'admin' || $_SESSION['cargo'] == 'almacenero') ? ('<a data-toggle="modal" href="#myModal4" title="Aceptar solicitud"><button style="height: 34px;" class="btn btn-warning" onclick="mostrar2(' . $reg->idsolicitud . ')"><i class="fa fa-retweet"></i></button></a>') : '')))
                   : (($reg->estado == 'Finalizado' || $reg->estado == 'Rechazado') ?
-                    ('<a data-toggle="modal" href="#myModal2" title="Mirar detalles de solicitud" style="color: black"><button class="btn btn-secondary" onclick="mostrar(' . $reg->idsolicitud . ')"><i class="fa fa-eye"></i></button></a>' .
-                      (($_SESSION['cargo'] == 'superadmin') || ($_SESSION['cargo'] == 'admin' || $_SESSION['cargo'] == 'encargado' || $_SESSION['cargo'] == 'almacenero') ? ('<a data-toggle="modal" href="#myModal3" title="Enviar comentario" style="color: black"><button class="btn btn-secondary" onclick="mostrarComentario(' . $reg->idsolicitud . ')"><i class="fa fa-commenting"></i></button></a>') : '') .
-                      (($_SESSION['cargo'] == 'superadmin') || ($_SESSION['cargo'] == 'admin' || $_SESSION['cargo'] == 'encargado') ? ('<button class="btn btn-secondary" title="Eliminar solicitud" style="color: black" onclick="eliminar(' . $reg->idsolicitud . ')"><i class="fa fa-trash"></i></button>') .
-                        '<a target="_blank" href="' . $url . $reg->idsolicitud . '"> <button class="btn btn-secondary" style="color: black;"><i class="fa fa-file"></i></button></a>' : ''))
-                    : ('<a data-toggle="modal" href="#myModal2" title="Mirar detalles de solicitud" style="color: black"><button class="btn btn-secondary" onclick="mostrar(' . $reg->idsolicitud . ')"><i class="fa fa-eye"></i></button></a>' .
-                      (($_SESSION['cargo'] == 'encargado') ? ('<button class="btn btn-secondary" title="Activar solicitud" style="color: black; width: 36px" onclick="activar(' . $reg->idsolicitud . ')"><i class="fa fa-check"></i></button>') : '') .
-                      (($_SESSION['cargo'] == 'superadmin') || ($_SESSION['cargo'] == 'admin' || $_SESSION['cargo'] == 'encargado') ? ('<button class="btn btn-secondary" title="Eliminar solicitud" style="color: black" onclick="eliminar(' . $reg->idsolicitud . ')"><i class="fa fa-trash"></i></button>') : '')) . '</div>'))),
+                    ('<a data-toggle="modal" href="#myModal2" title="Mirar detalles de solicitud"><button style="height: 34px;" class="btn btn-bcp" onclick="mostrar(' . $reg->idsolicitud . ')"><i class="fa fa-eye"></i></button></a>' .
+                      (($_SESSION['cargo'] == 'superadmin') || ($_SESSION['cargo'] == 'admin' || $_SESSION['cargo'] == 'encargado' || $_SESSION['cargo'] == 'almacenero') ? ('<a data-toggle="modal" href="#myModal3" title="Enviar comentario"><button style="height: 34px;" class="btn btn-info" onclick="mostrarComentario(' . $reg->idsolicitud . ')"><i class="fa fa-commenting"></i></button></a>') : '') .
+                      (($reg->estado_devolucion == "Finalizado") ? (($_SESSION['cargo'] == 'superadmin') || ($_SESSION['cargo'] == 'admin' || $_SESSION['cargo'] == 'encargado') ? ('<button style="height: 34px;" class="btn btn-danger" title="Eliminar solicitud" onclick="eliminar(' . $reg->idsolicitud . ')"><i class="fa fa-trash"></i></button>') : '') : ''))
+                    : ('<a data-toggle="modal" href="#myModal2" title="Mirar detalles de solicitud"><button style="height: 34px;" class="btn btn-bcp" onclick="mostrar(' . $reg->idsolicitud . ')"><i class="fa fa-eye"></i></button></a>' .
+                      (($_SESSION['cargo'] == 'encargado') ? ('<button style="height: 34px;" class="btn btn-success" title="Activar solicitud" onclick="activar(' . $reg->idsolicitud . ')"><i class="fa fa-check"></i></button>') : '') .
+                      (($_SESSION['cargo'] == 'superadmin') || ($_SESSION['cargo'] == 'admin' || $_SESSION['cargo'] == 'encargado') ? ('<button style="height: 34px;" class="btn btn-danger" title="Eliminar solicitud" onclick="eliminar(' . $reg->idsolicitud . ')"><i class="fa fa-trash"></i></button>') : '')) . '</div>'))) .
+              '<a target="_blank" href="' . $url . $reg->idsolicitud . '"> <button style="height: 34px;" class="btn btn-success"><i class="fa fa-file"></i></button></a>',
             "1" => "N° " . $reg->codigo_pedido,
             "2" => $reg->fecha_hora_pedido,
             "3" => ($reg->fecha_hora_despacho == "01-01-2000 00:00:00") ? "Sin registrar" : $reg->fecha_hora_despacho,
             "4" => ucwords($reg->responsable_pedido) . " - " . $cargo_pedido,
-            "5" => ($reg->idalmacenero == 0 || $reg->idalmacenero == "0") ? "Sin registrar" : ucwords($reg->responsable_despacho) . " - " . $reg->cargo_despacho,
+            "5" => ($reg->idalmacenero == 0 || $reg->idalmacenero == "0") ? "Sin registrar" : ucwords($reg->responsable_despacho) . " - " . $cargo_despacho,
             "6" => $reg->empresa,
-            "7" => $reg->telefono,
-            "8" => ($reg->estado == 'Recibido') ? (($_SESSION['cargo'] == 'superadmin') || ($_SESSION['cargo'] == 'admin' || $_SESSION['cargo'] == 'almacenero') ? '<span class="label bg-blue">Recibido</span>' : '<span class="label bg-blue">Enviado</span>') : (($reg->estado == 'Pendiente') ? '<span class="label bg-orange">Pendiente</span>' : (($reg->estado == 'Finalizado') ? '<span class="label bg-green">Finalizado</span>' : (($reg->estado == 'Rechazado') ? '<span class="label bg-red">Rechazado</span>' : '<span class="label bg-red">Anulado</span>')))
+            "7" => $reg->destino,
+            "8" => $reg->telefono,
+            "9" => ($reg->estado == 'Recibido') ? (($_SESSION['cargo'] == 'superadmin') || ($_SESSION['cargo'] == 'admin' || $_SESSION['cargo'] == 'almacenero') ? '<span class="label bg-blue">Recibido</span>' : '<span class="label bg-blue">Enviado</span>') : (($reg->estado == 'Pendiente') ? '<span class="label bg-orange">Pendiente</span>' : (($reg->estado == 'Finalizado') ? '<span class="label bg-green">Finalizado</span>' : (($reg->estado == 'Rechazado') ? '<span class="label bg-red">Rechazado</span>' : '<span class="label bg-red">Anulado</span>')))
           );
         }
         $results = array(
@@ -279,12 +326,12 @@ if (!isset($_SESSION["nombre"])) {
           }
 
           $data[] = array(
-            "0" => ($reg->stock != '0') ? '<div style="display: flex; justify-content: center;"><button class="btn btn-warning" style="height: 35px;" data-idarticulo="' . $reg->idarticulo . '" onclick="agregarDetalle(\'' . $reg->marca . '\',\'' . $reg->local . '\',\'' . $reg->categoria . '\',\'' . $reg->idarticulo . '\',\'' . $reg->stock . '\',\'' . $reg->nombre . '\'); disableButton(this);"><span class="fa fa-plus"></span></button></div>' : '',
+            "0" => ($reg->stock != '0') ? '<div style="display: flex; justify-content: center;"><button class="btn btn-warning" style="height: 35px;" data-idarticulo="' . $reg->idarticulo . '" onclick="agregarDetalle(\'' . (($reg->categoria != "") ? $reg->categoria : "Sin registrar.") . '\',\'' . $reg->local . '\',\'' . (($reg->medida != "Paquetes") ? ($reg->precio_compra) : ($reg->precio_compra_mayor)) . '\',\'' . (($reg->marca != "") ? $reg->marca : "Sin registrar.") . '\',\'' . $reg->idarticulo . '\',\'' . $reg->stock . '\',\'' . $reg->nombre . '\'); disableButton(this);"><span class="fa fa-plus"></span></button></div>' : '',
             "1" => '<a href="../files/articulos/' . $reg->imagen . '" class="galleria-lightbox" style="z-index: 10000 !important;">
 									<img src="../files/articulos/' . $reg->imagen . '" height="50px" width="50px" class="img-fluid">
 								</a>',
             "2" => $reg->nombre,
-            "3" => $reg->medida,
+            "3" => ($reg->medida == '') ? 'Sin registrar.' : $reg->medida,
             "4" => "<textarea type='text' class='form-control' rows='2' style='background-color: white !important; cursor: default; height: 60px !important;' readonly>" . (($reg->descripcion == '') ? 'Sin registrar.' : $reg->descripcion) . "</textarea>",
             "5" => (($reg->categoria != "") ? $reg->categoria : "Sin registrar."),
             "6" => (($reg->marca != "") ? $reg->marca : "Sin registrar."),
@@ -298,15 +345,15 @@ if (!isset($_SESSION["nombre"])) {
             "14" => "<textarea type='text' class='form-control' rows='2' style='background-color: white !important; cursor: default; height: 60px !important;' readonly>" . (($reg->talla == "") ? 'Sin registrar.' : $reg->talla) . "</textarea>",
             "15" => "<textarea type='text' class='form-control' rows='2' style='background-color: white !important; cursor: default; height: 60px !important;' readonly>" . (($reg->color == "") ? 'Sin registrar.' : $reg->color) . "</textarea>",
             "16" => ($reg->peso != "") ? $reg->peso : "Sin registrar.",
-            "17" => ($reg->fecha_emision == '00-00-0000') ? 'Sin registrar.' : $reg->fecha_emision,
-            "18" => ($reg->fecha_vencimiento == '00-00-0000') ? 'Sin registrar.' : $reg->fecha_vencimiento,
+            "17" => '<div class="nowrap-cell">' . (($reg->fecha_emision == '00-00-0000') ? 'Sin registrar.' : $reg->fecha_emision) . '</div>',
+            "18" => '<div class="nowrap-cell">' . (($reg->fecha_vencimiento == '00-00-0000') ? 'Sin registrar.' : $reg->fecha_vencimiento) . '</div>',
             "19" => "<textarea type='text' class='form-control' rows='2' style='background-color: white !important; cursor: default; height: 60px !important;' readonly>" . (($reg->nota_1 == "") ? 'Sin registrar.' : $reg->nota_1) . "</textarea>",
             "20" => "<textarea type='text' class='form-control' rows='2' style='background-color: white !important; cursor: default; height: 60px !important;' readonly>" . (($reg->nota_2 == "") ? 'Sin registrar.' : $reg->nota_2) . "</textarea>",
             "21" => "<textarea type='text' class='form-control' rows='2' style='background-color: white !important; cursor: default; height: 60px !important;' readonly>" . (($reg->imei == "") ? 'Sin registrar.' : $reg->imei) . "</textarea>",
             "22" => "<textarea type='text' class='form-control' rows='2' style='background-color: white !important; cursor: default; height: 60px !important;' readonly>" . (($reg->serial == "") ? 'Sin registrar.' : $reg->serial) . "</textarea>",
             "23" => $reg->usuario,
             "24" => $cargo_detalle,
-            "25" => $reg->fecha,
+            "25" => '<div class="nowrap-cell">' . ($reg->fecha) . '</div>',
             "26" => ($reg->stock > 0 && $reg->stock < $reg->stock_minimo) ? '<span class="label bg-orange">agotandose</span>' : (($reg->stock != '0') ? '<span class="label bg-green">Disponible</span>' : '<span class="label bg-red">agotado</span>')
           );
         }

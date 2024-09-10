@@ -7,7 +7,7 @@ if (strlen(session_id()) < 1)
 if (!isset($_SESSION["nombre"])) {
   echo 'Debe ingresar al sistema correctamente para visualizar el reporte';
 } else {
-  if ($_SESSION['devolucion'] == 1) {
+  if ($_SESSION['prestamo'] == 1) {
 
     //Inlcuímos a la clase PDF_MC_Table
     require('PDF_MC_Table.php');
@@ -35,7 +35,7 @@ if (!isset($_SESSION["nombre"])) {
     $pdf->Cell(40, 6, utf8_decode('Fecha devolución'), 1, 0, 'C', 1);
     $pdf->Cell(37, 6, 'Resp. Pedido', 1, 0, 'C', 1);
     $pdf->Cell(37, 6, 'Resp. Despacho', 1, 0, 'C', 1);
-    $pdf->Cell(37, 6, utf8_decode('Cod. LCL'), 1, 0, 'C', 1);
+    $pdf->Cell(37, 6, utf8_decode('Código'), 1, 0, 'C', 1);
 
     $pdf->Ln(10);
     //Comenzamos a crear las filas de los registros según la consulta mysql

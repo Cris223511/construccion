@@ -6,7 +6,7 @@ if (strlen(session_id()) < 1) {
 if (!isset($_SESSION["nombre"])) {
 	header("Location: ../vistas/login.html");
 } else {
-	if ($_SESSION['reporte'] == 1 || $_SESSION['reporteP'] == 1) {
+	if ($_SESSION['prestamo'] == 1) {
 		require_once "../modelos/Consultas.php";
 
 		$consulta = new Consultas();
@@ -24,13 +24,16 @@ if (!isset($_SESSION["nombre"])) {
 					$data[] = array(
 						"0" => $reg->codigo_producto,
 						"1" => $reg->nombre,
-						"2" => $reg->categoria,
-						"3" => $reg->marca,
+						"2" => (($reg->categoria != "") ? $reg->categoria : "Sin registrar."),
+						"3" => (($reg->marca != "") ? $reg->marca : "Sin registrar."),
 						"4" => $reg->local,
 						"5" => $reg->stock,
-						"6" => "<img src='../files/articulos/" . $reg->imagen . "' height='50px' width='50px' >",
+						"6" => '<a href="../files/articulos/' . $reg->imagen . '" class="galleria-lightbox" style="z-index: 10000 !important;">
+									<img src="../files/articulos/' . $reg->imagen . '" height="50px" width="50px" class="img-fluid">
+								</a>',
 						"7" => $reg->cantidad,
-						"8" => $reg->fecha,
+						"8" => $reg->cantidad_devuelta,
+						"9" => $reg->fecha,
 					);
 				}
 				$results = array(
@@ -56,9 +59,12 @@ if (!isset($_SESSION["nombre"])) {
 						"3" => $reg->marca,
 						"4" => $reg->local,
 						"5" => $reg->stock,
-						"6" => "<img src='../files/articulos/" . $reg->imagen . "' height='50px' width='50px' >",
+						"6" => '<a href="../files/articulos/' . $reg->imagen . '" class="galleria-lightbox" style="z-index: 10000 !important;">
+									<img src="../files/articulos/' . $reg->imagen . '" height="50px" width="50px" class="img-fluid">
+								</a>',
 						"7" => $reg->cantidad,
-						"8" => $reg->fecha,
+						"8" => $reg->cantidad_devuelta,
+						"9" => $reg->fecha,
 					);
 				}
 				$results = array(

@@ -8,7 +8,7 @@ if (!isset($_SESSION["nombre"])) {
 } else {
   require 'header.php';
 
-  if ($_SESSION['reporteP'] == 1) {
+  if ($_SESSION['prestamo'] == 1) {
 ?>
     <style>
       .tab {
@@ -84,7 +84,7 @@ if (!isset($_SESSION["nombre"])) {
                 </div>
               </div>
               <div class="panel-body table-responsive" id="listadoregistros">
-                <table id="tbllistado_1" class="table table-striped table-bordered table-condensed table-hover w-100" style="width: 100% !important">
+                <table id="tbllistado_2" class="table table-striped table-bordered table-condensed table-hover w-100" style="width: 100% !important">
                   <thead>
                     <th>Código de producto</th>
                     <th>Nombre</th>
@@ -94,6 +94,7 @@ if (!isset($_SESSION["nombre"])) {
                     <th>Stock normal</th>
                     <th>Imagen</th>
                     <th>Veces devueltos</th>
+                    <th>Cantidad devuelta</th>
                     <th>Fecha de devolución</th>
                   </thead>
                   <tbody>
@@ -107,6 +108,7 @@ if (!isset($_SESSION["nombre"])) {
                     <th>Stock normal</th>
                     <th>Imagen</th>
                     <th>Veces devueltos</th>
+                    <th>Cantidad devuelta</th>
                     <th>Fecha de devolución</th>
                   </tfoot>
                 </table>
@@ -121,7 +123,7 @@ if (!isset($_SESSION["nombre"])) {
                 </div>
               </div>
               <div class="panel-body table-responsive" id="listadoregistros">
-                <table id="tbllistado_2" class="table table-striped table-bordered table-condensed table-hover w-100" style="width: 100% !important">
+                <table id="tbllistado_1" class="table table-striped table-bordered table-condensed table-hover w-100" style="width: 100% !important">
                   <thead>
                     <th>Código de producto</th>
                     <th>Nombre</th>
@@ -131,6 +133,7 @@ if (!isset($_SESSION["nombre"])) {
                     <th>Stock normal</th>
                     <th>Imagen</th>
                     <th>Veces devueltos</th>
+                    <th>Cantidad devuelta</th>
                     <th>Fecha de devolución</th>
                   </thead>
                   <tbody>
@@ -144,6 +147,7 @@ if (!isset($_SESSION["nombre"])) {
                     <th>Stock normal</th>
                     <th>Imagen</th>
                     <th>Veces devueltos</th>
+                    <th>Cantidad devuelta</th>
                     <th>Fecha de devolución</th>
                   </tfoot>
                 </table>

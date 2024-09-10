@@ -1,5 +1,23 @@
 var tabla;
 let lastCodigoPedido = "";
+var idSession;
+
+function nowrapCell() {
+	var detallesTables = document.querySelectorAll("#detalles, #detalles2");
+
+	detallesTables.forEach(function (detallesTable) {
+		var tdList = detallesTable.querySelectorAll("td");
+		var thList = detallesTable.querySelectorAll("th");
+
+		tdList.forEach(function (td) {
+			td.classList.add("nowrap-cell");
+		});
+
+		thList.forEach(function (th) {
+			th.classList.add("nowrap-cell");
+		});
+	});
+}
 
 //Función que se ejecuta al inicio
 function init() {
@@ -21,12 +39,18 @@ function init() {
 
 	$('[data-toggle="popover"]').popover();
 
-	//Cargamos los items al select almacenero
-	$.post("../ajax/solicitudes.php?op=selectAlmacenero", function (r) {
-		$("#idalmacenero").html(r);
+	//Cargamos los items al select usuario
+	$.post("../ajax/usuario.php?op=selectUsuarios", function (data) {
+		$("#emisor").html(data);
+		$('#emisor').selectpicker('refresh');
+		$("#receptor").html(data);
+		$('#receptor').selectpicker('refresh');
+		$("#idalmacenero").html(data);
 		$('#idalmacenero').selectpicker('refresh');
-		$("#idalmacenero2").html(r);
+		$("#idalmacenero2").html(data);
 		$('#idalmacenero2').selectpicker('refresh');
+		$("#idencargado").html(data);
+		$('#idencargado').selectpicker('refresh');
 	});
 
 	// obtenemos el último número del código de pedido
@@ -36,7 +60,13 @@ function init() {
 		$("#codigo_pedido").val(lastCodigoPedido);
 	});
 
-	$('#mSolicitud').addClass("treeview active");
+	$.post("../ajax/usuario.php?op=getSessionId", function (r) {
+		// console.log(r);
+		data = JSON.parse(r);
+		idSession = data.idusuario;
+	})
+
+	$('#mPrestamo').addClass("treeview active");
 	$('#lSolicitud').addClass("active");
 }
 
@@ -52,10 +82,16 @@ function limpiar() {
 
 	$("#idalmacenero").val($("#idalmacenero option:first").val());
 	$("#idalmacenero").selectpicker('refresh');
+	$("#emisor").val($("#emisor option:first").val());
+	$("#emisor").selectpicker('refresh');
 
 	$("#codigo_pedido").val(lastCodigoPedido);
 	$("#telefono").val("");
 	$("#empresa").val("");
+	$("#destino").val("");
+
+	$("#emisor").val("");
+	$("#receptor").val("");
 
 	$("#idalmacenero2").val($("#idalmacenero2 option:first").val());
 	$("#idalmacenero2").selectpicker('refresh');
@@ -63,6 +99,7 @@ function limpiar() {
 	$("#codigo_pedido2").val(lastCodigoPedido);
 	$("#telefono2").val("");
 	$("#empresa2").val("");
+	$("#destino2").val("");
 
 	$("#btnGuardar").hide();
 	$("#btnAgregarArt").show();
@@ -86,10 +123,13 @@ function limpiar() {
 				Local
 			</th>
 			<th>
-				Cantidad <a href="#" data-toggle="popover" data-placement="top" title="Cantidad" data-content="Es la cantidad o stock del producto." style="color: #002a8e"><i class="fa fa-question-circle"></i></a>
+				Precio compra
 			</th>
 			<th>
-				Cantidad a Solicitar <a href="#" data-toggle="popover" data-placement="top" title="Cantidad Solicitada" data-content="Digita la cantidad a solicitar prestado (no debe superar a la cantidad o stock del producto)." style="color: #002a8e"><i class="fa fa-question-circle"></i></a>
+				Cantidad <a href="#" data-toggle="popover" data-placement="top" title="Cantidad" data-content="Es la cantidad o stock del producto." style="color: #418bb7"><i class="fa fa-question-circle"></i></a>
+			</th>
+			<th>
+				Cantidad a Solicitar <a href="#" data-toggle="popover" data-placement="top" title="Cantidad a Solicitar" data-content="Digita la cantidad a solicitar prestado (no debe superar a la cantidad o stock del producto)." style="color: #418bb7"><i class="fa fa-question-circle"></i></a>
 			</th>
 			<th>
 				Estado
@@ -100,6 +140,8 @@ function limpiar() {
 	`);
 
 	$('[data-toggle="popover"]').popover();
+
+	nowrapCell();
 }
 
 function ocultarModal() {
@@ -310,6 +352,28 @@ function guardaryeditar3(e) {
 	});
 }
 
+function probarDatos() {
+	// Obtenemos los datos del formulario
+	var formData = new FormData($("#formulario3")[0]);
+
+	$.ajax({
+		url: "../ajax/solicitudes.php?op=probarDatos",
+		type: "POST",
+		data: formData,
+		contentType: false,
+		processData: false,
+		success: function (response) {
+			// Muestra el resultado en la consola
+			console.log(response);
+			var data = JSON.parse(response);
+			console.log('Datos obtenidos:', data);
+		},
+		error: function (error) {
+			console.error('Error al obtener datos:', error);
+		}
+	});
+}
+
 function verificarCantidades() {
 	const filas = document.querySelectorAll('.filas');
 
@@ -347,6 +411,8 @@ function mostrar(idsolicitud) {
 		$("#idsolicitud").val(data.idsolicitud);
 		$("#idalmacenero").val(data.idalmacenero);
 		$("#idalmacenero").selectpicker('refresh');
+		$("#emisor").val(data.idencargado);
+		$("#emisor").selectpicker('refresh');
 
 		$("#codigo_pedido").val(data.codigo_pedido);
 		$("#telefono").val(data.telefono);
@@ -386,6 +452,7 @@ function mostrar(idsolicitud) {
 		// console.log(r);
 		$("#detalles").html(r);
 		$('[data-toggle="popover"]').popover();
+		nowrapCell();
 	});
 }
 
@@ -402,13 +469,18 @@ function mostrar2(idsolicitud) {
 		data = JSON.parse(data);
 		console.log(data);
 
+		idalmacenero = (data.idalmacenero == null | data.idalmacenero == "null") ? idSession : data.idalmacenero;
+
 		$("#idsolicitud2").val(data.idsolicitud);
-		$("#idalmacenero2").val(data.idalmacenero);
+		$("#idencargado").val(data.idencargado);
+		$("#idencargado").selectpicker('refresh');
+		$("#idalmacenero2").val(idalmacenero);
 		$("#idalmacenero2").selectpicker('refresh');
 
 		$("#codigo_pedido2").val(data.codigo_pedido);
 		$("#telefono2").val(data.telefono);
 		$("#empresa2").val(data.empresa);
+		$("#destino2").val(data.destino);
 	});
 
 	$("#detalles2").html(`
@@ -429,13 +501,13 @@ function mostrar2(idsolicitud) {
 				Local
 			</th>
 			<th>
-				Cantidad Solicitada <a href="#" data-toggle="popover" data-placement="top" title="Cantidad Solicitada" data-content="Es la cantidad solicitada a prestar." style="color: #002a8e"><i class="fa fa-question-circle"></i></a>
+				Cantidad Solicitada <a href="#" data-toggle="popover" data-placement="top" title="Cantidad Solicitada" data-content="Es la cantidad solicitada a prestar." style="color: #418bb7"><i class="fa fa-question-circle"></i></a>
 			</th>
 			<th>
-				Cantidad Prestada <a href="#" data-toggle="popover" data-placement="top" title="Cantidad Prestada" data-content="Es la cantidad que el almacenero prestó." style="color: #002a8e"><i class="fa fa-question-circle"></i></a>
+				Cantidad Prestada <a href="#" data-toggle="popover" data-placement="top" title="Cantidad Prestada" data-content="Es la cantidad que el receptor de pedido prestó." style="color: #418bb7"><i class="fa fa-question-circle"></i></a>
 			</th>
 			<th>
-				Cantidad a Prestar <a href="#" data-toggle="popover" data-placement="top" title="Cantidad a Prestar" data-content="Digita la cantidad que deseas prestar al encargado (no debe superar la cantidad solicitada)." style="color: #002a8e"><i class="fa fa-question-circle"></i></a>
+				Cantidad a Prestar <a href="#" data-toggle="popover" data-placement="top" title="Cantidad a Prestar" data-content="Digita la cantidad que deseas prestar al emisor de pedido (no debe superar la cantidad solicitada)." style="color: #418bb7"><i class="fa fa-question-circle"></i></a>
 			</th>
 			<th>
 				Estado
@@ -449,6 +521,7 @@ function mostrar2(idsolicitud) {
 		$("#btnGuardar3").show();
 		$('[data-toggle="popover"]').popover();
 		verificarCantidades();
+		nowrapCell();
 	});
 }
 
@@ -528,7 +601,7 @@ var cont = 0;
 var detalles = 0;
 $("#btnGuardar").hide();
 
-function agregarDetalle(marca, local, categoria, idarticulo, stock, articulo) {
+function agregarDetalle(marca, local, precio_compra, categoria, idarticulo, stock, articulo) {
 	var cantidad = 0;
 
 	if (idarticulo != "") {
@@ -538,6 +611,7 @@ function agregarDetalle(marca, local, categoria, idarticulo, stock, articulo) {
 			'<td>' + categoria + '</td>' +
 			'<td>' + marca + '</td>' +
 			'<td>' + local + '</td>' +
+			'<td><input type="hidden" name="precio_compra[]" value="' + precio_compra + '">' + precio_compra + '</td>' +
 			'<td>' + stock + '</td>' +
 			'<td class="nowrap-cell"><input type="number" step="any" name="cantidad[]" id="cantidad[]" value="' + cantidad + '" min="0.1"></td>' +
 			'<td><span class="label bg-orange">Incompleto</span></td>' +
@@ -551,6 +625,7 @@ function agregarDetalle(marca, local, categoria, idarticulo, stock, articulo) {
 		alert("Error al ingresar el detalle, revisar los datos del artículo");
 	}
 	evaluar();
+	nowrapCell();
 }
 
 function verificar_stock(idarticulo, articulo) {

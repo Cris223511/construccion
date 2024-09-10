@@ -28,6 +28,22 @@
     <script src="../public/js/bootstrap-select.min.js"></script>
 
     <script>
+      // Evento click en el documento
+      $(document).on('click', function(e) {
+        // Comprobar si el clic fue fuera del popover
+        if ($(e.target).closest('[data-toggle="popover"]').length === 0) {
+          // Cerrar el popover
+          $('[data-toggle="popover"]').popover('hide');
+        }
+      });
+
+      // Evitar que el popover se cierre al hacer clic dentro de él
+      $(document).on('click', '.popover', function(e) {
+        e.stopPropagation();
+      });
+    </script>
+
+    <script>
       function inicializeGLightbox() {
         const glightbox = GLightbox({
           selector: '.glightbox'
@@ -80,7 +96,7 @@
         return palabra.toUpperCase();
       }
 
-      const thElements = document.querySelectorAll("#tblarticulos th, #tbllistado th, #tbltrabajadores th");
+      const thElements = document.querySelectorAll("#tbllistado_1 th, #tbllistado_2 th, #tblarticulos th, #tbllistado th, #tbltrabajadores th");
 
       thElements.forEach((e) => {
         e.textContent = e.textContent.toUpperCase();
@@ -143,7 +159,7 @@
       });
 
       $(document).on('draw.dt', function(e, settings) {
-        if ($(settings.nTable).is('#tbllistado') || $(settings.nTable).is('#tblarticulos') || $(settings.nTable).is('#detalles')) {
+        if ($(settings.nTable).is('#tbllistado_1') || $(settings.nTable).is('#tbllistado_2') || $(settings.nTable).is('#tbllistado') || $(settings.nTable).is('#tblarticulos') || $(settings.nTable).is('#detalles')) {
           const table = $(settings.nTable).DataTable();
           if (table.rows({
               page: 'current'

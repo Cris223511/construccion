@@ -7,7 +7,7 @@ if (strlen(session_id()) < 1)
 if (!isset($_SESSION["nombre"])) {
   echo 'Debe ingresar al sistema correctamente para visualizar el reporte';
 } else {
-  if ($_SESSION['devolucion'] == 1) {
+  if ($_SESSION['prestamo'] == 1) {
     // Incluímos el archivo FacturaDevolucion.php
     require('FacturaDevolucion.php');
 
@@ -46,7 +46,7 @@ if (!isset($_SESSION["nombre"])) {
       $ext_logo
     );
 
-    $pdf->fact_dev(utf8_decode("Cod. LCL: N° $regs->codigo_pedido"));
+    $pdf->fact_dev(utf8_decode("COD: N° $regs->codigo_pedido"));
     $pdf->fact_dev2(utf8_decode($regs->estado));
 
     $pdf->temporaire("");
@@ -55,11 +55,19 @@ if (!isset($_SESSION["nombre"])) {
     $pdf->addDate1(($regs->fecha_hora_devolucion == "01-01-2000 00:00:00") ? "Sin registrar" : $regs->fecha_hora_devolucion);
     $pdf->addDate2($regs->fecha_hora_pedido);
 
-    // Enviamos los datos del ENCARGADO al método addClientAdresse de la clase Factura
-    $pdf->addClientAdresse1("Nombres: " . utf8_decode($regs->responsable_pedido) . " " . utf8_decode($regs->responsable_pedido_apellido), "Domicilio: " . utf8_decode($regs->direccion_pedido), $regs->tipo_documento_pedido . ": " . $regs->num_documento_pedido, "Email: " . $regs->email_pedido, "Telefono: " . $regs->telefono_pedido);
+    if (($regs->idalmacenero != 0 || $regs->idalmacenero != "0")) {
+      //Enviamos los datos del DESPACHADOR al método addClientAdresse de la clase Factura
+      $pdf->addClientAdresse1("Nombres: " . utf8_decode($regs->responsable_pedido), "Domicilio: " . utf8_decode($regs->direccion_pedido), $regs->tipo_documento_pedido . ": " . $regs->num_documento_pedido, "Email: " . $regs->email_pedido, "Telefono: " . $regs->telefono_pedido);
+      $pdf->addClientAdresse2("Nombres: " . utf8_decode($regs->responsable_despacho), "Domicilio: " . utf8_decode($regs->direccion_despacho), $regs->tipo_documento_despacho . ": " . $regs->num_documento_despacho, "Email: " . $regs->email_despacho, "Telefono: " . $regs->telefono_despacho);
+    } else {
+      $pdf->addClientAdresse("Nombres: " . utf8_decode($regs->responsable_pedido), "Domicilio: " . utf8_decode($regs->direccion_pedido), $regs->tipo_documento_pedido . ": " . $regs->num_documento_pedido, "Email: " . $regs->email_pedido, "Telefono: " . $regs->telefono_pedido);
+    }
 
-    // Enviamos los datos del DESPACHADOR al método addClientAdresse de la clase Factura
-    $pdf->addClientAdresse2("Nombres: " . utf8_decode($regs->responsable_despacho) . " " . utf8_decode($regs->responsable_despacho_apellido), "Domicilio: " . utf8_decode($regs->direccion_despacho), $regs->tipo_documento_despacho . ": " . $regs->num_documento_despacho, "Email: " . $regs->email_despacho, "Telefono: " . $regs->telefono_despacho);
+    $regs->empresa = ($regs->empresa == '') ? 'Sin registrar.' : ($regs->empresa);
+    $regs->telefono = ($regs->telefono == '') ? 'Sin registrar.' : number_format($regs->telefono, 0, '', ' ');
+    $regs->destino = ($regs->destino == '') ? 'Sin registrar.' : ($regs->destino);
+
+    $pdf->additionalInfo(utf8_decode($regs->empresa), utf8_decode($regs->telefono), utf8_decode($regs->destino));
 
     // Establecemos las columnas que va a tener la sección donde mostramos los detalles de la devolucion
     $cols = array(
@@ -67,7 +75,7 @@ if (!isset($_SESSION["nombre"])) {
       "NOMBRE DE PRODUCTO" => 80,
       "CANTIDAD" => 28,
       "C. DEVUELTA" => 28,
-      "P.C." => 20
+      "P.V." => 20
     );
 
     $pdf->addCols($cols);
@@ -76,7 +84,7 @@ if (!isset($_SESSION["nombre"])) {
       "NOMBRE DE PRODUCTO" => "L",
       "CANTIDAD" => "C",
       "C. DEVUELTA" => "C",
-      "P.C." => "C"
+      "P.V." => "C"
     );
 
     $pdf->addLineFormat($cols);
@@ -96,7 +104,7 @@ if (!isset($_SESSION["nombre"])) {
         "NOMBRE DE PRODUCTO" => utf8_decode("$regd->nombre"),
         "CANTIDAD" => "$regd->cantidad",
         "C. DEVUELTA" => "$regd->cantidad_devuelta",
-        "P.C." => $regd->precio_compra == '' ? "0.00" : $regd->precio_compra
+        "P.V." => $regd->precio_compra
       );
       $size = $pdf->addLine($y, $line);
       $y   += $size + 2;

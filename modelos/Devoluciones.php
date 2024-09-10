@@ -51,6 +51,8 @@ class Devolucion
 
 			$sql2 = "UPDATE devolucion SET opcion='$opcion', estado='Finalizado', fecha_hora_devolucion=SYSDATE() WHERE iddevolucion='$iddevolucion'";
 			ejecutarConsulta($sql2);
+			$sql3 = "UPDATE solicitud SET estado='Finalizado', fecha_hora_despacho=SYSDATE() WHERE idsolicitud='$iddevolucion'";
+			ejecutarConsulta($sql3);
 		}
 
 		return $sw;
@@ -75,13 +77,16 @@ class Devolucion
 		$sql = "SELECT
 					d.iddevolucion,
 					ual.idusuario AS idalmacenero,
+					uen.idusuario AS idencargado,
 					d.codigo_pedido,
 					d.empresa,
+					d.destino,
 					d.telefono,
 					d.opcion,
 					d.estado
 				FROM devolucion d
 				LEFT JOIN usuario ual ON d.idalmacenero = ual.idusuario
+				LEFT JOIN usuario uen ON d.idencargado = uen.idusuario
 				WHERE d.iddevolucion='$iddevolucion' AND (d.estado = 'Pendiente' OR d.estado = 'Finalizado' OR d.estado = 'En curso')";
 		return ejecutarConsultaSimpleFila($sql);
 	}
@@ -96,6 +101,7 @@ class Devolucion
 					ual.cargo AS cargo_despacho,
 					d.codigo_pedido,
 					d.empresa,
+					d.destino,
 					d.telefono,
 					d.opcion,
 					DATE_FORMAT(d.fecha_hora_pedido, '%d-%m-%Y %H:%i:%s') AS fecha_hora_pedido,
@@ -119,6 +125,7 @@ class Devolucion
 					ual.cargo AS cargo_despacho,
 					d.codigo_pedido,
 					d.empresa,
+					d.destino,
 					d.telefono,
 					d.opcion,
 					DATE_FORMAT(d.fecha_hora_pedido, '%d-%m-%Y %H:%i:%s') AS fecha_hora_pedido,
@@ -149,17 +156,18 @@ class Devolucion
 		$sql = "SELECT dd.iddevolucion,
 					dd.idarticulo,
 					a.nombre,
-					c.nombre as categoria,
-					m.nombre as marca,
-					al.ubicacion as local,
+					c.titulo as categoria,
+					m.titulo as marca,
+					al.titulo as local,
 					dd.cantidad,
+					dd.precio_compra,
 					dd.cantidad_prestada,
 					dd.cantidad_devuelta
 				FROM detalle_devolucion dd
 				LEFT JOIN articulo a ON dd.idarticulo = a.idarticulo
-				LEFT JOIN marcas m ON a.idmarcas = m.idmarcas
+				LEFT JOIN marcas m ON a.idmarca = m.idmarca
 				LEFT JOIN categoria c ON a.idcategoria = c.idcategoria
-				LEFT JOIN locales al ON a.idalmacen = al.idalmacen
+				LEFT JOIN locales al ON a.idlocal = al.idlocal
 				WHERE dd.iddevolucion='$iddevolucion'";
 		return ejecutarConsulta($sql);
 	}
@@ -168,16 +176,16 @@ class Devolucion
 	{
 		$sql = "SELECT
 					d.iddevolucion,
+					d.idalmacenero,
 					uen.nombre AS responsable_pedido,
 					ual.nombre AS responsable_despacho,
-					uen.apellido AS responsable_pedido_apellido,
-					ual.apellido AS responsable_despacho_apellido,
 					uen.cargo AS cargo_pedido,
 					ual.cargo AS cargo_despacho,
 					uen.direccion AS direccion_pedido, uen.tipo_documento AS tipo_documento_pedido, uen.num_documento AS num_documento_pedido, uen.email AS email_pedido, uen.telefono AS telefono_pedido,
 					ual.direccion AS direccion_despacho, ual.tipo_documento AS tipo_documento_despacho, ual.num_documento AS num_documento_despacho, ual.email AS email_despacho, ual.telefono AS telefono_despacho,
 					d.codigo_pedido,
 					d.empresa,
+					d.destino,
 					d.telefono,
 					d.opcion,
 					d.estado,
@@ -197,7 +205,7 @@ class Devolucion
 					dd.idarticulo,
 					a.nombre,
 					a.codigo_producto,
-					(SELECT precio_compra FROM detalle_ingreso WHERE idarticulo=dd.idarticulo order by iddetalle_ingreso desc limit 0,1) as precio_compra,
+					dd.precio_compra,
 					dd.cantidad,
 					dd.cantidad_devuelta as cantidad_devuelta
 				FROM detalle_devolucion dd

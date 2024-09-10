@@ -1,7 +1,7 @@
 var tablas = [];
 
 async function init() {
-	$('#mReporteP').addClass("treeview active");
+	$('#mPrestamo').addClass("treeview active");
 	$('#lConsultaD').addClass("active");
 
 	await cargarTablas();

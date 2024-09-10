@@ -240,9 +240,9 @@ class PDF_Invoice extends FPDF
 		$this->RoundedRect($r1 + 17, $y1, ($r2 - $r1) - 17, $y2, 3.5, 'D');
 		$this->Line($r1 + 17, $mid, $r2, $mid);
 		$this->SetXY($r1 + 1 + ($r2 - $r1) / 2 + 3, $y1 + 2);
-		$this->SetFont("Arial", "B", 10);
-		$this->Cell(10, 5, "Fecha Despacho", 0, 0, "C");
-		$this->SetXY($r1 + ($r2 - $r1) / 2 + 3, $y1 + 10.5);
+		$this->SetFont("Arial", "B", 8.5);
+		$this->Cell(10, 5, utf8_decode("Fecha Devolución"), 0, 0, "C");
+		$this->SetXY($r1 + ($r2 - $r1) / 2 + 3.5, $y1 + 10.5);
 		$this->SetFont("Arial", "", 8.5);
 		$this->Cell(10, 5, $date1, 0, 0, "C");
 	}
@@ -257,14 +257,12 @@ class PDF_Invoice extends FPDF
 		$this->RoundedRect($r1 - 19, $y1, ($r2 - $r1) - 17, $y2, 3.5, 'D');
 		$this->Line($r1 - 19, $mid, $r2 - 36, $mid);
 		$this->SetXY($r1 + ($r2 - $r1) / 2 - 32, $y1 + 2);
-		$this->SetFont("Arial", "B", 10);
+		$this->SetFont("Arial", "B", 8.5);
 		$this->Cell(10, 5, "Fecha Pedido", 0, 0, "C");
-		$this->SetXY($r1 - 1 + ($r2 - $r1) / 2 - 32, $y1 + 10.5);
+		$this->SetXY($r1 - 1 + ($r2 - $r1) / 2 - 31.5, $y1 + 10.5);
 		$this->SetFont("Arial", "", 8.5);
 		$this->Cell(10, 5, $date2, 0, 0, "C");
 	}
-
-
 
 	function addClient($ref)
 	{
@@ -301,25 +299,62 @@ class PDF_Invoice extends FPDF
 	}
 
 	// Cliente address
+	function additionalInfo($empresa, $telefono, $lugar_destino)
+	{
+		$r1     = $this->w - 200;
+		$r2     = $r1 + 68;
+		$y1     = 35;
+		$this->SetXY($r1, $y1);
+		$this->SetFont("Arial", "B", 10);
+		$this->MultiCell(80, 4, "EMPRESA:");
+		$this->SetXY($r1, $y1 + 5);
+		$this->SetFont("Arial", "B", 10);
+		$this->MultiCell(80, 4, utf8_decode("TELÉFONO:"));
+		$this->SetXY($r1, $y1 + 10);
+		$this->SetFont("Arial", "B", 10);
+		$this->MultiCell(80, 4, "LUGAR DESTINO:");
+
+		$this->SetXY($r1 + 20, $y1);
+		$this->SetFont("Arial", "", 10);
+		$this->MultiCell(null, 4, $empresa);
+		$this->SetXY($r1 + 21, $y1 + 5);
+		$this->SetFont("Arial", "", 10);
+		$this->MultiCell(null, 4, $telefono);
+		$this->SetXY($r1 + 31.5, $y1 + 10);
+		$this->SetFont("Arial", "", 10);
+		$this->MultiCell(null, 4, $lugar_destino);
+	}
+
+	// Cliente address
+	function addClientAdresse($cliente, $domicilio, $num_documento, $email, $telefono)
+	{
+		$r1     = $this->w - 314;
+		$r2     = $r1 + 68;
+		$y1     = 39;
+		$this->SetXY($r1 - 96, $y1 + 15);
+		$this->SetFont("Arial", "B", 10);
+		$this->MultiCell(80, 4, "USUARIO EMISOR DEL PEDIDO:");
+		$this->SetXY($r1 - 96, $y1 + 20);
+		$this->SetFont("Arial", "", 10);
+		$this->MultiCell(150, 4, $cliente);
+		$this->SetXY($r1 - 96, $y1 + 25);
+		$this->MultiCell(150, 4, $num_documento);
+	}
+
+	// Cliente address
 	function addClientAdresse1($cliente, $domicilio, $num_documento, $email, $telefono)
 	{
 		$r1     = $this->w - 200;
 		$r2     = $r1 + 68;
 		$y1     = 39;
-		$this->SetXY($r1, $y1);
+		$this->SetXY($r1, $y1 + 15);
 		$this->SetFont("Arial", "B", 10);
-		$this->MultiCell(60, 4, "ENCARGADO DEL PEDIDO:");
-		$this->SetXY($r1, $y1 + 5);
+		$this->MultiCell(80, 4, "USUARIO EMISOR DEL PEDIDO:");
+		$this->SetXY($r1, $y1 + 20);
 		$this->SetFont("Arial", "", 10);
 		$this->MultiCell(150, 4, $cliente);
-		$this->SetXY($r1, $y1 + 10);
-		$this->MultiCell(150, 4, $domicilio);
-		$this->SetXY($r1, $y1 + 15);
-		$this->MultiCell(150, 4, $num_documento);
-		$this->SetXY($r1, $y1 + 20);
-		$this->MultiCell(150, 4, $email);
 		$this->SetXY($r1, $y1 + 25);
-		$this->MultiCell(150, 4, $telefono);
+		$this->MultiCell(150, 4, $num_documento);
 	}
 
 	// Vendedor address
@@ -328,20 +363,14 @@ class PDF_Invoice extends FPDF
 		$r1     = $this->w - 314;
 		$r2     = $r1 + 68;
 		$y1     = 39;
-		$this->SetXY($r1, $y1);
+		$this->SetXY($r1, $y1 + 15);
 		$this->SetFont("Arial", "B", 10);
-		$this->MultiCell(60, 4, "DESPACHADOR:");
-		$this->SetXY($r1, $y1 + 5);
+		$this->MultiCell(80, 4, "USUARIO RECEPTOR DEL PEDIDO:");
+		$this->SetXY($r1, $y1 + 20);
 		$this->SetFont("Arial", "", 10);
 		$this->MultiCell(150, 4, $cliente);
-		$this->SetXY($r1, $y1 + 10);
-		$this->MultiCell(150, 4, $domicilio);
-		$this->SetXY($r1, $y1 + 15);
-		$this->MultiCell(150, 4, $num_documento);
-		$this->SetXY($r1, $y1 + 20);
-		$this->MultiCell(150, 4, $email);
 		$this->SetXY($r1, $y1 + 25);
-		$this->MultiCell(150, 4, $telefono);
+		$this->MultiCell(150, 4, $num_documento);
 	}
 
 	// Mode of payment
