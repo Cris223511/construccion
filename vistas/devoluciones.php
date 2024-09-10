@@ -127,7 +127,7 @@ if (!isset($_SESSION["nombre"])) {
                   <input type="number" class="form-control" name="telefono" id="telefono3" maxlength="9" placeholder="Sin registrar." disabled>
                 </div>
                 <div class="form-group col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                  <label class="label_serie">Nombre o empresa(*):</label>
+                  <label class="label_serie">Nombre o empresa:</label>
                   <input type="text" class="form-control" name="empresa" id="empresa3" maxlength="50" placeholder="Sin registrar." disabled>
                 </div>
                 <div class="form-group col-lg-12 col-md-12">
@@ -203,7 +203,7 @@ if (!isset($_SESSION["nombre"])) {
                   <input type="number" class="form-control" name="telefono" id="telefono2" maxlength="9" placeholder="Sin registrar." disabled>
                 </div>
                 <div class="form-group col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                  <label class="label_serie">Nombre o empresa(*):</label>
+                  <label class="label_serie">Nombre o empresa:</label>
                   <input type="text" class="form-control" name="empresa" id="empresa2" maxlength="50" placeholder="Sin registrar." disabled>
                 </div>
                 <div class="form-group col-lg-12 col-md-12">
@@ -298,7 +298,7 @@ if (!isset($_SESSION["nombre"])) {
                   <input type="number" class="form-control" name="telefono" id="telefono" maxlength="9" placeholder="Sin registrar." disabled>
                 </div>
                 <div class="form-group col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                  <label class="label_serie">Nombre o empresa(*):</label>
+                  <label class="label_serie">Nombre o empresa:</label>
                   <input type="text" class="form-control" name="empresa" id="empresa" maxlength="50" placeholder="Sin registrar." disabled>
                 </div>
                 <div class="form-group col-lg-6 col-md-6 col-sm-12 col-xs-12">
