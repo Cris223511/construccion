@@ -346,31 +346,17 @@ $local_login = $_SESSION['local'];
           ?>
 
           <?php
-          if ($_SESSION['reporteP'] == 1) {
-            echo '<li id="mReporteP" class="treeview">
-              <a href="productosmasdevuelto.php">
-                <i class="fa fa-bar-chart"></i> <span>Almacén de devolución</span>
+          if ($_SESSION['prestamo'] == 1) {
+            echo '<li id="mPrestamo" class="treeview">
+              <a href="#">
+                <i class="fa fa-truck"></i> <span>Préstamo de Productos</span>
+                <i class="fa fa-angle-left pull-right"></i>
               </a>
-            </li>';
-          }
-          ?>
-
-          <?php
-          if ($_SESSION['solicitud'] == 1) {
-            echo '<li id="mSolicitud" class="treeview">
-              <a href="solicitudes.php">
-                <i class="fa fa-paper-plane"></i> <span>Solicitudes</span>
-              </a>
-            </li>';
-          }
-          ?>
-
-          <?php
-          if ($_SESSION['devolucion'] == 1) {
-            echo '<li id="mDevolucion" class="treeview">
-              <a href="devoluciones.php">
-                <i class="fa fa-truck"></i> <span>Devoluciones</span>
-              </a>
+              <ul class="treeview-menu">
+                <li id="lSolicitud"><a href="solicitudes.php"><i class="fa fa-circle-o"></i> Solicitudes</a></li>  
+                <li id="lDevolucion"><a href="devoluciones.php"><i class="fa fa-circle-o"></i> Devoluciones</a></li>
+                <li id="lConsultaD"><a href="productosmasdevuelto.php"><i class="fa fa-circle-o"></i> Productos más Devueltos</a></li>
+              </ul>
             </li>';
           }
           ?>

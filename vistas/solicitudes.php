@@ -9,7 +9,7 @@ if (!isset($_SESSION["nombre"])) {
   require '../config/Conexion.php';
   require 'header.php';
 
-  if ($_SESSION['solicitud'] == 1) {
+  if ($_SESSION['prestamo'] == 1) {
 ?>
 
     <style>
