@@ -244,7 +244,7 @@ function guardaryeditar4(e) {
 		});
 
 		if (!todosCompletos) {
-			bootbox.alert("Uno o más artículos aún no están completos. Para aceptar la devolución al <strong>almacén de origen</strong>, el emisor debe haber solicitado devolver <strong>toda la cantidad prestada</strong>.");
+			bootbox.alert("Uno o más artículos aún no están completos. Para aceptar la devolución al <strong>almacén de origen</strong>, el emisor debe haber solicitado devolver <strong>toda la cantidad prestada</strong>. Si quiere devolver un artículo individualmente, deberá hacerlo desde el módulo <a href='productosmasdevuelto.php'><strong>productos devueltos.</strong></a>");
 			return;
 		}
 	}

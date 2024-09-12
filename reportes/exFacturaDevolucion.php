@@ -75,7 +75,7 @@ if (!isset($_SESSION["nombre"])) {
       "NOMBRE DE PRODUCTO" => 80,
       "CANTIDAD" => 28,
       "C. DEVUELTA" => 28,
-      "P.V." => 20
+      "P.C." => 20
     );
 
     $pdf->addCols($cols);
@@ -84,7 +84,7 @@ if (!isset($_SESSION["nombre"])) {
       "NOMBRE DE PRODUCTO" => "L",
       "CANTIDAD" => "C",
       "C. DEVUELTA" => "C",
-      "P.V." => "C"
+      "P.C." => "C"
     );
 
     $pdf->addLineFormat($cols);
@@ -104,7 +104,7 @@ if (!isset($_SESSION["nombre"])) {
         "NOMBRE DE PRODUCTO" => utf8_decode("$regd->nombre"),
         "CANTIDAD" => "$regd->cantidad",
         "C. DEVUELTA" => "$regd->cantidad_devuelta",
-        "P.V." => $regd->precio_compra
+        "P.C." => $regd->precio_compra
       );
       $size = $pdf->addLine($y, $line);
       $y   += $size + 2;

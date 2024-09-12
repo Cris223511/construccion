@@ -83,16 +83,16 @@ if (!isset($_SESSION["nombre"])) {
 									<th>Marca</th>
 									<th style="white-space: nowrap;">Código de producto</th>
 									<th style="white-space: nowrap;">Código de barra</th>
+									<th>Stock</th>
+									<th style="white-space: nowrap;">Stock Mínimo</th>
 									<th>Cantidad</th>
                                     <th>Precio compra</th>
 									<th style="white-space: nowrap;">Unidad de medida</th>
-									<th>Stock</th>
-									<th style="white-space: nowrap;">Stock Mínimo</th>
                                     <th>Subtotal</th>
 								</thead>';
 
 				while ($reg = $rspta->fetch_object()) {
-					echo '<tr class="filas"><td></td> <td><a href="../files/articulos/' . $reg->imagen . '" class="galleria-lightbox" style="z-index: 10000 !important;"><img src="../files/articulos/' . $reg->imagen . '" height="50px" width="50px" class="img-fluid"></a></td> <td>' . $reg->articulo . '</td><td>' . (($reg->categoria != "") ? $reg->categoria : "Sin registrar.") . '</td><td>' . (($reg->marca != "") ? $reg->marca : "Sin registrar.") . '</td><td>' . $reg->codigo_producto . '</td><td>' . (($reg->codigo != "") ? $reg->codigo : "Sin registrar.") . '</td><td>' . $reg->cantidad . '</td><td>' . "<nav>S/. " . number_format($reg->precio_compra, 2) . "</nav>" . '</td><td>' . $reg->medida . '</td><td>' . $reg->stock . '</td><td>' . $reg->stock_minimo . '</td><td>' . "<nav>S/. " . number_format($reg->subtotal, 2) . "</nav>" . '</td></tr>';
+					echo '<tr class="filas"><td></td> <td><a href="../files/articulos/' . $reg->imagen . '" class="galleria-lightbox" style="z-index: 10000 !important;"><img src="../files/articulos/' . $reg->imagen . '" height="50px" width="50px" class="img-fluid"></a></td> <td>' . $reg->articulo . '</td><td>' . (($reg->categoria != "") ? $reg->categoria : "Sin registrar.") . '</td><td>' . (($reg->marca != "") ? $reg->marca : "Sin registrar.") . '</td><td>' . $reg->codigo_producto . '</td><td>' . (($reg->codigo != "") ? $reg->codigo : "Sin registrar.") . '</td><td>' . $reg->stock . '</td><td>' . $reg->stock_minimo . '</td><td>' . $reg->cantidad . '</td><td>' . "<nav>S/. " . number_format($reg->precio_compra, 2) . "</nav>" . '</td><td>' . $reg->medida . '</td><td>' . "<nav>S/. " . number_format($reg->subtotal, 2) . "</nav>" . '</td></tr>';
 					$igv = $igv + ($rspta2["impuesto"] == 18 ? $reg->subtotal * 0.18 : $reg->subtotal * 0);
 				}
 
@@ -175,7 +175,7 @@ if (!isset($_SESSION["nombre"])) {
 							$cargo_detalle = "Superadministrador";
 							break;
 						case 'admin':
-							$cargo_detalle = "Administrador";
+							$cargo_detalle = "Administrador del local";
 							break;
 						case 'usuario':
 							$cargo_detalle = "Usuario";
@@ -187,7 +187,7 @@ if (!isset($_SESSION["nombre"])) {
 							$cargo_detalle = "Almacenero";
 							break;
 						case 'encargado':
-							$cargo_detalle = "Encargado";
+							$cargo_detalle = "Encargado del pedido";
 							break;
 						default:
 							break;
@@ -282,7 +282,7 @@ if (!isset($_SESSION["nombre"])) {
 							$cargo_detalle = "Superadministrador";
 							break;
 						case 'admin':
-							$cargo_detalle = "Administrador";
+							$cargo_detalle = "Administrador del local";
 							break;
 						case 'usuario':
 							$cargo_detalle = "Usuario";
@@ -294,7 +294,7 @@ if (!isset($_SESSION["nombre"])) {
 							$cargo_detalle = "Almacenero";
 							break;
 						case 'encargado':
-							$cargo_detalle = "Encargado";
+							$cargo_detalle = "Encargado del pedido";
 							break;
 						default:
 							break;
@@ -309,7 +309,7 @@ if (!isset($_SESSION["nombre"])) {
 						"3" => $reg->medida,
 						"4" => "<textarea type='text' class='form-control' rows='2' style='background-color: white !important; cursor: default; height: 60px !important;' readonly>" . (($reg->descripcion == '') ? 'Sin registrar.' : $reg->descripcion) . "</textarea>",
 						"5" => $reg->categoria,
-						"6" => (($reg->marca != "") ? $reg->marca : "Sin registrar."),
+						"6" => '<div class="nowrap-cell">' . (($reg->marca != "") ? $reg->marca : "Sin registrar.") . '</div>',
 						"7" => $reg->local,
 						"8" => ($reg->stock > 0 && $reg->stock < $reg->stock_minimo) ? '<span style="color: #Ea9900; font-weight: bold">' . $reg->stock . '</span>' : (($reg->stock != '0') ? '<span>' . $reg->stock . '</span>' : '<span style="color: red; font-weight: bold">' . $reg->stock . '</span>'),
 						"9" => $reg->stock_minimo,
@@ -374,7 +374,7 @@ if (!isset($_SESSION["nombre"])) {
 						'idarticulo' => $reg->idarticulo,
 						'articulo' => $reg->nombre,
 						'categoria' => $reg->categoria,
-						'marca' => (($reg->marca != "") ? $reg->marca : "Sin registrar."),
+						'marca' => '<div class="nowrap-cell">' . (($reg->marca != "") ? $reg->marca : "Sin registrar.") . '</div>',
 						'medida' => $reg->medida,
 						'stock' => $reg->stock,
 						'stock_minimo' => $reg->stock_minimo,

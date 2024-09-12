@@ -100,7 +100,7 @@ if (!isset($_SESSION["nombre"])) {
 							$cargo_detalle = "Superadministrador";
 							break;
 						case 'admin':
-							$cargo_detalle = "Administrador";
+							$cargo_detalle = "Administrador del local";
 							break;
 						case 'usuario':
 							$cargo_detalle = "Usuario";
@@ -112,7 +112,7 @@ if (!isset($_SESSION["nombre"])) {
 							$cargo_detalle = "Almacenero";
 							break;
 						case 'encargado':
-							$cargo_detalle = "Encargado";
+							$cargo_detalle = "Encargado del pedido";
 							break;
 						default:
 							break;

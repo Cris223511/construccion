@@ -23,7 +23,7 @@ class Solicitud
 		$idsolicitudnew = ejecutarConsulta_retornarID($sql);
 
 		$sql2 = "INSERT INTO devolucion (idalmacenero, idencargado, codigo_pedido, telefono, comentario, empresa, destino, fecha_hora_pedido, fecha_hora_devolucion, opcion, estado)
-		VALUES (0, '$idencargado', '$codigo_pedido', '$telefono', '', '$empresa', '$destino', SYSDATE(), '2000-01-01 00:00:00', '1', 'Recibido')";
+		VALUES (0, '$idencargado', '$codigo_pedido', '$telefono', '', '$empresa', '$destino', SYSDATE(), '2000-01-01 00:00:00', '0', 'Recibido')";
 		ejecutarConsulta($sql2);
 
 		$num_elementos = 0;
@@ -32,7 +32,7 @@ class Solicitud
 		while ($num_elementos < count($idarticulo)) {
 			$sql_detalle1 = "INSERT INTO detalle_solicitud(idsolicitud, idarticulo, cantidad, cantidad_prestada, precio_compra) VALUES ('$idsolicitudnew', '$idarticulo[$num_elementos]','$cantidad[$num_elementos]',0,'$precio_compra[$num_elementos]')";
 			ejecutarConsulta($sql_detalle1) or $sw = false;
-			$sql_detalle2 = "INSERT INTO detalle_devolucion(iddevolucion, idarticulo, cantidad, cantidad_prestada, cantidad_devuelta, cantidad_a_devolver, precio_compra, fecha_hora) VALUES ('$idsolicitudnew', '$idarticulo[$num_elementos]','$cantidad[$num_elementos]',0,0,0,'$precio_compra[$num_elementos]',SYSDATE())";
+			$sql_detalle2 = "INSERT INTO detalle_devolucion(iddevolucion, idarticulo, cantidad, cantidad_prestada, cantidad_devuelta, cantidad_a_devolver, precio_compra, opcion, fecha_hora) VALUES ('$idsolicitudnew', '$idarticulo[$num_elementos]','$cantidad[$num_elementos]',0,0,0,'$precio_compra[$num_elementos]',0,SYSDATE())";
 			ejecutarConsulta($sql_detalle2) or $sw = false;
 			$num_elementos = $num_elementos + 1;
 		}

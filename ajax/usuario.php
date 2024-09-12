@@ -141,7 +141,7 @@ switch ($_GET["op"]) {
 							$cargo_detalle = "Superadministrador";
 							break;
 						case 'admin':
-							$cargo_detalle = "Administrador";
+							$cargo_detalle = "Administrador del local";
 							break;
 						case 'usuario':
 							$cargo_detalle = "Usuario";
@@ -153,7 +153,7 @@ switch ($_GET["op"]) {
 							$cargo_detalle = "Almacenero";
 							break;
 						case 'encargado':
-							$cargo_detalle = "Encargado";
+							$cargo_detalle = "Encargado del pedido";
 							break;
 						default:
 							break;
@@ -207,7 +207,7 @@ switch ($_GET["op"]) {
 					$cargo_detalle = "Superadministrador";
 					break;
 				case 'admin':
-					$cargo_detalle = "Administrador";
+					$cargo_detalle = "Administrador del local";
 					break;
 				case 'usuario':
 					$cargo_detalle = "Usuario";
@@ -219,7 +219,7 @@ switch ($_GET["op"]) {
 					$cargo_detalle = "Almacenero";
 					break;
 				case 'encargado':
-					$cargo_detalle = "Encargado";
+					$cargo_detalle = "Encargado del pedido";
 					break;
 				default:
 					break;
@@ -244,7 +244,7 @@ switch ($_GET["op"]) {
 					$cargo_detalle = "Superadministrador";
 					break;
 				case 'admin':
-					$cargo_detalle = "Administrador";
+					$cargo_detalle = "Administrador del local";
 					break;
 				case 'usuario':
 					$cargo_detalle = "Usuario";
@@ -256,7 +256,7 @@ switch ($_GET["op"]) {
 					$cargo_detalle = "Almacenero";
 					break;
 				case 'encargado':
-					$cargo_detalle = "Encargado";
+					$cargo_detalle = "Encargado del pedido";
 					break;
 				default:
 					break;
@@ -338,7 +338,7 @@ switch ($_GET["op"]) {
 					$_SESSION['cargo_detalle'] = "Superadministrador";
 					break;
 				case 'admin':
-					$_SESSION['cargo_detalle'] = "Administrador";
+					$_SESSION['cargo_detalle'] = "Administrador del local";
 					break;
 				case 'mirador':
 					$_SESSION['cargo_detalle'] = "Mirador";
@@ -350,7 +350,7 @@ switch ($_GET["op"]) {
 					$_SESSION['cargo_detalle'] = "Almacenero";
 					break;
 				case 'encargado':
-					$_SESSION['cargo_detalle'] = "Encargado";
+					$_SESSION['cargo_detalle'] = "Encargado del pedido";
 					break;
 				default:
 					break;
@@ -370,6 +370,7 @@ switch ($_GET["op"]) {
 			in_array(5, $valores) ? $_SESSION['entradas'] = 1 : $_SESSION['entradas'] = 0;
 			in_array(6, $valores) ? $_SESSION['salidas'] = 1 : $_SESSION['salidas'] = 0;
 			in_array(7, $valores) ? $_SESSION['prestamo'] = 1 : $_SESSION['prestamo'] = 0;
+			in_array(8, $valores) ? $_SESSION['reportes'] = 1 : $_SESSION['reportes'] = 0;
 		}
 		echo json_encode($fetch);
 		break;

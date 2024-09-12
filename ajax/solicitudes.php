@@ -197,11 +197,11 @@ if (!isset($_SESSION["nombre"])) {
             case 'admin':
               $cargo_pedido = "Administrador";
               break;
-            case 'cliente':
-              $cargo_pedido = "Cliente";
+            case 'usuario':
+              $cargo_pedido = "Usuario";
               break;
-            case 'vendedor':
-              $cargo_pedido = "Vendedor";
+            case 'mirador':
+              $cargo_pedido = "Mirador";
               break;
             case 'almacenero':
               $cargo_pedido = "Almacenero";
@@ -210,6 +210,7 @@ if (!isset($_SESSION["nombre"])) {
               $cargo_pedido = "Encargado";
               break;
             default:
+              break;
           }
 
           $cargo_despacho = "";
@@ -221,11 +222,11 @@ if (!isset($_SESSION["nombre"])) {
             case 'admin':
               $cargo_despacho = "Administrador";
               break;
-            case 'cliente':
-              $cargo_despacho = "Cliente";
+            case 'usuario':
+              $cargo_despacho = "Usuario";
               break;
-            case 'vendedor':
-              $cargo_despacho = "Vendedor";
+            case 'mirador':
+              $cargo_despacho = "Mirador";
               break;
             case 'almacenero':
               $cargo_despacho = "Almacenero";
@@ -234,6 +235,7 @@ if (!isset($_SESSION["nombre"])) {
               $cargo_despacho = "Encargado";
               break;
             default:
+              break;
           }
 
           $reg->telefono = ($reg->telefono == '') ? 'Sin registrar' : number_format($reg->telefono, 0, '', ' ');
@@ -257,7 +259,7 @@ if (!isset($_SESSION["nombre"])) {
                   : (($reg->estado == 'Finalizado' || $reg->estado == 'Rechazado') ?
                     ('<a data-toggle="modal" href="#myModal2" title="Mirar detalles de solicitud"><button style="height: 34px;" class="btn btn-bcp" onclick="mostrar(' . $reg->idsolicitud . ')"><i class="fa fa-eye"></i></button></a>' .
                       (($_SESSION['cargo'] == 'superadmin') || ($_SESSION['cargo'] == 'admin' || $_SESSION['cargo'] == 'encargado' || $_SESSION['cargo'] == 'almacenero') ? ('<a data-toggle="modal" href="#myModal3" title="Enviar comentario"><button style="height: 34px;" class="btn btn-info" onclick="mostrarComentario(' . $reg->idsolicitud . ')"><i class="fa fa-commenting"></i></button></a>') : '') .
-                      (($reg->estado_devolucion == "Finalizado") ? (($_SESSION['cargo'] == 'superadmin') || ($_SESSION['cargo'] == 'admin' || $_SESSION['cargo'] == 'encargado') ? ('<button style="height: 34px;" class="btn btn-danger" title="Eliminar solicitud" onclick="eliminar(' . $reg->idsolicitud . ')"><i class="fa fa-trash"></i></button>') : '') : ''))
+                      (($reg->estado == 'Rechazado' || $reg->estado_devolucion == "Finalizado") ? (($_SESSION['cargo'] == 'superadmin') || ($_SESSION['cargo'] == 'admin' || $_SESSION['cargo'] == 'encargado') ? ('<button style="height: 34px;" class="btn btn-danger" title="Eliminar solicitud" onclick="eliminar(' . $reg->idsolicitud . ')"><i class="fa fa-trash"></i></button>') : '') : ''))
                     : ('<a data-toggle="modal" href="#myModal2" title="Mirar detalles de solicitud"><button style="height: 34px;" class="btn btn-bcp" onclick="mostrar(' . $reg->idsolicitud . ')"><i class="fa fa-eye"></i></button></a>' .
                       (($_SESSION['cargo'] == 'encargado') ? ('<button style="height: 34px;" class="btn btn-success" title="Activar solicitud" onclick="activar(' . $reg->idsolicitud . ')"><i class="fa fa-check"></i></button>') : '') .
                       (($_SESSION['cargo'] == 'superadmin') || ($_SESSION['cargo'] == 'admin' || $_SESSION['cargo'] == 'encargado') ? ('<button style="height: 34px;" class="btn btn-danger" title="Eliminar solicitud" onclick="eliminar(' . $reg->idsolicitud . ')"><i class="fa fa-trash"></i></button>') : '')) . '</div>'))) .
@@ -307,7 +309,7 @@ if (!isset($_SESSION["nombre"])) {
               $cargo_detalle = "Superadministrador";
               break;
             case 'admin':
-              $cargo_detalle = "Administrador";
+              $cargo_detalle = "Administrador del local";
               break;
             case 'usuario':
               $cargo_detalle = "Usuario";
@@ -319,7 +321,7 @@ if (!isset($_SESSION["nombre"])) {
               $cargo_detalle = "Almacenero";
               break;
             case 'encargado':
-              $cargo_detalle = "Encargado";
+              $cargo_detalle = "Encargado del pedido";
               break;
             default:
               break;
@@ -334,7 +336,7 @@ if (!isset($_SESSION["nombre"])) {
             "3" => ($reg->medida == '') ? 'Sin registrar.' : $reg->medida,
             "4" => "<textarea type='text' class='form-control' rows='2' style='background-color: white !important; cursor: default; height: 60px !important;' readonly>" . (($reg->descripcion == '') ? 'Sin registrar.' : $reg->descripcion) . "</textarea>",
             "5" => (($reg->categoria != "") ? $reg->categoria : "Sin registrar."),
-            "6" => (($reg->marca != "") ? $reg->marca : "Sin registrar."),
+            "6" => '<div class="nowrap-cell">' . (($reg->marca != "") ? $reg->marca : "Sin registrar.") . '</div>',
             "7" => $reg->local,
             "8" => ($reg->stock > 0 && $reg->stock < $reg->stock_minimo) ? '<span style="color: #Ea9900; font-weight: bold">' . $reg->stock . '</span>' : (($reg->stock != '0') ? '<span>' . $reg->stock . '</span>' : '<span style="color: red; font-weight: bold">' . $reg->stock . '</span>'),
             "9" => $reg->stock_minimo,

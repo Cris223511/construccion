@@ -65,18 +65,19 @@ class Consultas
     public function articulosmasdevueltos_tipo1()
     {
         $sql = "SELECT 
+				  dd.iddevolucion,
 				  a.idcategoria as idcategoria,
 				  c.titulo as categoria,
 				  m.titulo as marca,
 				  al.titulo as local,
 				  a.codigo as codigo,
 				  a.codigo_producto as codigo_producto,
+				  d.codigo_pedido as codigo_pedido,
 				  a.nombre as nombre,
 				  a.stock as stock,
 				  a.descripcion as descripcion,
 				  a.imagen as imagen,
-				  COUNT(dd.idarticulo) as cantidad,
-				  dd.cantidad_devuelta as cantidad_devuelta,
+				  dd.cantidad_devuelta,
 				  DATE_FORMAT(dd.fecha_hora, '%d-%m-%Y %H:%i:%s') AS fecha
 				FROM detalle_devolucion dd
 				LEFT JOIN articulo a ON dd.idarticulo = a.idarticulo
@@ -84,10 +85,9 @@ class Consultas
 				LEFT JOIN locales al ON a.idlocal = al.idlocal
 				LEFT JOIN marcas m ON a.idmarca = m.idmarca
 				LEFT JOIN devolucion d ON dd.iddevolucion = d.iddevolucion
-				WHERE d.opcion = 1
+				WHERE dd.opcion = 1
 				AND a.eliminado = '0'
-				GROUP BY dd.idarticulo
-				ORDER BY cantidad DESC";
+                ORDER BY dd.iddevolucion DESC";
 
         return ejecutarConsulta($sql);
     }
@@ -95,18 +95,20 @@ class Consultas
     public function articulosmasdevueltos_tipo2()
     {
         $sql = "SELECT 
+				  dd.iddetalle_devolucion,
+				  dd.iddevolucion,
 				  a.idcategoria as idcategoria,
 				  c.titulo as categoria,
 				  m.titulo as marca,
 				  al.titulo as local,
 				  a.codigo as codigo,
 				  a.codigo_producto as codigo_producto,
+				  d.codigo_pedido as codigo_pedido,
 				  a.nombre as nombre,
 				  a.stock as stock,
 				  a.descripcion as descripcion,
 				  a.imagen as imagen,
-				  COUNT(dd.idarticulo) as cantidad,
-				  dd.cantidad_devuelta as cantidad_devuelta,
+				  dd.cantidad_devuelta,
 				  DATE_FORMAT(dd.fecha_hora, '%d-%m-%Y %H:%i:%s') AS fecha
 				FROM detalle_devolucion dd
 				LEFT JOIN articulo a ON dd.idarticulo = a.idarticulo
@@ -114,11 +116,16 @@ class Consultas
 				LEFT JOIN locales al ON a.idlocal = al.idlocal
 				LEFT JOIN marcas m ON a.idmarca = m.idmarca
 				LEFT JOIN devolucion d ON dd.iddevolucion = d.iddevolucion
-				WHERE d.opcion = 2
+				WHERE dd.opcion = 2
 				AND a.eliminado = '0'
-				GROUP BY dd.idarticulo
-				ORDER BY cantidad DESC";
+                ORDER BY dd.iddevolucion DESC";
 
+        return ejecutarConsulta($sql);
+    }
+
+    public function reparar($iddetalle_devolucion)
+    {
+        $sql = "UPDATE detalle_devolucion SET opcion = '1', cantidad_a_devolver = cantidad_devuelta WHERE iddetalle_devolucion = '$iddetalle_devolucion'";
         return ejecutarConsulta($sql);
     }
 }

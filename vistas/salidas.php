@@ -223,11 +223,11 @@ if (!isset($_SESSION["nombre"])) {
                           <th>Marca</th>
                           <th style="white-space: nowrap;">Código de producto</th>
                           <th style="white-space: nowrap;">Código de barra</th>
+                          <th>Stock</th>
+                          <th style="white-space: nowrap;">Stock mínimo</th>
                           <th>Cantidad</th>
                           <th>Precio compra</th>
                           <th style="white-space: nowrap;">Unidad de medida</th>
-                          <th>Stock</th>
-                          <th style="white-space: nowrap;">Stock mínimo</th>
                           <th>Subtotal</th>
                         </thead>
                         <tbody>

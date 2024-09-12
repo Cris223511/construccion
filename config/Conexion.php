@@ -1,22 +1,28 @@
-<?php 
+<?php
 require_once "global.php";
 
-$conexion = new mysqli(DB_HOST,DB_USERNAME,DB_PASSWORD,DB_NAME);
+// Configurar la zona horaria
+date_default_timezone_set('America/Lima');
 
-mysqli_query( $conexion, 'SET NAMES "'.DB_ENCODE.'"');
+$conexion = new mysqli('p:' . DB_HOST, DB_USERNAME, DB_PASSWORD, DB_NAME);
 
-//Si tenemos un posible error en la conexión lo mostramos
-if (mysqli_connect_errno())
-{
-	printf("Falló conexión a la base de datos: %s\n",mysqli_connect_error());
+mysqli_query($conexion, 'SET NAMES "' . DB_ENCODE . '"');
+
+// Si tenemos un posible error en la conexión lo mostramos
+if (mysqli_connect_errno()) {
+	printf("Falló conexión a la base de datos: %s\n", mysqli_connect_error());
 	exit();
 }
 
-if (!function_exists('ejecutarConsulta'))
-{
+if (!function_exists('ejecutarConsulta')) {
 	function ejecutarConsulta($sql)
 	{
 		global $conexion;
+
+		if (strpos($sql, "SYSDATE()") !== false) {
+			$sql = str_replace("SYSDATE()", "'" . date('Y-m-d H:i:s') . "'", $sql);
+		}
+
 		$query = $conexion->query($sql);
 		if (!$query) {
 			echo "Error en la consulta SQL: " . mysqli_error($conexion);
@@ -28,7 +34,12 @@ if (!function_exists('ejecutarConsulta'))
 	function ejecutarConsultaSimpleFila($sql)
 	{
 		global $conexion;
-		$query = $conexion->query($sql);		
+
+		if (strpos($sql, "SYSDATE()") !== false) {
+			$sql = str_replace("SYSDATE()", "'" . date('Y-m-d H:i:s') . "'", $sql);
+		}
+
+		$query = $conexion->query($sql);
 		$row = $query->fetch_assoc();
 		return $row;
 	}
@@ -36,15 +47,19 @@ if (!function_exists('ejecutarConsulta'))
 	function ejecutarConsulta_retornarID($sql)
 	{
 		global $conexion;
-		$query = $conexion->query($sql);		
-		return $conexion->insert_id;			
+
+		if (strpos($sql, "SYSDATE()") !== false) {
+			$sql = str_replace("SYSDATE()", "'" . date('Y-m-d H:i:s') . "'", $sql);
+		}
+
+		$query = $conexion->query($sql);
+		return $conexion->insert_id;
 	}
 
 	function limpiarCadena($str)
 	{
 		global $conexion;
-		$str = mysqli_real_escape_string($conexion,trim($str));
+		$str = mysqli_real_escape_string($conexion, trim($str));
 		return htmlspecialchars($str);
 	}
 }
-?>

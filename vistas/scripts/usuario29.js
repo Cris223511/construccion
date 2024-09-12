@@ -75,7 +75,7 @@ function limpiar() {
 	$("#telefono").val("");
 	$("#email").val("");
 	$("#local_ruc").val("");
-	$("#cargo").val("admin");
+	$("#cargo").val("usuario");
 	$('#cargo option[value="superadmin"]').remove();
 	$("#cargo").selectpicker('refresh');
 	$("#login").val("");

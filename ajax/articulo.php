@@ -218,7 +218,7 @@ if (!isset($_SESSION["nombre"])) {
 							$cargo_detalle = "Superadministrador";
 							break;
 						case 'admin':
-							$cargo_detalle = "Administrador";
+							$cargo_detalle = "Administrador del local";
 							break;
 						case 'usuario':
 							$cargo_detalle = "Usuario";
@@ -230,7 +230,7 @@ if (!isset($_SESSION["nombre"])) {
 							$cargo_detalle = "Almacenero";
 							break;
 						case 'encargado':
-							$cargo_detalle = "Encargado";
+							$cargo_detalle = "Encargado del pedido";
 							break;
 						default:
 							break;
@@ -248,7 +248,7 @@ if (!isset($_SESSION["nombre"])) {
 						"3" => $reg->medida,
 						"4" => "<textarea type='text' class='form-control' rows='2' style='background-color: white !important; cursor: default; height: 60px !important;' readonly>" . (($reg->descripcion == '') ? 'Sin registrar.' : $reg->descripcion) . "</textarea>",
 						"5" => (($reg->categoria != "") ? $reg->categoria : "Sin registrar."),
-						"6" => (($reg->marca != "") ? $reg->marca : "Sin registrar."),
+						"6" => '<div class="nowrap-cell">' . (($reg->marca != "") ? $reg->marca : "Sin registrar.") . '</div>',
 						"7" => $reg->local,
 						"8" => ($reg->stock > 0 && $reg->stock < $reg->stock_minimo) ? '<span style="color: #Ea9900; font-weight: bold">' . $reg->stock . '</span>' : (($reg->stock != '0') ? '<span>' . $reg->stock . '</span>' : '<span style="color: red; font-weight: bold">' . $reg->stock . '</span>'),
 						"9" => $reg->stock_minimo,

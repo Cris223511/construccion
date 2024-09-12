@@ -23,8 +23,21 @@ class Devolucion
 		$sw = true;
 
 		while ($num_elementos < count($idarticulo)) {
-			$sql_detalle1 = "UPDATE detalle_devolucion SET cantidad_devuelta=cantidad_devuelta+'$cantidad_devuelta[$num_elementos]' WHERE iddevolucion='$iddevolucion' AND idarticulo='$idarticulo[$num_elementos]'";
-			ejecutarConsulta($sql_detalle1) or $sw = false;
+			$sql_opcion = "SELECT opcion FROM detalle_devolucion WHERE iddevolucion='$iddevolucion' AND idarticulo='$idarticulo[$num_elementos]'";
+
+			$resultado = ejecutarConsultaSimpleFila($sql_opcion);
+			$opcionActual = $resultado['opcion'];
+
+			if ($opcionActual == '1') {
+				$sql_detalle1 = "UPDATE detalle_devolucion SET cantidad_devuelta = cantidad_devuelta + '$cantidad_devuelta[$num_elementos]', opcion = '2' WHERE iddevolucion='$iddevolucion' AND idarticulo='$idarticulo[$num_elementos]'";
+			} else {
+				$sql_detalle1 = "UPDATE detalle_devolucion SET cantidad_devuelta = cantidad_devuelta + '$cantidad_devuelta[$num_elementos]' WHERE iddevolucion='$iddevolucion' AND idarticulo='$idarticulo[$num_elementos]'";
+			}
+
+			if (isset($sql_detalle1)) {
+				ejecutarConsulta($sql_detalle1) or $sw = false;
+			}
+
 			$num_elementos = $num_elementos + 1;
 		}
 
@@ -33,6 +46,7 @@ class Devolucion
 
 		return $sw;
 	}
+
 
 	public function actualizarDevolucion2($iddevolucion, $opcion, $idarticulo, $cantidad_devuelta)
 	{
@@ -44,7 +58,7 @@ class Devolucion
 
 		if ($opcion == 1) {
 			while ($num_elementos < count($idarticulo)) {
-				$sql_detalle1 = "UPDATE detalle_devolucion SET cantidad_a_devolver=cantidad_a_devolver+'$cantidad_devuelta[$num_elementos]' WHERE iddevolucion='$iddevolucion' AND idarticulo='$idarticulo[$num_elementos]'";
+				$sql_detalle1 = "UPDATE detalle_devolucion SET cantidad_a_devolver=cantidad_a_devolver+'$cantidad_devuelta[$num_elementos]', opcion='$opcion' WHERE iddevolucion='$iddevolucion' AND idarticulo='$idarticulo[$num_elementos]'";
 				ejecutarConsulta($sql_detalle1) or $sw = false;
 				$num_elementos = $num_elementos + 1;
 			}
@@ -53,6 +67,12 @@ class Devolucion
 			ejecutarConsulta($sql2);
 			$sql3 = "UPDATE solicitud SET estado='Finalizado', fecha_hora_despacho=SYSDATE() WHERE idsolicitud='$iddevolucion'";
 			ejecutarConsulta($sql3);
+		} else {
+			while ($num_elementos < count($idarticulo)) {
+				$sql_detalle1 = "UPDATE detalle_devolucion SET opcion='$opcion' WHERE iddevolucion='$iddevolucion' AND idarticulo='$idarticulo[$num_elementos]'";
+				ejecutarConsulta($sql_detalle1) or $sw = false;
+				$num_elementos = $num_elementos + 1;
+			}
 		}
 
 		return $sw;

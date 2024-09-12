@@ -71,17 +71,17 @@ if (!isset($_SESSION["nombre"])) {
 				$fecha_fin = $_GET["fecha_fin"];
 
 				// if ($cargo == "superadmin") {
-					if ($fecha_inicio == "" && $fecha_fin == "") {
-						$rspta = $tipos->listar();
-					} else {
-						$rspta = $tipos->listarPorFecha($fecha_inicio, $fecha_fin);
-					}
+				if ($fecha_inicio == "" && $fecha_fin == "") {
+					$rspta = $tipos->listar();
+				} else {
+					$rspta = $tipos->listarPorFecha($fecha_inicio, $fecha_fin);
+				}
 				// } else {
-					// if ($fecha_inicio == "" && $fecha_fin == "") {
-						// $rspta = $tipos->listarPorUsuario($idusuario);
-					// } else {
-						// $rspta = $tipos->listarPorUsuarioFecha($idusuario, $fecha_inicio, $fecha_fin);
-					// }
+				// if ($fecha_inicio == "" && $fecha_fin == "") {
+				// $rspta = $tipos->listarPorUsuario($idusuario);
+				// } else {
+				// $rspta = $tipos->listarPorUsuarioFecha($idusuario, $fecha_inicio, $fecha_fin);
+				// }
 				// }
 
 				$data = array();
@@ -107,7 +107,7 @@ if (!isset($_SESSION["nombre"])) {
 							$cargo_detalle = "Superadministrador";
 							break;
 						case 'admin':
-							$cargo_detalle = "Administrador";
+							$cargo_detalle = "Administrador del local";
 							break;
 						case 'usuario':
 							$cargo_detalle = "Usuario";
@@ -119,18 +119,17 @@ if (!isset($_SESSION["nombre"])) {
 							$cargo_detalle = "Almacenero";
 							break;
 						case 'encargado':
-							$cargo_detalle = "Encargado";
+							$cargo_detalle = "Encargado del pedido";
 							break;
 						default:
 							break;
 					}
-					
+
 					$data[] = array(
 						"0" => '<div style="display: flex; flex-wrap: nowrap; gap: 3px">' .
 							mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-warning" style="margin-right: 3px; height: 35px;" onclick="mostrar(' . $reg->idtipo . ')"><i class="fa fa-pencil"></i></button>') .
 							(($reg->estado == 'activado') ?
-								(mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-danger" style="margin-right: 3px; height: 35px;" onclick="desactivar(' . $reg->idtipo . ')"><i class="fa fa-close"></i></button>')) :
-								(mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-success" style="margin-right: 3px; width: 35px; height: 35px;" onclick="activar(' . $reg->idtipo . ')"><i style="margin-left: -2px" class="fa fa-check"></i></button>'))) .
+								(mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-danger" style="margin-right: 3px; height: 35px;" onclick="desactivar(' . $reg->idtipo . ')"><i class="fa fa-close"></i></button>')) : (mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-success" style="margin-right: 3px; width: 35px; height: 35px;" onclick="activar(' . $reg->idtipo . ')"><i style="margin-left: -2px" class="fa fa-check"></i></button>'))) .
 							mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-danger" style="height: 35px;" onclick="eliminar(' . $reg->idtipo . ')"><i class="fa fa-trash"></i></button>') .
 							'</div>',
 						"1" => $reg->titulo,
@@ -150,6 +149,15 @@ if (!isset($_SESSION["nombre"])) {
 				);
 
 				echo json_encode($results);
+				break;
+
+			case 'selectTipos':
+				$rspta = $tipos->listar();
+
+				echo '<option value="">- Seleccione -</option>';
+				while ($reg = $rspta->fetch_object()) {
+					echo '<option value="' . $reg->titulo . '"> ' . $reg->titulo . '</option>';
+				}
 				break;
 		}
 	} else {

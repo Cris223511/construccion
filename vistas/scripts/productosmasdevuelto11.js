@@ -73,3 +73,17 @@ pintarTablas();
 document.addEventListener('DOMContentLoaded', function () {
 	init();
 });
+
+//Función para reparar registros
+function reparar(iddetalle_devolucion, local) {
+	bootbox.confirm("¿Está seguro de reparar el artículo? <br><br> Esta acción hará que el artículo se translade a su almacén de origen <strong>" + local + "</strong> y aumentará su stock (la cantidad devuelta más el stock actual).", function (result) {
+		if (result) {
+			$.post("../ajax/consultas.php?op=reparar", { iddetalle_devolucion: iddetalle_devolucion }, function (e) {
+				bootbox.alert(e);
+				setTimeout(() => {
+					location.reload();
+				}, 1500);
+			});
+		}
+	})
+}

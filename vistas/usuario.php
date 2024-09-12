@@ -113,8 +113,9 @@ if (!isset($_SESSION["nombre"])) {
                   <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
                     <label>Cargo(*):</label>
                     <select name="cargo" id="cargo" class="form-control selectpicker" required>
-                      <option value="admin">Administrador</option>
                       <option value="usuario">Usuario</option>
+                      <option value="mirador">Mirador</option>
+                      <option value="admin">Administrador del local</option>
                       <option value="encargado">Encargado de pedido</option>
                       <option value="almacenero">Almacenero</option>
                     </select>

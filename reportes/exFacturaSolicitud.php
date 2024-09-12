@@ -68,7 +68,7 @@ if (!isset($_SESSION["nombre"])) {
     $regs->empresa = ($regs->empresa == '') ? 'Sin registrar.' : ($regs->empresa);
     $regs->telefono = ($regs->telefono == '') ? 'Sin registrar.' : number_format($regs->telefono, 0, '', ' ');
     $regs->destino = ($regs->destino == '') ? 'Sin registrar.' : ($regs->destino);
-    
+
     $pdf->additionalInfo(utf8_decode($regs->empresa), utf8_decode($regs->telefono), utf8_decode($regs->destino));
 
     //Establecemos las columnas que va a tener la sección donde mostramos los detalles de la solicitud
@@ -77,7 +77,7 @@ if (!isset($_SESSION["nombre"])) {
       "NOMBRE DE PRODUCTO" => 80,
       "CANTIDAD" => 28,
       "C. PRESTADA" => 28,
-      "P.V." => 20
+      "P.C." => 20
     );
 
     $pdf->addCols($cols);
@@ -86,7 +86,7 @@ if (!isset($_SESSION["nombre"])) {
       "NOMBRE DE PRODUCTO" => "L",
       "CANTIDAD" => "C",
       "C. PRESTADA" => "C",
-      "P.V." => "C"
+      "P.C." => "C"
     );
 
     $pdf->addLineFormat($cols);
@@ -106,7 +106,7 @@ if (!isset($_SESSION["nombre"])) {
         "NOMBRE DE PRODUCTO" => utf8_decode("$regd->nombre"),
         "CANTIDAD" => "$regd->cantidad",
         "C. PRESTADA" => "$regd->cantidad_prestada",
-        "P.V." => $regd->precio_compra
+        "P.C." => $regd->precio_compra
       );
       $size = $pdf->addLine($y, $line);
       $y   += $size + 2;

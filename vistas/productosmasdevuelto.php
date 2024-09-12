@@ -67,47 +67,51 @@ if (!isset($_SESSION["nombre"])) {
           opacity: 1;
         }
       }
+
+      td {
+        height: 30.84px !important;
+      }
     </style>
 
     <div class="content-wrapper">
       <section class="content">
         <div class="row">
           <div class="tab">
-            <button class="tablinks active" onclick="changeTables(event, 'type_1')">Tipo 1 (Almacén de devolución)</button>
-            <button class="tablinks" onclick="changeTables(event, 'type_2')">Tipo 2 (Almacén de origen)</button>
+            <button class="tablinks active" onclick="changeTables(event, 'type_1')">Tipo 1 (Almacén de origen)</button>
+            <button class="tablinks" onclick="changeTables(event, 'type_2')">Tipo 2 (Almacén de devolución)</button>
           </div>
           <div id="type_1" class="col-md-12 tabcontent">
             <div class="box">
               <div class="box-header with-border">
-                <h1 class="box-title">PRODUCTOS MÁS DEVUELTOS DEL <strong>ALMACÉN DE DEVOLUCIÓN</strong>:</h1>
+                <h1 class="box-title">PRODUCTOS DEVUELTOS DEL <strong>ALMACÉN DE ORIGEN</strong>:</h1>
                 <div class="box-tools pull-right">
                 </div>
               </div>
               <div class="panel-body table-responsive" id="listadoregistros">
-                <table id="tbllistado_2" class="table table-striped table-bordered table-condensed table-hover w-100" style="width: 100% !important">
+                <table id="tbllistado_1" class="table table-striped table-bordered table-condensed table-hover w-100" style="width: 100% !important">
                   <thead>
-                    <th>Código de producto</th>
+                    <th>Código devolución</th>
+                    <th>Imagen</th>
                     <th>Nombre</th>
+                    <th>Ubicación del local</th>
                     <th>Categoría</th>
                     <th>Marca</th>
-                    <th>Ubicación del local</th>
-                    <th>Stock normal</th>
-                    <th>Imagen</th>
-                    <th>Veces devueltos</th>
+                    <th>Código producto</th>
+                    <th>Stock actual</th>
                     <th>Cantidad devuelta</th>
                     <th>Fecha de devolución</th>
                   </thead>
                   <tbody>
                   </tbody>
                   <tfoot>
-                    <th>Código de producto</th>
+                    <th>Código devolución</th>
+                    <th>Imagen</th>
                     <th>Nombre</th>
+                    <th>Ubicación del local</th>
                     <th>Categoría</th>
                     <th>Marca</th>
-                    <th>Ubicación del local</th>
-                    <th>Stock normal</th>
-                    <th>Imagen</th>
-                    <th>Veces devueltos</th>
+                    <th>Código producto</th>
+                    <th>Stock actual</th>
                     <th>Cantidad devuelta</th>
                     <th>Fecha de devolución</th>
                   </tfoot>
@@ -118,35 +122,37 @@ if (!isset($_SESSION["nombre"])) {
           <div id="type_2" class="col-md-12 tabcontent">
             <div class="box">
               <div class="box-header with-border">
-                <h1 class="box-title">PRODUCTOS MÁS DEVUELTOS DEL <strong>ALMACÉN DE ORIGEN</strong>:</h1>
+                <h1 class="box-title">PRODUCTOS DEVUELTOS DEL <strong>ALMACÉN DE DEVOLUCIÓN</strong>:</h1>
                 <div class="box-tools pull-right">
                 </div>
               </div>
               <div class="panel-body table-responsive" id="listadoregistros">
-                <table id="tbllistado_1" class="table table-striped table-bordered table-condensed table-hover w-100" style="width: 100% !important">
+                <table id="tbllistado_2" class="table table-striped table-bordered table-condensed table-hover w-100" style="width: 100% !important">
                   <thead>
-                    <th>Código de producto</th>
+                    <th>Opciones</th>
+                    <th>Código devolución</th>
+                    <th>Imagen</th>
                     <th>Nombre</th>
+                    <th>Ubicación del local</th>
                     <th>Categoría</th>
                     <th>Marca</th>
-                    <th>Ubicación del local</th>
-                    <th>Stock normal</th>
-                    <th>Imagen</th>
-                    <th>Veces devueltos</th>
+                    <th>Código producto</th>
+                    <th>Stock actual</th>
                     <th>Cantidad devuelta</th>
                     <th>Fecha de devolución</th>
                   </thead>
                   <tbody>
                   </tbody>
                   <tfoot>
-                    <th>Código de producto</th>
+                    <th>Opciones</th>
+                    <th>Código devolución</th>
+                    <th>Imagen</th>
                     <th>Nombre</th>
+                    <th>Ubicación del local</th>
                     <th>Categoría</th>
                     <th>Marca</th>
-                    <th>Ubicación del local</th>
-                    <th>Stock normal</th>
-                    <th>Imagen</th>
-                    <th>Veces devueltos</th>
+                    <th>Código producto</th>
+                    <th>Stock actual</th>
                     <th>Cantidad devuelta</th>
                     <th>Fecha de devolución</th>
                   </tfoot>

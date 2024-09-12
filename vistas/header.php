@@ -355,7 +355,22 @@ $local_login = $_SESSION['local'];
               <ul class="treeview-menu">
                 <li id="lSolicitud"><a href="solicitudes.php"><i class="fa fa-circle-o"></i> Solicitudes</a></li>  
                 <li id="lDevolucion"><a href="devoluciones.php"><i class="fa fa-circle-o"></i> Devoluciones</a></li>
-                <li id="lConsultaD"><a href="productosmasdevuelto.php"><i class="fa fa-circle-o"></i> Productos más Devueltos</a></li>
+                <li id="lConsultaD"><a href="productosmasdevuelto.php"><i class="fa fa-circle-o"></i> Productos devueltos</a></li>
+              </ul>
+            </li>';
+          }
+          ?>
+
+          <?php
+          if ($_SESSION['reportes'] == 1) {
+            echo '<li id="mReporte" class="treeview">
+              <a href="#">
+                <i class="fa fa-bar-chart"></i> <span>Reportes Generales</span>
+                <i class="fa fa-angle-left pull-right"></i>
+              </a>
+              <ul class="treeview-menu">
+                <li id="lReporteE"><a href="reporteEntrada.php"><i class="fa fa-circle-o"></i> Reporte de entradas</a></li>  
+                <li id="lReporteS"><a href="reporteSalida.php"><i class="fa fa-circle-o"></i> Reporte de salidas</a></li>
               </ul>
             </li>';
           }

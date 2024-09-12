@@ -119,6 +119,32 @@
         });
       });
 
+      function nowrapCells() {
+        ["#tbllistado", "#detalles", "#tbllistado2", "#tbllistado3", "#tblarticulos", "#tbldetalles", "#tbldetalles2"].forEach(selector => {
+          addClassToCells(selector, "nowrap-cell");
+        });
+      }
+
+      function addClassToCells(selector, className) {
+        var table = document.querySelector(selector);
+
+        if (!table) return;
+
+        var columnIndices = Array.from(table.querySelectorAll("th")).reduce((indices, th, index) => {
+          if (["CLIENTE", "PROVEEDOR", "NOMBRE", "NOMBRES", "DESCRIPCIÓN", "DESCRIPCIÓN DEL LOCAL", "ALMACÉN"].includes(th.innerText.trim())) {
+            indices.push(index);
+          }
+          return indices;
+        }, []);
+
+        table.querySelectorAll("td, th").forEach((cell, index) => {
+          var cellIndex = index % table.rows[0].cells.length;
+          if (!columnIndices.includes(cellIndex)) {
+            cell.classList.add(className);
+          }
+        });
+      }
+
       function changeValue(dropdown) {
         var option = dropdown.options[dropdown.selectedIndex].value;
 
@@ -165,6 +191,7 @@
               page: 'current'
             }).count() > 0) {
             inicializeGLightbox();
+            nowrapCells();
           }
         }
       });
