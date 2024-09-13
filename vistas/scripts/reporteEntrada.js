@@ -16,14 +16,20 @@ function init() {
         $('#usuarioBuscar').selectpicker('refresh');
     })
 
+    $.post("../ajax/tipos.php?op=selectTipos", function (r) {
+        console.log(r);
+        $("#tiposBuscar").html(r);
+        $('#tiposBuscar').selectpicker('refresh');
+    })
+
     $.post("../ajax/proveedores.php?op=selectProveedores", function (r) {
         console.log(r);
         $("#proveedorBuscar").html(r);
         $('#proveedorBuscar').selectpicker('refresh');
     })
 
-    $('#mReportes').addClass("treeview active");
-    $('#lReporteCompra').addClass("active");
+    $('#mReporte').addClass("treeview active");
+    $('#lReporteE').addClass("active");
 }
 
 function listar() {

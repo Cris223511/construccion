@@ -36,8 +36,8 @@ function init() {
         $('#maquinariaBuscar').selectpicker('refresh');
     })
 
-    $('#mReportes').addClass("treeview active");
-    $('#lReporteCompra').addClass("active");
+    $('#mReporte').addClass("treeview active");
+    $('#lReporteS').addClass("active");
 }
 
 function listar() {
