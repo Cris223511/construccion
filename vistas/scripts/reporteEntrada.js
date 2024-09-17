@@ -16,18 +16,6 @@ function init() {
         $('#usuarioBuscar').selectpicker('refresh');
     })
 
-    $.post("../ajax/tipos.php?op=selectTipos", function (r) {
-        console.log(r);
-        $("#tiposBuscar").html(r);
-        $('#tiposBuscar').selectpicker('refresh');
-    })
-
-    $.post("../ajax/proveedores.php?op=selectProveedores", function (r) {
-        console.log(r);
-        $("#proveedorBuscar").html(r);
-        $('#proveedorBuscar').selectpicker('refresh');
-    })
-
     $('#mReporte').addClass("treeview active");
     $('#lReporteE').addClass("active");
 }
@@ -38,8 +26,6 @@ function listar() {
     let param3 = "";
     let param4 = "";
     let param5 = "";
-    let param6 = "";
-    let param7 = "";
 
     tabla = $('#tbllistado').dataTable(
         {
@@ -67,7 +53,7 @@ function listar() {
             {
                 url: '../ajax/reporte.php?op=listarEntradas',
                 type: "get",
-                data: { param1: param1, param2: param2, param3: param3, param4: param4, param5: param5, param6: param6, param7: param7 },
+                data: { param1: param1, param2: param2, param3: param3, param4: param4, param5: param5 },
                 dataType: "json",
                 error: function (e) {
                     console.log(e.responseText);
@@ -93,7 +79,7 @@ function listar() {
 }
 
 function resetear() {
-    const selects = ["fecha_inicio", "fecha_fin", "documentoBuscar", "localBuscar", "usuarioBuscar", "estadoBuscar", "proveedorBuscar"];
+    const selects = ["fecha_inicio", "fecha_fin", "documentoBuscar", "localBuscar", "usuarioBuscar"];
 
     for (const selectId of selects) {
         $("#" + selectId).val("");
@@ -109,8 +95,6 @@ function buscar() {
     let param3 = "";
     let param4 = "";
     let param5 = "";
-    let param6 = "";
-    let param7 = "";
 
     // Obtener los selectores
     const fecha_inicio = document.getElementById("fecha_inicio");
@@ -118,10 +102,8 @@ function buscar() {
     const documentoBuscar = document.getElementById("documentoBuscar");
     const localBuscar = document.getElementById("localBuscar");
     const usuarioBuscar = document.getElementById("usuarioBuscar");
-    const estadoBuscar = document.getElementById("estadoBuscar");
-    const proveedorBuscar = document.getElementById("proveedorBuscar");
 
-    if (fecha_inicio.value == "" && fecha_fin.value == "" && documentoBuscar.value == "" && localBuscar.value == "" && usuarioBuscar.value == "" && estadoBuscar.value == "" && proveedorBuscar.value == "") {
+    if (fecha_inicio.value == "" && fecha_fin.value == "" && documentoBuscar.value == "" && localBuscar.value == "" && usuarioBuscar.value == "") {
         bootbox.alert("Debe seleccionar al menos un campo para realizar la búsqueda.");
         return;
     }
@@ -136,8 +118,6 @@ function buscar() {
     param3 = documentoBuscar.value;
     param4 = localBuscar.value;
     param5 = usuarioBuscar.value;
-    param6 = estadoBuscar.value;
-    param7 = proveedorBuscar.value;
 
     tabla = $('#tbllistado').dataTable(
         {
@@ -165,7 +145,7 @@ function buscar() {
             {
                 url: '../ajax/reporte.php?op=listarEntradas',
                 type: "get",
-                data: { param1: param1, param2: param2, param3: param3, param4: param4, param5: param5, param6: param6, param7: param7 },
+                data: { param1: param1, param2: param2, param3: param3, param4: param4, param5: param5 },
                 dataType: "json",
                 error: function (e) {
                     console.log(e.responseText);

@@ -13,6 +13,9 @@ if (!isset($_SESSION["nombre"])) {
 
 		$iddetalle_devolucion = isset($_POST["iddetalle_devolucion"]) ? limpiarCadena($_POST["iddetalle_devolucion"]) : "";
 
+		$idlocalSession = $_SESSION["idlocal"];
+		$cargo = $_SESSION["cargo"];
+
 		switch ($_GET["op"]) {
 				// artículos más devueltos
 
@@ -114,6 +117,47 @@ if (!isset($_SESSION["nombre"])) {
 			case 'reparar':
 				$rspta = $consulta->reparar($iddetalle_devolucion);
 				echo $rspta ? "Artículo reparado y enviado al almacén de origen exitosamente." : "Artículo no se puede reparar";
+				break;
+
+			case 'listarEscritorio':
+				$parametros_entradas = array();
+				$parametros_salidas = array();
+
+				// Condiciones basadas en el cargo del usuario
+				if ($cargo != "superadmin") {
+					// Solo aplicamos a las entradas y salidas si no es superadmin
+					$parametros_entradas[] = "e.idlocal = '$idlocalSession'";
+					$parametros_salidas[] = "s.idlocal = '$idlocalSession'";
+				}
+
+				// Filtros de fechas para entradas y salidas
+				if (!empty($_POST["param1"]) && !empty($_POST["param2"])) {
+					$parametros_entradas[] = "DATE(e.fecha_hora) BETWEEN '{$_POST["param1"]}' AND '{$_POST["param2"]}'";
+					$parametros_salidas[] = "DATE(s.fecha_hora) BETWEEN '{$_POST["param1"]}' AND '{$_POST["param2"]}'";
+				}
+
+				// Condiciones para las entradas
+				if (count($parametros_entradas) > 0) {
+					$condiciones_entradas = "WHERE " . implode(" AND ", $parametros_entradas);
+				} else {
+					$condiciones_entradas = "";
+				}
+
+				// Condiciones para las salidas
+				if (count($parametros_salidas) > 0) {
+					$condiciones_salidas = "WHERE " . implode(" AND ", $parametros_salidas);
+				} else {
+					$condiciones_salidas = "";
+				}
+
+				if ($cargo == "superadmin") {
+					$rspta = $consulta->listarTotalesEntradasSalidas($condiciones_entradas, $condiciones_salidas);
+				} else {
+					$rspta = $consulta->listarTotalesEntradasSalidasLocal($idlocalSession, $condiciones_entradas, $condiciones_salidas);
+				}
+
+				echo json_encode($rspta);
+
 				break;
 		}
 		//Fin de las validaciones de acceso

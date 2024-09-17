@@ -155,7 +155,7 @@ if (!isset($_SESSION["nombre"])) {
                       <th style="white-space: nowrap;">Stock normal</th>
                       <th style="white-space: nowrap;">Stock mínimo</th>
                       <th style="white-space: nowrap;">P. Compra</th>
-                      <th style="white-space: nowrap;">P. Compra Mayor</th>
+                      <!-- <th style="white-space: nowrap;">P. Compra Mayor</th> -->
                       <th style="white-space: nowrap;">C. producto</th>
                       <th style="white-space: nowrap;">C. de barra</th>
                       <th style="width: 20%; min-width: 200px;">Talla</th>
@@ -186,7 +186,7 @@ if (!isset($_SESSION["nombre"])) {
                       <th>Stock normal</th>
                       <th>Stock mínimo</th>
                       <th>P. Compra</th>
-                      <th>P. Compra Mayor</th>
+                      <!-- <th>P. Compra Mayor</th> -->
                       <th>C. producto</th>
                       <th>C. de barra</th>
                       <th>Talla</th>
@@ -248,9 +248,13 @@ if (!isset($_SESSION["nombre"])) {
                         <input type="number" class="form-control" name="precio_compra" id="precio_compra" step="any" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="8" onkeydown="evitarNegativo(event)" onpaste="return false;" onDrop="return false;" step="any" min="0" placeholder="Ingrese el precio de compra.">
                       </div>
                       <div class="form-group col-lg-6 col-md-12">
+                        <label>Código(*):</label>
+                        <input type="text" class="form-control" name="codigo_producto" id="codigo_producto" maxlength="20" placeholder="Ingrese el código del producto." oninput="convertirMayus(this)" required>
+                      </div>
+                      <!-- <div class="form-group col-lg-6 col-md-12">
                         <label>Precio compra al mayor:</label>
                         <input type="number" class="form-control" name="precio_compra_mayor" id="precio_compra_mayor" step="any" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="8" onkeydown="evitarNegativo(event)" onpaste="return false;" onDrop="return false;" step="any" min="0" placeholder="Ingrese el precio de compra al mayor.">
-                      </div>
+                      </div> -->
                       <div class="form-group col-lg-6 col-md-12">
                         <label>Stock(*):</label>
                         <input type="number" class="form-control" name="stock" id="stock" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="6" onkeydown="evitarNegativo(event)" onpaste="return false;" onDrop="return false;" step="any" min="0.1" placeholder="Ingrese el stock." required>
@@ -259,14 +263,10 @@ if (!isset($_SESSION["nombre"])) {
                         <label>Stock mínimo:</label>
                         <input type="number" class="form-control" name="stock_minimo" id="stock_minimo" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="6" onkeydown="evitarNegativo(event)" onpaste="return false;" onDrop="return false;" step="any" placeholder="Ingrese el stock mínimo.">
                       </div>
-                      <div class="form-group col-lg-6 col-md-12">
+                      <div class="form-group col-lg-12 col-md-12">
                         <label>Imagen:</label>
                         <input type="file" class="form-control" name="imagen" id="imagen" accept="image/x-png,image/gif,image/jpeg">
                         <input type="hidden" name="imagenactual" id="imagenactual">
-                      </div>
-                      <div class="form-group col-lg-6 col-md-12">
-                        <label>Código(*):</label>
-                        <input type="text" class="form-control" name="codigo_producto" id="codigo_producto" maxlength="20" placeholder="Ingrese el código del producto." oninput="convertirMayus(this)" required>
                       </div>
                       <div class="form-group col-lg-12 col-md-12">
                         <label>Descripción:</label>

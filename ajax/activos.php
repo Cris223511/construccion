@@ -13,56 +13,56 @@ if (!isset($_SESSION["nombre"])) {
 	header("Location: ../vistas/login.html");
 } else {
 	if ($_SESSION['salidas'] == 1) {
-		require_once "../modelos/Maquinarias.php";
+		require_once "../modelos/Activos.php";
 
-		$maquinarias = new Maquinaria();
+		$activos = new Activo();
 
 		// Variables de sesión a utilizar.
 		$idusuario = $_SESSION["idusuario"];
 		$cargo = $_SESSION["cargo"];
 
-		$idmaquinaria = isset($_POST["idmaquinaria"]) ? limpiarCadena($_POST["idmaquinaria"]) : "";
+		$idactivo = isset($_POST["idactivo"]) ? limpiarCadena($_POST["idactivo"]) : "";
 		$titulo = isset($_POST["titulo"]) ? limpiarCadena($_POST["titulo"]) : "";
 		$descripcion = isset($_POST["descripcion"]) ? limpiarCadena($_POST["descripcion"]) : "";
 
 		switch ($_GET["op"]) {
 			case 'guardaryeditar':
-				if (empty($idmaquinaria)) {
-					$nombreExiste = $maquinarias->verificarNombreExiste($titulo);
+				if (empty($idactivo)) {
+					$nombreExiste = $activos->verificarNombreExiste($titulo);
 					if ($nombreExiste) {
-						echo "El nombre de la maquinaria ya existe.";
+						echo "El nombre del activo ya existe.";
 					} else {
-						$rspta = $maquinarias->agregar($idusuario, $titulo, $descripcion);
-						echo $rspta ? "Maquinaria registrada" : "La maquinaria no se pudo registrar";
+						$rspta = $activos->agregar($idusuario, $titulo, $descripcion);
+						echo $rspta ? "Activo registrado" : "El activo no se pudo registrar";
 					}
 				} else {
-					$nombreExiste = $maquinarias->verificarNombreEditarExiste($titulo, $idmaquinaria);
+					$nombreExiste = $activos->verificarNombreEditarExiste($titulo, $idactivo);
 					if ($nombreExiste) {
-						echo "El nombre de la maquinaria ya existe.";
+						echo "El nombre del activo ya existe.";
 					} else {
-						$rspta = $maquinarias->editar($idmaquinaria, $titulo, $descripcion);
-						echo $rspta ? "Maquinaria actualizada" : "La maquinaria no se pudo actualizar";
+						$rspta = $activos->editar($idactivo, $titulo, $descripcion);
+						echo $rspta ? "Activo actualizado" : "El activo no se pudo actualizar";
 					}
 				}
 				break;
 
 			case 'desactivar':
-				$rspta = $maquinarias->desactivar($idmaquinaria);
-				echo $rspta ? "Maquinaria desactivada" : "La maquinaria no se pudo desactivar";
+				$rspta = $activos->desactivar($idactivo);
+				echo $rspta ? "Activo desactivado" : "El activo no se pudo desactivar";
 				break;
 
 			case 'activar':
-				$rspta = $maquinarias->activar($idmaquinaria);
-				echo $rspta ? "Maquinaria activada" : "La maquinaria no se pudo activar";
+				$rspta = $activos->activar($idactivo);
+				echo $rspta ? "Activo activado" : "El activo no se pudo activar";
 				break;
 
 			case 'eliminar':
-				$rspta = $maquinarias->eliminar($idmaquinaria);
-				echo $rspta ? "Maquinaria eliminado" : "La maquinaria no se pudo eliminar";
+				$rspta = $activos->eliminar($idactivo);
+				echo $rspta ? "Activo eliminado" : "El activo no se pudo eliminar";
 				break;
 
 			case 'mostrar':
-				$rspta = $maquinarias->mostrar($idmaquinaria);
+				$rspta = $activos->mostrar($idactivo);
 				echo json_encode($rspta);
 				break;
 
@@ -72,15 +72,15 @@ if (!isset($_SESSION["nombre"])) {
 
 				// if ($cargo == "superadmin") {
 				if ($fecha_inicio == "" && $fecha_fin == "") {
-					$rspta = $maquinarias->listar();
+					$rspta = $activos->listar();
 				} else {
-					$rspta = $maquinarias->listarPorFecha($fecha_inicio, $fecha_fin);
+					$rspta = $activos->listarPorFecha($fecha_inicio, $fecha_fin);
 				}
 				// } else {
 				// if ($fecha_inicio == "" && $fecha_fin == "") {
-				// $rspta = $maquinarias->listarPorUsuario($idusuario);
+				// $rspta = $activos->listarPorUsuario($idusuario);
 				// } else {
-				// $rspta = $maquinarias->listarPorUsuarioFecha($idusuario, $fecha_inicio, $fecha_fin);
+				// $rspta = $activos->listarPorUsuarioFecha($idusuario, $fecha_inicio, $fecha_fin);
 				// }
 				// }
 
@@ -129,10 +129,10 @@ if (!isset($_SESSION["nombre"])) {
 
 					$data[] = array(
 						"0" => '<div style="display: flex; flex-wrap: nowrap; gap: 3px">' .
-							mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-warning" style="margin-right: 3px; height: 35px;" onclick="mostrar(' . $reg->idmaquinaria . ')"><i class="fa fa-pencil"></i></button>') .
+							mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-warning" style="margin-right: 3px; height: 35px;" onclick="mostrar(' . $reg->idactivo . ')"><i class="fa fa-pencil"></i></button>') .
 							(($reg->estado == 'activado') ?
-								(mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-danger" style="margin-right: 3px; height: 35px;" onclick="desactivar(' . $reg->idmaquinaria . ')"><i class="fa fa-close"></i></button>')) : (mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-success" style="margin-right: 3px; width: 35px; height: 35px;" onclick="activar(' . $reg->idmaquinaria . ')"><i style="margin-left: -2px" class="fa fa-check"></i></button>'))) .
-							mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-danger" style="height: 35px;" onclick="eliminar(' . $reg->idmaquinaria . ')"><i class="fa fa-trash"></i></button>') .
+								(mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-danger" style="margin-right: 3px; height: 35px;" onclick="desactivar(' . $reg->idactivo . ')"><i class="fa fa-close"></i></button>')) : (mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-success" style="margin-right: 3px; width: 35px; height: 35px;" onclick="activar(' . $reg->idactivo . ')"><i style="margin-left: -2px" class="fa fa-check"></i></button>'))) .
+							mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-danger" style="height: 35px;" onclick="eliminar(' . $reg->idactivo . ')"><i class="fa fa-trash"></i></button>') .
 							'</div>',
 						"1" => $reg->titulo,
 						"2" => "<textarea type='text' class='form-control' rows='2' style='background-color: white !important; cursor: default; height: 60px !important;'' readonly>" . (($reg->descripcion == '') ? 'Sin registrar.' : $reg->descripcion) . "</textarea>",
@@ -153,8 +153,8 @@ if (!isset($_SESSION["nombre"])) {
 				echo json_encode($results);
 				break;
 
-			case 'selectMaquinarias':
-				$rspta = $maquinarias->listar();
+			case 'selectActivos':
+				$rspta = $activos->listar();
 
 				echo '<option value="">- Seleccione -</option>';
 				while ($reg = $rspta->fetch_object()) {

@@ -26,7 +26,7 @@ if (!isset($_SESSION["nombre"])) {
 		$idlocal = isset($_POST["idlocal"]) ? limpiarCadena($_POST["idlocal"]) : "";
 		$idtipo = isset($_POST["idtipo"]) ? limpiarCadena($_POST["idtipo"]) : "";
 		$tipo_movimiento = isset($_POST["tipo_movimiento"]) ? limpiarCadena($_POST["tipo_movimiento"]) : "";
-		$idmaquinaria = isset($_POST["idmaquinaria"]) ? limpiarCadena($_POST["idmaquinaria"]) : "";
+		$idactivo = isset($_POST["idactivo"]) ? limpiarCadena($_POST["idactivo"]) : "";
 		$idautorizado = isset($_POST["idautorizado"]) ? limpiarCadena($_POST["idautorizado"]) : "";
 		$idrecibido = isset($_POST["idrecibido"]) ? limpiarCadena($_POST["idrecibido"]) : "";
 		$codigo = isset($_POST["codigo"]) ? limpiarCadena($_POST["codigo"]) : "";
@@ -43,7 +43,7 @@ if (!isset($_SESSION["nombre"])) {
 				if ($codigoExiste) {
 					echo "El N° de documento de la salida ya existe.";
 				} else {
-					$rspta = $salidas->agregar($idlocal, $idusuario, $idtipo, $tipo_movimiento, $idmaquinaria, $idautorizado, $idrecibido, $codigo, $ubicacion, $descripcion, $impuesto, $total_compra, $_POST["idarticulo"], $_POST["cantidad"], $_POST["precio_compra"]);
+					$rspta = $salidas->agregar($idlocal, $idusuario, $idtipo, $tipo_movimiento, $idactivo, $idautorizado, $idrecibido, $codigo, $ubicacion, $descripcion, $impuesto, $total_compra, $_POST["idarticulo"], $_POST["cantidad"], $_POST["precio_compra"]);
 					echo $rspta ? "Salida registrada" : "Una de las cantidades superan al stock normal del artículo.";
 				}
 				break;
@@ -165,7 +165,7 @@ if (!isset($_SESSION["nombre"])) {
 				}
 
 				$firstIteration = true;
-				$totalPrecioCompra = 0;
+				$totalSalidas = 0;
 
 				while ($reg = $rspta->fetch_object()) {
 					$cargo_detalle = "";
@@ -204,7 +204,7 @@ if (!isset($_SESSION["nombre"])) {
 						"1" => $reg->fecha,
 						"2" => $reg->local,
 						"3" => 'N° ' . (($reg->codigo != "") ? $reg->codigo : "Sin registrar."),
-						"4" => $reg->total_compra,
+						"4" => $reg->total_cantidad,
 						"5" => ($reg->tipo == '' ? 'Sin registrar.' : $reg->tipo),
 						"6" => ($reg->tipo_movimiento == '' ? 'Sin registrar.' : ucwords($reg->tipo_movimiento)),
 						"7" => ($reg->autorizado == '' ? 'Sin registrar.' : $reg->autorizado),
@@ -215,7 +215,7 @@ if (!isset($_SESSION["nombre"])) {
 							'<span class="label bg-red">Desactivado</span>'
 					);
 
-					$totalPrecioCompra += $reg->total_compra;
+					$totalSalidas += $reg->total_cantidad;
 					$firstIteration = false; // Marcar que ya no es la primera iteración
 				}
 
@@ -225,7 +225,7 @@ if (!isset($_SESSION["nombre"])) {
 						"1" => "",
 						"2" => "",
 						"3" => "<strong>TOTAL</strong>",
-						"4" => '<strong>' . number_format($totalPrecioCompra, 2) . '</strong>',
+						"4" => '<strong>' . number_format($totalSalidas, 2) . '</strong>',
 						"5" => "",
 						"6" => "",
 						"7" => "",
@@ -301,7 +301,7 @@ if (!isset($_SESSION["nombre"])) {
 					}
 
 					$data[] = array(
-						"0" => '<div style="display: flex; justify-content: center;"><button class="btn btn-warning" style="height: 35px;" data-idarticulo="' . $reg->idarticulo . '" onclick="agregarDetalle(' . $reg->idarticulo . ',\'' . $reg->nombre . '\',\'' . (($reg->categoria != "") ? $reg->categoria : "Sin registrar.") . '\',\'' . (($reg->marca != "") ? $reg->marca : "Sin registrar.") . '\',\'' . $reg->medida . '\',\'' . $reg->stock . '\',\'' . $reg->stock_minimo . '\',\'' . (($reg->medida != "Paquetes") ? ($reg->precio_compra) : ($reg->precio_compra_mayor)) . '\',\'' . $reg->codigo_producto . '\',\'' . (($reg->codigo != "") ? $reg->codigo : "Sin registrar.") . '\',\'' . $reg->imagen . '\'); disableButton(this);"><span class="fa fa-plus"></span></button></div>',
+						"0" => '<div style="display: flex; justify-content: center;"><button class="btn btn-warning" style="height: 35px;" data-idarticulo="' . $reg->idarticulo . '" onclick="agregarDetalle(' . $reg->idarticulo . ',\'' . $reg->nombre . '\',\'' . (($reg->categoria != "") ? $reg->categoria : "Sin registrar.") . '\',\'' . (($reg->marca != "") ? $reg->marca : "Sin registrar.") . '\',\'' . $reg->medida . '\',\'' . $reg->stock . '\',\'' . $reg->stock_minimo . '\',\'' . (($reg->precio_compra)) . '\',\'' . $reg->codigo_producto . '\',\'' . (($reg->codigo != "") ? $reg->codigo : "Sin registrar.") . '\',\'' . $reg->imagen . '\'); disableButton(this);"><span class="fa fa-plus"></span></button></div>',
 						"1" => '<a href="../files/articulos/' . $reg->imagen . '" class="galleria-lightbox" style="z-index: 10000 !important;">
 									<img src="../files/articulos/' . $reg->imagen . '" height="50px" width="50px" class="img-fluid">
 								</a>',
@@ -378,7 +378,8 @@ if (!isset($_SESSION["nombre"])) {
 						'medida' => $reg->medida,
 						'stock' => $reg->stock,
 						'stock_minimo' => $reg->stock_minimo,
-						'precio_compra' => ($reg->medida != "Paquetes") ? ($reg->precio_compra == '' ? "0" : $reg->precio_compra) : ($reg->precio_compra_mayor == '' ? "0" : $reg->precio_compra_mayor),
+						// 'precio_compra' => ($reg->medida != "Paquetes") ? ($reg->precio_compra == '' ? "0" : $reg->precio_compra) : ($reg->precio_compra_mayor == '' ? "0" : $reg->precio_compra_mayor),
+						'precio_compra' => ($reg->precio_compra == '' ? "0" : $reg->precio_compra),
 						'codigo_producto' => $reg->codigo_producto,
 						'codigo' => (($reg->codigo != "") ? $reg->codigo : "Sin registrar."),
 						'imagen' => $reg->imagen,

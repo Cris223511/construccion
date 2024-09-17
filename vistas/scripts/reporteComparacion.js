@@ -3,29 +3,13 @@ var tabla;
 //Función que se ejecuta al inicio
 function init() {
     listar();
-
-    $.post("../ajax/locales.php?op=selectLocal", function (r) {
-        console.log(r);
-        $("#localBuscar").html(r);
-        $('#localBuscar').selectpicker('refresh');
-    });
-
-    $.post("../ajax/usuario.php?op=selectUsuarios", function (r) {
-        console.log(r);
-        $("#usuarioBuscar").html(r);
-        $('#usuarioBuscar').selectpicker('refresh');
-    })
-
     $('#mReporte').addClass("treeview active");
-    $('#lReporteS').addClass("active");
+    $('#lReporteC').addClass("active");
 }
 
 function listar() {
     let param1 = "";
     let param2 = "";
-    let param3 = "";
-    let param4 = "";
-    let param5 = "";
 
     tabla = $('#tbllistado').dataTable(
         {
@@ -51,9 +35,9 @@ function listar() {
             ],
             "ajax":
             {
-                url: '../ajax/reporte.php?op=listarSalidas',
+                url: '../ajax/reporte.php?op=listarComparaciones',
                 type: "get",
-                data: { param1: param1, param2: param2, param3: param3, param4: param4, param5: param5 },
+                data: { param1: param1, param2: param2 },
                 dataType: "json",
                 error: function (e) {
                     console.log(e.responseText);
@@ -79,7 +63,7 @@ function listar() {
 }
 
 function resetear() {
-    const selects = ["fecha_inicio", "fecha_fin", "documentoBuscar", "localBuscar", "usuarioBuscar"];
+    const selects = ["fecha_inicio", "fecha_fin"];
 
     for (const selectId of selects) {
         $("#" + selectId).val("");
@@ -92,18 +76,12 @@ function resetear() {
 function buscar() {
     let param1 = "";
     let param2 = "";
-    let param3 = "";
-    let param4 = "";
-    let param5 = "";
 
     // Obtener los selectores
     const fecha_inicio = document.getElementById("fecha_inicio");
     const fecha_fin = document.getElementById("fecha_fin");
-    const documentoBuscar = document.getElementById("documentoBuscar");
-    const localBuscar = document.getElementById("localBuscar");
-    const usuarioBuscar = document.getElementById("usuarioBuscar");
 
-    if (fecha_inicio.value == "" && fecha_fin.value == "" && documentoBuscar.value == "" && localBuscar.value == "" && usuarioBuscar.value == "") {
+    if (fecha_inicio.value == "" && fecha_fin.value == "") {
         bootbox.alert("Debe seleccionar al menos un campo para realizar la búsqueda.");
         return;
     }
@@ -115,9 +93,6 @@ function buscar() {
 
     param1 = fecha_inicio.value;
     param2 = fecha_fin.value;
-    param3 = documentoBuscar.value;
-    param4 = localBuscar.value;
-    param5 = usuarioBuscar.value;
 
     tabla = $('#tbllistado').dataTable(
         {
@@ -143,9 +118,9 @@ function buscar() {
             ],
             "ajax":
             {
-                url: '../ajax/reporte.php?op=listarSalidas',
+                url: '../ajax/reporte.php?op=listarComparaciones',
                 type: "get",
-                data: { param1: param1, param2: param2, param3: param3, param4: param4, param5: param5 },
+                data: { param1: param1, param2: param2 },
                 dataType: "json",
                 error: function (e) {
                     console.log(e.responseText);

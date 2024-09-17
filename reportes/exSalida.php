@@ -55,9 +55,9 @@ if (!isset($_SESSION["nombre"])) {
         "Email: " . utf8_decode($regv->email !== "" ? $regv->email : "Sin registrar."),
         "Telefono: " . utf8_decode($regv->telefono !== "" ? $regv->telefono : "Sin registrar.")
       );
-    } elseif ($regv->tipo_movimiento == "maquinaria") {
+    } elseif ($regv->tipo_movimiento == "activo") {
       $pdf->addClientAdresse5(
-        "Nombre: " . utf8_decode($regv->maquinaria !== "" ? $regv->maquinaria : "Sin registrar."),
+        "Nombre: " . utf8_decode($regv->activo !== "" ? $regv->activo : "Sin registrar."),
       );
     } else {
       $pdf->addClientAdresse5("");
@@ -69,12 +69,10 @@ if (!isset($_SESSION["nombre"])) {
     );
 
     $cols = array(
-      "CODIGO" => 36,
-      "NOMBRE DE PRODUCTO" => 60,
-      "CANTIDAD" => 22,
-      "U. MEDIDA" => 25,
-      "P.U." => 25,
-      "SUBTOTAL" => 22
+      "CODIGO" => 43,
+      "NOMBRE DE PRODUCTO" => 83,
+      "U. MEDIDA" => 32,
+      "CANTIDAD" => 32,
     );
 
     $pdf->addCols($cols);
@@ -82,10 +80,8 @@ if (!isset($_SESSION["nombre"])) {
     $cols = array(
       "CODIGO" => "L",
       "NOMBRE DE PRODUCTO" => "L",
-      "CANTIDAD" => "C",
       "U. MEDIDA" => "C",
-      "P.U." => "C",
-      "SUBTOTAL" => "C"
+      "CANTIDAD" => "C",
     );
 
     $pdf->addLineFormat($cols);
@@ -97,27 +93,29 @@ if (!isset($_SESSION["nombre"])) {
       $line = array(
         "CODIGO" => "$regd->codigo_producto",
         "NOMBRE DE PRODUCTO" => utf8_decode("$regd->articulo"),
-        "CANTIDAD" => utf8_decode("$regd->cantidad"),
         "U. MEDIDA" => utf8_decode("$regd->medida"),
-        "P.U." => utf8_decode("$regd->precio_compra"),
-        "SUBTOTAL" => number_format($regd->subtotal, 2)
+        "CANTIDAD" => utf8_decode("$regd->cantidad"),
       );
       $size = $pdf->addLine($y, $line);
       $y   += $size + 2;
     }
 
-    $formatterES = new NumberFormatter("es-ES", NumberFormatter::SPELLOUT);
-    $izquierda = intval(floor($regv->total_compra));
-    $derecha = intval(($regv->total_compra - floor($regv->total_compra)) * 100);
+    // $formatterES = new NumberFormatter("es-ES", NumberFormatter::SPELLOUT);
+    // $izquierda = intval(floor($regv->total_cantidad));
+    // $derecha = intval(($regv->total_cantidad - floor($regv->total_cantidad)) * 100);
 
-    $texto = $formatterES->format($izquierda) . " NUEVOS SOLES CON " . $formatterES->format($derecha) . " CÉNTIMOS";
-    $textoEnMayusculas = mb_strtoupper($texto, 'UTF-8');
+    // $texto = $formatterES->format($izquierda) . " NUEVOS SOLES CON " . $formatterES->format($derecha) . " CÉNTIMOS";
+    // $textoEnMayusculas = mb_strtoupper($texto, 'UTF-8');
 
-    $pdf->addCadreTVAs("---" . utf8_decode($textoEnMayusculas));
+    // $pdf->addCadreTVAs("---" . utf8_decode($textoEnMayusculas));
+
+    // Firmas
+    $pdf->firma1();
+    $pdf->firma2();
 
     //Mostramos el impuesto
-    $pdf->addTVAs($regv->impuesto, $regv->total_compra, "S/ ");
-    $pdf->addCadreEurosFrancs(($regv->impuesto == "18.00") ? "IGV 0.18 %" : "IGV 0.00 %");
+    $pdf->addTVAs($regv->total_cantidad);
+    $pdf->addCadreEurosFrancs();
     $pdf->Output('Reporte de Salidas.pdf', 'I');
   } else {
     echo 'No tiene permiso para visualizar el reporte.';

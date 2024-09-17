@@ -157,6 +157,7 @@ if (!isset($_SESSION["nombre"])) {
 				}
 
 				$firstIteration = true;
+				$totalCantidad = 0;
 				$totalPrecioCompra = 0;
 
 				while ($reg = $rspta->fetch_object()) {
@@ -196,15 +197,17 @@ if (!isset($_SESSION["nombre"])) {
 						"1" => $reg->fecha,
 						"2" => $reg->local,
 						"3" => "N° " . (($reg->codigo != "") ? $reg->codigo : "Sin registrar."),
-						"4" => $reg->total_compra,
-						"5" => ($reg->tipo == '' ? 'Sin registrar.' : $reg->tipo),
-						"6" => $reg->proveedor,
-						"7" => $reg->usuario,
-						"8" => $cargo_detalle,
-						"9" => ($reg->estado == 'activado') ? '<span class="label bg-green">Activado</span>' :
+						"4" => $reg->total_cantidad,
+						"5" => $reg->total_compra,
+						"6" => ($reg->tipo == '' ? 'Sin registrar.' : $reg->tipo),
+						"7" => $reg->proveedor,
+						"8" => $reg->usuario,
+						"9" => $cargo_detalle,
+						"10" => ($reg->estado == 'activado') ? '<span class="label bg-green">Activado</span>' :
 							'<span class="label bg-red">Desactivado</span>'
 					);
 
+					$totalCantidad += $reg->total_cantidad;
 					$totalPrecioCompra += $reg->total_compra;
 					$firstIteration = false; // Marcar que ya no es la primera iteración
 				}
@@ -215,12 +218,13 @@ if (!isset($_SESSION["nombre"])) {
 						"1" => "",
 						"2" => "",
 						"3" => "<strong>TOTAL</strong>",
-						"4" => '<strong>' . number_format($totalPrecioCompra, 2) . '</strong>',
-						"5" => "",
+						"4" => '<strong>' . number_format($totalCantidad, 2) . '</strong>',
+						"5" => '<strong>' . number_format($totalPrecioCompra, 2) . '</strong>',
 						"6" => "",
 						"7" => "",
 						"8" => "",
 						"9" => "",
+						"10" => "",
 					);
 				}
 
@@ -285,7 +289,7 @@ if (!isset($_SESSION["nombre"])) {
 					}
 
 					$data[] = array(
-						"0" => '<div style="display: flex; justify-content: center;"><button class="btn btn-warning" style="height: 35px;" data-idarticulo="' . $reg->idarticulo . '" onclick="agregarDetalle(' . $reg->idarticulo . ',\'' . $reg->nombre . '\',\'' . (($reg->categoria != "") ? $reg->categoria : "Sin registrar.") . '\',\'' . (($reg->marca != "") ? $reg->marca : "Sin registrar.") . '\',\'' . $reg->medida . '\',\'' . $reg->stock . '\',\'' . $reg->stock_minimo . '\',\'' . (($reg->medida != "Paquetes") ? ($reg->precio_compra) : ($reg->precio_compra_mayor)) . '\',\'' . $reg->codigo_producto . '\',\'' . (($reg->codigo != "") ? $reg->codigo : "Sin registrar.") . '\',\'' . $reg->imagen . '\'); disableButton(this);"><span class="fa fa-plus"></span></button></div>',
+						"0" => '<div style="display: flex; justify-content: center;"><button class="btn btn-warning" style="height: 35px;" data-idarticulo="' . $reg->idarticulo . '" onclick="agregarDetalle(' . $reg->idarticulo . ',\'' . $reg->nombre . '\',\'' . (($reg->categoria != "") ? $reg->categoria : "Sin registrar.") . '\',\'' . (($reg->marca != "") ? $reg->marca : "Sin registrar.") . '\',\'' . $reg->medida . '\',\'' . $reg->stock . '\',\'' . $reg->stock_minimo . '\',\'' . ($reg->precio_compra) . '\',\'' . $reg->codigo_producto . '\',\'' . (($reg->codigo != "") ? $reg->codigo : "Sin registrar.") . '\',\'' . $reg->imagen . '\'); disableButton(this);"><span class="fa fa-plus"></span></button></div>',
 						"1" => '<a href="../files/articulos/' . $reg->imagen . '" class="galleria-lightbox" style="z-index: 10000 !important;">
 										<img src="../files/articulos/' . $reg->imagen . '" height="50px" width="50px" class="img-fluid">
 									</a>',
@@ -362,7 +366,8 @@ if (!isset($_SESSION["nombre"])) {
 						'medida' => $reg->medida,
 						'stock' => $reg->stock,
 						'stock_minimo' => $reg->stock_minimo,
-						'precio_compra' => ($reg->medida != "Paquetes") ? ($reg->precio_compra == '' ? "0" : $reg->precio_compra) : ($reg->precio_compra_mayor == '' ? "0" : $reg->precio_compra_mayor),
+						// 'precio_compra' => ($reg->medida != "Paquetes") ? ($reg->precio_compra == '' ? "0" : $reg->precio_compra) : ($reg->precio_compra_mayor == '' ? "0" : $reg->precio_compra_mayor),
+						'precio_compra' => $reg->precio_compra == '' ? "0" : $reg->precio_compra,
 						'codigo_producto' => $reg->codigo_producto,
 						'codigo' => (($reg->codigo != "") ? $reg->codigo : "Sin registrar."),
 						'imagen' => $reg->imagen,

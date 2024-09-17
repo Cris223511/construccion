@@ -10,14 +10,46 @@ class Consultas
 
     public function totalentradahoy()
     {
-        $sql = "SELECT COUNT(*) AS cantidad FROM entradas";
+        $sql = "SELECT 
+                  COUNT(DISTINCT e.identrada) AS total_entradas, 
+                  SUM(de.cantidad) AS cantidad_total_entradas 
+                FROM entradas e 
+                LEFT JOIN detalle_entrada de ON e.identrada = de.identrada";
         return ejecutarConsulta($sql);
     }
 
+
+
     public function totalsalidahoy()
     {
-        $sql = "SELECT COUNT(*) AS cantidad FROM salidas";
+        $sql = "SELECT 
+                  COUNT(DISTINCT s.idsalida) AS total_salidas, 
+                  SUM(ds.cantidad) AS cantidad_total_salidas 
+                FROM salidas s 
+            LEFT JOIN detalle_salida ds ON s.idsalida = ds.idsalida";
         return ejecutarConsulta($sql);
+    }
+
+
+
+    public function listarTotalesEntradasSalidas($condiciones_entradas = "", $condiciones_salidas = "")
+    {
+        $sql = "SELECT 
+            (SELECT COUNT(DISTINCT e.identrada) FROM entradas e $condiciones_entradas) AS total_entradas,
+            (SELECT SUM(de.cantidad) FROM detalle_entrada de LEFT JOIN entradas e ON de.identrada = e.identrada $condiciones_entradas) AS cantidad_total_entradas,
+            (SELECT COUNT(DISTINCT s.idsalida) FROM salidas s $condiciones_salidas) AS total_salidas,
+            (SELECT SUM(ds.cantidad) FROM detalle_salida ds LEFT JOIN salidas s ON ds.idsalida = s.idsalida $condiciones_salidas) AS cantidad_total_salidas";
+        return ejecutarConsultaSimpleFila($sql);
+    }
+
+    public function listarTotalesEntradasSalidasLocal($idlocal, $condiciones_entradas = "", $condiciones_salidas = "")
+    {
+        $sql = "SELECT 
+            (SELECT COUNT(DISTINCT e.identrada) FROM entradas e WHERE e.idlocal = '$idlocal' $condiciones_entradas) AS total_entradas,
+            (SELECT SUM(de.cantidad) FROM detalle_entrada de LEFT JOIN entradas e ON de.identrada = e.identrada WHERE e.idlocal = '$idlocal' $condiciones_entradas) AS cantidad_total_entradas,
+            (SELECT COUNT(DISTINCT s.idsalida) FROM salidas s WHERE s.idlocal = '$idlocal' $condiciones_salidas) AS total_salidas,
+            (SELECT SUM(ds.cantidad) FROM detalle_salida ds LEFT JOIN salidas s ON ds.idsalida = s.idsalida WHERE s.idlocal = '$idlocal' $condiciones_salidas) AS cantidad_total_salidas";
+        return ejecutarConsultaSimpleFila($sql);
     }
 
     public function entradasultimos_10dias()

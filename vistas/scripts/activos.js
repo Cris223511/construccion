@@ -8,11 +8,11 @@ function init() {
 		guardaryeditar(e);
 	});
 	$('#mSalidas').addClass("treeview active");
-	$('#lMaquinarias').addClass("active");
+	$('#lActivos').addClass("active");
 }
 
 function limpiar() {
-	$("#idmaquinaria").val("");
+	$("#idactivo").val("");
 	$("#titulo").val("");
 	$("#descripcion").val("");
 }
@@ -57,7 +57,7 @@ function listar() {
 			],
 			"ajax":
 			{
-				url: '../ajax/maquinarias.php?op=listar',
+				url: '../ajax/activos.php?op=listar',
 				data: { fecha_inicio: fecha_inicio, fecha_fin: fecha_fin },
 				type: "get",
 				dataType: "json",
@@ -109,7 +109,7 @@ function buscar() {
 			],
 			"ajax":
 			{
-				url: '../ajax/maquinarias.php?op=listar',
+				url: '../ajax/activos.php?op=listar',
 				data: { fecha_inicio: fecha_inicio, fecha_fin: fecha_fin },
 				type: "get",
 				dataType: "json",
@@ -142,14 +142,14 @@ function guardaryeditar(e) {
 	var formData = new FormData($("#formulario")[0]);
 
 	$.ajax({
-		url: "../ajax/maquinarias.php?op=guardaryeditar",
+		url: "../ajax/activos.php?op=guardaryeditar",
 		type: "POST",
 		data: formData,
 		contentType: false,
 		processData: false,
 
 		success: function (datos) {
-			if (datos == "El nombre de la maquinaria ya existe.") {
+			if (datos == "El nombre del activo ya existe.") {
 				bootbox.alert(datos);
 				$("#btnGuardar").prop("disabled", false);
 				return;
@@ -162,8 +162,8 @@ function guardaryeditar(e) {
 	});
 }
 
-function mostrar(idmaquinaria) {
-	$.post("../ajax/maquinarias.php?op=mostrar", { idmaquinaria: idmaquinaria }, function (data, status) {
+function mostrar(idactivo) {
+	$.post("../ajax/activos.php?op=mostrar", { idactivo: idactivo }, function (data, status) {
 		data = JSON.parse(data);
 		mostrarform(true);
 
@@ -171,14 +171,14 @@ function mostrar(idmaquinaria) {
 
 		$("#titulo").val(data.titulo);
 		$("#descripcion").val(data.descripcion);
-		$("#idmaquinaria").val(data.idmaquinaria);
+		$("#idactivo").val(data.idactivo);
 	})
 }
 
-function desactivar(idmaquinaria) {
-	bootbox.confirm("¿Está seguro de desactivar la maquinaria?", function (result) {
+function desactivar(idactivo) {
+	bootbox.confirm("¿Está seguro de desactivar el activo?", function (result) {
 		if (result) {
-			$.post("../ajax/maquinarias.php?op=desactivar", { idmaquinaria: idmaquinaria }, function (e) {
+			$.post("../ajax/activos.php?op=desactivar", { idactivo: idactivo }, function (e) {
 				bootbox.alert(e);
 				tabla.ajax.reload();
 			});
@@ -186,10 +186,10 @@ function desactivar(idmaquinaria) {
 	})
 }
 
-function activar(idmaquinaria) {
-	bootbox.confirm("¿Está seguro de activar la maquinaria?", function (result) {
+function activar(idactivo) {
+	bootbox.confirm("¿Está seguro de activar el activo?", function (result) {
 		if (result) {
-			$.post("../ajax/maquinarias.php?op=activar", { idmaquinaria: idmaquinaria }, function (e) {
+			$.post("../ajax/activos.php?op=activar", { idactivo: idactivo }, function (e) {
 				bootbox.alert(e);
 				tabla.ajax.reload();
 			});
@@ -197,10 +197,10 @@ function activar(idmaquinaria) {
 	})
 }
 
-function eliminar(idmaquinaria) {
-	bootbox.confirm("¿Estás seguro de eliminar la maquinaria?", function (result) {
+function eliminar(idactivo) {
+	bootbox.confirm("¿Estás seguro de eliminar el activo?", function (result) {
 		if (result) {
-			$.post("../ajax/maquinarias.php?op=eliminar", { idmaquinaria: idmaquinaria }, function (e) {
+			$.post("../ajax/activos.php?op=eliminar", { idactivo: idactivo }, function (e) {
 				bootbox.alert(e);
 				tabla.ajax.reload();
 			});

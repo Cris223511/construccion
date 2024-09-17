@@ -299,7 +299,7 @@ $local_login = $_SESSION['local'];
               <ul class="treeview-menu">
                 <li id="lSalidas"><a href="salidas.php"><i class="fa fa-circle-o"></i> Salidas</a></li>
                 <li id="lPersonales"><a href="personales.php"><i class="fa fa-circle-o"></i> Personales</a></li>
-                <li id="lMaquinarias"><a href="maquinarias.php"><i class="fa fa-circle-o"></i> Maquinarias</a></li>
+                <li id="lActivos"><a href="activos.php"><i class="fa fa-circle-o"></i> Activos</a></li>
               </ul>
             </li>';
           }
@@ -371,6 +371,7 @@ $local_login = $_SESSION['local'];
               <ul class="treeview-menu">
                 <li id="lReporteE"><a href="reporteEntrada.php"><i class="fa fa-circle-o"></i> Reporte de entradas</a></li>  
                 <li id="lReporteS"><a href="reporteSalida.php"><i class="fa fa-circle-o"></i> Reporte de salidas</a></li>
+                <li id="lReporteC"><a href="reporteComparacion.php"><i class="fa fa-circle-o"></i> Reporte de comparaciones</a></li>
               </ul>
             </li>';
           }

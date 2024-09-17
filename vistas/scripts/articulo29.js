@@ -226,7 +226,7 @@ function limpiar() {
 	$("#stock").val("");
 	$("#stock_minimo").val("");
 	$("#precio_compra").val("");
-	$("#precio_compra_mayor").val("");
+	// $("#precio_compra_mayor").val("");
 	$("#imagenmuestra").attr("src", "");
 	$("#imagenmuestra").hide();
 	$("#imagenactual").val("");
@@ -454,7 +454,7 @@ function mostrar(idarticulo) {
 		$("#stock").val(data.stock);
 		$("#stock_minimo").val(data.stock_minimo);
 		$("#precio_compra").val(data.precio_compra);
-		$("#precio_compra_mayor").val(data.precio_compra_mayor);
+		// $("#precio_compra_mayor").val(data.precio_compra_mayor);
 		$("#talla").val(data.talla);
 		$("#color").val(data.color);
 		$("#peso").val(data.peso);

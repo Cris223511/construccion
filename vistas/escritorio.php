@@ -28,10 +28,12 @@ if (!isset($_SESSION["nombre"])) {
     }
 
     $regE = $rsptaE->fetch_object();
-    $totalE = $regE->cantidad;
+    $totalE = $regE->total_entradas;
+    $totalEE = $regE->cantidad_total_entradas;
 
     $regS = $rsptaS->fetch_object();
-    $totalS = $regS->cantidad;
+    $totalS = $regS->total_salidas;
+    $totalSS = $regS->cantidad_total_salidas;
 
     $fechasE = '';
     $totalesE = '';
@@ -55,43 +57,83 @@ if (!isset($_SESSION["nombre"])) {
     $fechasS = substr($fechasS, 0, -1);
     $totalesS = substr($totalesS, 0, -1);
 ?>
+
+    <style>
+      @media (max-width: 991px) {
+        .botones {
+          width: 100% !important;
+        }
+
+        #labelCustom {
+          display: none;
+        }
+
+        .listadoregistros {
+          margin-bottom: 0;
+        }
+      }
+    </style>
     <div class="content-wrapper">
       <section class="content">
         <div class="row">
           <div class="col-md-12">
             <div class="box">
               <div class="box-header with-border">
-                <h1 class="box-title">Escritorio </h1>
-                <div class="box-tools pull-right">
-                </div>
+                <h1 class="box-title">Escritorio</h1>
+                <div class="box-tools pull-right"></div>
               </div>
-              <div class="panel-body">
-                <div class="col-lg-6 col-md-6 col-sm-12">
-                  <div class="small-box bg-green">
-                    <div class="inner">
-                      <h4 style="font-size:17px;">
-                        <strong>Total: <?php echo $totalE; ?></strong>
-                      </h4>
-                      <p>Entradas</p>
-                    </div>
-                    <div class="icon">
-                      <i class="ion ion-bag"></i>
-                    </div>
-                    <a href="entradas.php" class="small-box-footer">Entradas <i class="fa fa-arrow-circle-right"></i></a>
+              <div class="panel-body table-responsive listadoregistros" style="overflow: visible; padding: 10px;">
+                <div class="form-group col-lg-4 col-md-4 col-sm-6 col-xs-12" style="padding: 5px; margin: 0px;">
+                  <label>Fecha Inicial:</label>
+                  <input type="date" class="form-control" name="fecha_inicio" id="fecha_inicio">
+                </div>
+                <div class="form-group col-lg-4 col-md-4 col-sm-6 col-xs-12" style="padding: 5px; margin: 0px;">
+                  <label>Fecha Final:</label>
+                  <input type="date" class="form-control" name="fecha_fin" id="fecha_fin">
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12" style="padding: 5px; margin: 0px;">
+                  <label id="labelCustom">ㅤ</label>
+                  <div style="display: flex; gap: 10px;">
+                    <button style="width: 100%; height: 34px;" class="btn btn-bcp" onclick="buscar()">Buscar</button>
+                    <button style="height: 34px;" class="btn btn-success" onclick="resetear()"><i class="fa fa-repeat"></i></button>
                   </div>
                 </div>
-                <div class="col-lg-6 col-md-6 col-sm-12">
-                  <div class="small-box bg-red">
-                    <div class="inner">
-                      <h4 style="font-size:17px;">
-                        <strong>Total: <?php echo $totalS; ?></strong>
-                      </h4>
-                      <p>Salidas</p>
+              </div>
+              <div class="panel-body listadoregistros" style="background-color: #ecf0f5 !important; padding-left: 0 !important; padding-right: 0 !important; height: max-content;">
+                <div class="table-responsive listadoregistros2" style="overflow-x: visible; display: inline-block; width: 100%; padding-top: 20px !important; background-color: white; height: max-content;">
+                  <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="small-box bg-green">
+                      <div class="inner">
+                        <div style="font-size: 15px; display: flex; flex-direction: column;">
+                          <span style="margin-bottom: 5px;">Total de entradas:<strong id="total_entradas"> <?php echo $totalE; ?></strong></span>
+                          <span>Cantidad total de productos:<strong id="cantidad_total_entradas"> <?php echo $totalEE; ?></strong></span>
+                        </div>
+                        <strong>
+                          <p style="font-size: 17px; margin-top: 10px;">Entradas</p>
+                        </strong>
+                      </div>
+                      <div class="icon">
+                        <i class="ion ion-bag"></i>
+                      </div>
+                      <a href="entradas.php" class="small-box-footer">Entradas <i class="fa fa-arrow-circle-right"></i></a>
                     </div>
-                    <div class="icon">
-                      <i class="ion ion-bag"></i>
+                  </div>
+                  <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="small-box bg-red">
+                      <div class="inner">
+                        <div style="font-size: 15px; display: flex; flex-direction: column;">
+                          <span style="margin-bottom: 5px;">Total de salidas:<strong id="total_salidas"> <?php echo $totalS; ?></strong></span>
+                          <span>Cantidad total de productos:<strong id="cantidad_total_salidas"> <?php echo $totalSS; ?></strong></span>
+                        </div>
+                        <strong>
+                          <p style="font-size: 17px; margin-top: 10px;">Salidas</p>
+                        </strong>
+                      </div>
+                      <div class="icon">
+                        <i class="ion ion-bag"></i>
+                      </div>
+                      <a href="salidas.php" class="small-box-footer">Salidas <i class="fa fa-arrow-circle-right"></i></a>
                     </div>
-                    <a href="salidas.php" class="small-box-footer">Salidas <i class="fa fa-arrow-circle-right"></i></a>
                   </div>
                 </div>
               </div>
@@ -229,3 +271,4 @@ require 'footer.php';
 ob_end_flush();
 
 ?>
+<script type="text/javascript" src="scripts/escritorio.js"></script>

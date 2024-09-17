@@ -109,7 +109,7 @@ function init() {
 
 		const selects = {
 			"idtipo": $("#idtipo"),
-			"idmaquinaria": $("#idmaquinaria"),
+			"idactivo": $("#idactivo"),
 			"idlocal": $("#idlocal"),
 			"idlocal2": $("#idlocal2"),
 			"idlocal3": $("#idlocal3"),
@@ -153,8 +153,8 @@ function init() {
 		$('#idautorizado').closest('.form-group').find('input[type="text"]').attr('onkeydown', 'checkEnter(event)');
 		$('#idrecibido').closest('.form-group').find('input[type="text"]').attr('onkeydown', 'checkEnter(event)');
 
-		$('#idmaquinaria').closest('.form-group').find('input[type="text"]').attr('onkeydown', 'agregarMaquinaria(event)');
-		$('#idmaquinaria').closest('.form-group').find('input[type="text"]').attr('maxlength', '40');
+		$('#idactivo').closest('.form-group').find('input[type="text"]').attr('onkeydown', 'agregarActivo(event)');
+		$('#idactivo').closest('.form-group').find('input[type="text"]').attr('maxlength', '40');
 
 		$('#idtipo').closest('.form-group').find('input[type="text"]').attr('onkeydown', 'agregarTipo(event)');
 		$('#idtipo').closest('.form-group').find('input[type="text"]').attr('maxlength', '40');
@@ -195,18 +195,18 @@ function listarTodosActivos(selectId) {
 	});
 }
 
-function agregarMaquinaria(e) {
-	let inputValue = $('#idmaquinaria').closest('.form-group').find('input[type="text"]');
+function agregarActivo(e) {
+	let inputValue = $('#idactivo').closest('.form-group').find('input[type="text"]');
 
 	if (e.key === "Enter") {
 		if ($('.no-results').is(':visible')) {
 			e.preventDefault();
 			$("#titulo2").val(inputValue.val());
 
-			var formData = new FormData($("#formularioMaquinaria")[0]);
+			var formData = new FormData($("#formularioActivo")[0]);
 
 			$.ajax({
-				url: "../ajax/maquinarias.php?op=guardaryeditar",
+				url: "../ajax/activos.php?op=guardaryeditar",
 				type: "POST",
 				data: formData,
 				contentType: false,
@@ -217,13 +217,13 @@ function agregarMaquinaria(e) {
 					if (!datos) {
 						console.log("No se recibieron datos del servidor.");
 						return;
-					} else if (datos == "El nombre de la maquinaria ya existe.") {
+					} else if (datos == "El nombre dedel activo ya existe.") {
 						bootbox.alert(datos);
 						return;
 					} else {
 						// bootbox.alert(datos);
-						listarTodosActivos("idmaquinaria");
-						$("#idmaquinaria2").val("");
+						listarTodosActivos("idactivo");
+						$("#idactivo2").val("");
 						$("#titulo2").val("");
 						$("#descripcion2").val("");
 					}
@@ -623,7 +623,7 @@ function limpiar() {
 	$("#impuesto").selectpicker('refresh');
 
 	$(".selectPersonal").hide();
-	$("#selectMaquinaria").hide();
+	$("#selectActivo").hide();
 
 	$("#idtipo").val($("#idtipo option:first").val());
 	$("#idtipo").selectpicker('refresh');
@@ -635,8 +635,8 @@ function limpiar() {
 	$("#idautorizado").selectpicker('refresh');
 	$("#idrecibido").val($("#idrecibido option:first").val());
 	$("#idrecibido").selectpicker('refresh');
-	$("#idmaquinaria").val($("#idmaquinaria option:first").val());
-	$("#idmaquinaria").selectpicker('refresh');
+	$("#idactivo").val($("#idactivo option:first").val());
+	$("#idactivo").selectpicker('refresh');
 
 	$(".filas").remove();
 	$('#myModal').modal('hide');
@@ -836,8 +836,8 @@ function mostrar(idsalida) {
 				$("#tipo_movimiento").val('personal');
 				$('#tipo_movimiento').selectpicker('refresh');
 				$('#tipo_movimiento').trigger('onchange');
-			} else if (data.tipo_movimiento == "maquinaria") {
-				$("#tipo_movimiento").val('maquinaria');
+			} else if (data.tipo_movimiento == "activo") {
+				$("#tipo_movimiento").val('activo');
 				$('#tipo_movimiento').selectpicker('refresh');
 				$('#tipo_movimiento').trigger('onchange');
 			} else {
@@ -850,8 +850,8 @@ function mostrar(idsalida) {
 			$('#idautorizado').selectpicker('refresh');
 			$("#idrecibido").val(data.idrecibido);
 			$('#idrecibido').selectpicker('refresh');
-			$("#idmaquinaria").val(data.idmaquinaria);
-			$('#idmaquinaria').selectpicker('refresh');
+			$("#idactivo").val(data.idactivo);
+			$('#idactivo').selectpicker('refresh');
 
 			const { letras, numeros } = separarLetrasYNumeros(data.codigo);
 			// Establecer valores en los campos correspondientes
@@ -1113,35 +1113,24 @@ function evaluar() {
 function evaluarMetodo() {
 	var tipoMovimiento = $("#tipo_movimiento").val();
 	$(".selectPersonal").hide();
-	$("#selectMaquinaria").hide();
+	$("#selectActivo").hide();
 
 	$("#idautorizado").val($("#idautorizado option:first").val());
 	$("#idautorizado").selectpicker('refresh');
 	$("#idrecibido").val($("#idrecibido option:first").val());
 	$("#idrecibido").selectpicker('refresh');
-	$("#idmaquinaria").val($("#idmaquinaria option:first").val());
-	$("#idmaquinaria").selectpicker('refresh');
-
-	$("#idmaquinaria").attr("required", "required");
-	$("#idautorizado").attr("required", "required");
-	$("#idrecibido").attr("required", "required");
+	$("#idactivo").val($("#idactivo option:first").val());
+	$("#idactivo").selectpicker('refresh');
 
 	if (tipoMovimiento === "personal") {
 		$(".selectPersonal").show();
-		$("#idmaquinaria").removeAttr("required");
-		$("#idautorizado").removeAttr("required");
-	} else if (tipoMovimiento === "maquinaria") {
+	} else if (tipoMovimiento === "activo") {
 		$(".selectPersonal").show();
-		$("#selectMaquinaria").show();
-		$("#idautorizado").removeAttr("required");
-		$("#idrecibido").removeAttr("required");
+		$("#selectActivo").show();
 	}
 	else {
-		$("#idmaquinaria").attr("required", "required");
-		$("#idautorizado").attr("required", "required");
-		$("#idrecibido").attr("required", "required");
 		$(".selectPersonal").hide();
-		$("#selectMaquinaria").hide();
+		$("#selectActivo").hide();
 	}
 }
 

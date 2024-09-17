@@ -20,26 +20,26 @@ if (!isset($_SESSION["nombre"])) {
     $pdf->SetFont('Arial', 'B', 12);
 
     $pdf->Cell(45, 6, '', 0, 0, 'C');
-    $pdf->Cell(100, 6, 'LISTA DE MAQUINARIAS', 1, 0, 'C');
+    $pdf->Cell(100, 6, 'LISTA DE ACTIVOS', 1, 0, 'C');
     $pdf->Ln(10);
 
     $pdf->SetFillColor(232, 232, 232);
     $pdf->SetFont('Arial', 'B', 10);
-    $pdf->Cell(40, 6, utf8_decode('Maquinaria'), 1, 0, 'C', 1);
+    $pdf->Cell(40, 6, utf8_decode('Activo'), 1, 0, 'C', 1);
     $pdf->Cell(110, 6, utf8_decode('Descripción'), 1, 0, 'C', 1);
     $pdf->Cell(40, 6, utf8_decode('Fecha y hora'), 1, 0, 'C', 1);
 
     $pdf->Ln(10);
-    require_once "../modelos/Maquinarias.php";
-    $maquinarias = new Maquinaria();
+    require_once "../modelos/Activos.php";
+    $activos = new Activo();
 
     $idusuario = $_SESSION["idusuario"];
     $cargo = $_SESSION["cargo"];
 
     // if ($cargo == "superadmin") {
-      $rspta = $maquinarias->listar();
+      $rspta = $activos->listar();
     // } else {
-      // $rspta = $maquinarias->listarPorUsuario($idusuario);
+      // $rspta = $activos->listarPorUsuario($idusuario);
     // }
 
     $pdf->SetWidths(array(40, 110, 40));

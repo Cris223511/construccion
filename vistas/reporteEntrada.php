@@ -49,6 +49,10 @@ if (!isset($_SESSION["nombre"])) {
             tbody td:nth-child(12) {
                 white-space: nowrap !important;
             }
+
+            td {
+                height: 30.84px !important;
+            }
         </style>
         <div class="content-wrapper">
             <section class="content">
@@ -59,42 +63,29 @@ if (!isset($_SESSION["nombre"])) {
                                 <h1 class="box-title">Reporte de entradas generales</h1>
                                 <div class="box-tools pull-right"></div>
                                 <div class="panel-body table-responsive listadoregistros" style="overflow: visible; padding-left: 0px; padding-right: 0px; padding-bottom: 0px;">
-                                    <div class="form-group col-lg-3 col-md-3 col-sm-4 col-xs-12" style="padding: 5px; margin: 0px;">
+                                    <div class="form-group col-lg-4 col-md-4 col-sm-6 col-xs-12" style="padding: 5px; margin: 0px;">
                                         <label>Fecha Inicial:</label>
                                         <input type="date" class="form-control" name="fecha_inicio" id="fecha_inicio">
                                     </div>
-                                    <div class="form-group col-lg-3 col-md-3 col-sm-4 col-xs-12" style="padding: 5px; margin: 0px;">
+                                    <div class="form-group col-lg-4 col-md-4 col-sm-6 col-xs-12" style="padding: 5px; margin: 0px;">
                                         <label>Fecha Final:</label>
                                         <input type="date" class="form-control" name="fecha_fin" id="fecha_fin">
                                     </div>
-                                    <div class="form-group col-lg-3 col-md-3 col-sm-4 col-xs-12" style="padding: 5px; margin: 0px;">
-                                        <label>N° de documento:</label>
+                                    <div class="form-group col-lg-4 col-md-4 col-sm-6 col-xs-12" style="padding: 5px; margin: 0px;">
+                                        <label>N° documento entrada:</label>
                                         <input type="number" class="form-control" name="documentoBuscar" id="documentoBuscar" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="20" placeholder="Ingrese el N° de documento." required>
                                     </div>
-                                    <div class="form-group col-lg-3 col-md-3 col-sm-4 col-xs-12" style="padding: 5px; margin: 0px;">
+                                    <div class="form-group col-lg-4 col-md-4 col-sm-6 col-xs-12" style="padding: 5px; margin: 0px;">
                                         <label>Local:</label>
                                         <select id="localBuscar" name="localBuscar" class="form-control selectpicker" data-live-search="true" data-size="5">
                                         </select>
                                     </div>
-                                    <div class="form-group col-lg-3 col-md-3 col-sm-4 col-xs-12" style="padding: 5px; margin: 0px;">
+                                    <div class="form-group col-lg-4 col-md-4 col-sm-6 col-xs-12" style="padding: 5px; margin: 0px;">
                                         <label>Usuario:</label>
                                         <select id="usuarioBuscar" name="usuarioBuscar" class="form-control selectpicker" data-live-search="true" data-size="5">
                                         </select>
                                     </div>
-                                    <div class="form-group col-lg-3 col-md-3 col-sm-4 col-xs-12" style="padding: 5px; margin: 0px;">
-                                        <label>Estado:</label>
-                                        <select id="estadoBuscar" name="estadoBuscar" class="form-control selectpicker" data-size="5">
-                                            <option value="">- Seleccione -</option>
-                                            <option value="activado">ACTIVADO</option>
-                                            <option value="desactivado">DESACTIVADO</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group col-lg-3 col-md-3 col-sm-4 col-xs-12" style="padding: 5px; margin: 0px;">
-                                        <label>Proveedor:</label>
-                                        <select id="proveedorBuscar" name="proveedorBuscar" class="form-control selectpicker" data-live-search="true" data-size="5">
-                                        </select>
-                                    </div>
-                                    <div class="col-lg-3 col-md-3 col-sm-8 col-xs-12" style="padding: 5px; margin: 0px;">
+                                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12" style="padding: 5px; margin: 0px;">
                                         <label id="labelCustom">ㅤ</label>
                                         <div style="display: flex; gap: 10px;">
                                             <button style="width: 100%;" class="btn btn-bcp" onclick="buscar()">Buscar</button>
@@ -107,30 +98,32 @@ if (!isset($_SESSION["nombre"])) {
                                 <div class="table-responsive" style="padding: 8px !important; padding: 20px !important; background-color: white;">
                                     <table id="tbllistado" class="table table-striped table-bordered table-condensed table-hover w-100" style="width: 100% !important">
                                         <thead>
-                                            <th>Opciones</th>
-                                            <th style="white-space: nowrap;">Fecha y hora</th>
+                                            <th style="white-space: nowrap;">Imagen</th>
+                                            <th>Nombre producto</th>
+                                            <th>Código producto</th>
                                             <th>Ubicación del local</th>
-                                            <th style="white-space: nowrap;">N° de documento</th>
-                                            <th>Total compra</th>
-                                            <th>Tipo</th>
-                                            <th>Proveedor</th>
+                                            <th>Cantidad entrada</th>
+                                            <th>Stock actual</th>
+                                            <th>Precio compra unitario</th>
+                                            <th>N° documento entrada</th>
                                             <th style="white-space: nowrap;">Agregado por</th>
                                             <th>Cargo</th>
-                                            <th>Estado</th>
+                                            <th style="white-space: nowrap;">Fecha de entrada</th>
                                         </thead>
                                         <tbody>
                                         </tbody>
                                         <tfoot>
-                                            <th>Opciones</th>
-                                            <th>Fecha y hora</th>
+                                            <th>Imagen</th>
+                                            <th>Nombre producto</th>
+                                            <th>Código producto</th>
                                             <th>Ubicación del local</th>
-                                            <th>N° de documento</th>
-                                            <th>Total compra</th>
-                                            <th>Tipo</th>
-                                            <th>Proveedor</th>
+                                            <th>Cantidad entrada</th>
+                                            <th>Stock actual</th>
+                                            <th>Precio compra unitario</th>
+                                            <th>N° documento entrada</th>
                                             <th>Agregado por</th>
                                             <th>Cargo</th>
-                                            <th>Estado</th>
+                                            <th>Fecha de entrada</th>
                                         </tfoot>
                                     </table>
                                 </div>

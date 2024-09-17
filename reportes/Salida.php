@@ -313,7 +313,7 @@ class PDF_Invoice extends FPDF
 		if ($cliente == "") {
 			$this->MultiCell(60, 14, "TIPO: SIN REGISTRAR");
 		} else {
-			$this->MultiCell(60, 14, "TIPO: MAQUINARIA");
+			$this->MultiCell(60, 14, "TIPO: ACTIVO");
 		}
 
 		$this->SetXY($r1, $y1 + 5);
@@ -394,7 +394,7 @@ class PDF_Invoice extends FPDF
 		$r1  = 10;
 		$r2  = $this->w - ($r1 * 2);
 		$y1  = 79;
-		$y2  = $this->h - 50 - $y1;
+		$y2  = $this->h - 61 - $y1;
 		$this->SetXY($r1, $y1);
 		$this->Rect($r1, $y1, $r2, $y2, "D");
 		$this->Line($r1, $y1 + 6, $r1 + $r2, $y1 + 6);
@@ -516,29 +516,53 @@ class PDF_Invoice extends FPDF
 		//$this->Cell(6,0, "T.V.A. :");
 	}
 
-	function addCadreEurosFrancs($impuesto)
+	function addCadreEurosFrancs()
 	{
 		$r1  = $this->w - 75;
 		$r2  = $r1 + 65;
-		$y1  = $this->h - 40;
+		$y1  = $this->h - 50;
 		$y2  = $y1 + 20;
-		$this->RoundedRect($r1, $y1, ($r2 - $r1), ($y2 - $y1), 2.5, 'D');
-		$this->Line($r1 + 28,  $y1, $r1 + 28, $y2); // avant EUROS
-		//$this->Line( $r1+20, $y1+4, $r2, $y1+4); // Sous Euros & Francs
-		//$this->Line( $r1+38,  $y1, $r1+38, $y2); // Entre Euros & Francs
+		$this->RoundedRect($r1 + 33, $y1 - 5, ($r2 - $r1) - 33, ($y2 - $y1) - 5, 2.5, 'D');
 		$this->SetFont("Arial", "B", 8);
-		$this->SetXY($r1 + 34, $y1 + 1);
-		$this->Cell(15, 4, "TOTALES", 0, 0, "C");
+		$this->SetXY($r1 + 42, $y1 - 3);
+		$this->Cell(15, 4, "CANTIDAD TOTAL", 0, 0, "C");
 		$this->SetFont("Arial", "", 8);
-		//$this->SetXY( $r1+42, $y1 );
-		//$this->Cell(15,4, "FRANCS", 0, 0, "C");
-		$this->SetFont("Arial", "B", 6);
-		$this->SetXY($r1 + 4, $y1 + 5);
-		$this->Cell(20, 4, "OPERACION GRAVADA", 0, 0, "C");
-		$this->SetXY($r1 + 4, $y1 + 10);
-		$this->Cell(20, 4, $impuesto, 0, 0, "C");
-		$this->SetXY($r1 + 4, $y1 + 15);
-		$this->Cell(20, 4, "TOTAL A PAGAR", 0, 0, "C");
+	}
+
+	function firma1()
+	{
+		$r1  = $this->w - 190;
+		$r2  = $r1 + 39;
+		$y1  = 243;
+		$mid = $y1 + (16 / 2);
+		$this->Line($r1 - 10, $mid + 5, $r2 + 10, $mid + 5);
+		$this->SetXY($r1 - 4.5 + ($r2 - $r1) / 2, $y1 + 15);
+		$this->SetFont("Arial", "B", 8.5);
+		$this->Cell(10, 5, utf8_decode("RECIBIDO POR"), 0, 0, "C");
+		$this->SetXY($r1 - 30 + ($r2 - $r1) / 2, $y1 + 22);
+		$this->SetFont("Arial", "B", 8.5);
+		$this->Cell(10, 5, mb_strtoupper(utf8_decode("NOMBRES:")), 0, 0, "L");
+		$this->SetXY($r1 - 30 + ($r2 - $r1) / 2, $y1 + 28);
+		$this->SetFont("Arial", "B", 8.5);
+		$this->Cell(10, 5, "DNI O RUC:", 0, 0, "L");
+	}
+
+	function firma2()
+	{
+		$r1  = $this->w - 100;
+		$r2  = $r1 + 39;
+		$y1  = 243;
+		$mid = $y1 + (16 / 2);
+		$this->Line($r1 - 10, $mid + 5, $r2 + 10, $mid + 5);
+		$this->SetXY($r1 - 4.5 + ($r2 - $r1) / 2, $y1 + 15);
+		$this->SetFont("Arial", "B", 8.5);
+		$this->Cell(10, 5, utf8_decode("ENTREGADO POR"), 0, 0, "C");
+		$this->SetXY($r1 - 30 + ($r2 - $r1) / 2, $y1 + 22);
+		$this->SetFont("Arial", "B", 8.5);
+		$this->Cell(10, 5, mb_strtoupper(utf8_decode("NOMBRES:")), 0, 0, "L");
+		$this->SetXY($r1 - 30 + ($r2 - $r1) / 2, $y1 + 28);
+		$this->SetFont("Arial", "B", 8.5);
+		$this->Cell(10, 5, "DNI O RUC:", 0, 0, "L");
 	}
 
 	// remplit les cadres TVA / Totaux et la remarque
@@ -560,20 +584,16 @@ class PDF_Invoice extends FPDF
 	// invoice = array( "px_unit" => value,
 	//                  "qte"     => qte,
 	//                  "tva"     => code_tva );
-	function addTVAs($igv, $total, $moneda)
+	function addTVAs($total)
 	{
 		$this->SetFont('Arial', '', 8);
 
 		$re  = $this->w - 30;
 		$rf  = $this->w - 29;
-		$y1  = $this->h - 40;
+		$y1  = $this->h - 50;
 		$this->SetFont("Arial", "", 8);
-		$this->SetXY($re, $y1 + 5);
-		$this->Cell(17, 4, $moneda . sprintf("%0.2F", $total - ($total * $igv / ($igv + 100))), '', '', 'R');
-		$this->SetXY($re, $y1 + 10);
-		$this->Cell(17, 4, $moneda . sprintf("%0.2F", ($total * $igv / ($igv + 100))), '', '', 'R');
-		$this->SetXY($re, $y1 + 14.8);
-		$this->Cell(17, 4, $moneda . sprintf("%0.2F", $total), '', '', 'R');
+		$this->SetXY($re - 4.5, $y1 + 3);
+		$this->Cell(17, 4, sprintf("%0.2F", ($total)), '', '', 'C');
 	}
 
 	// add a watermark (temporary estimate, DUPLICATA...)

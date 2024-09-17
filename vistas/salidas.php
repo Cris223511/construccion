@@ -94,7 +94,7 @@ if (!isset($_SESSION["nombre"])) {
                       <th style="white-space: nowrap;">Fecha y hora</th>
                       <th>Ubicación del local</th>
                       <th style="white-space: nowrap;">N° de documento</th>
-                      <th>Total compra</th>
+                      <th>Cantidad salidas</th>
                       <th>Tipo</th>
                       <th>Tipo Movimiento</th>
                       <th style="white-space: nowrap;">Autorizado por</th>
@@ -110,7 +110,7 @@ if (!isset($_SESSION["nombre"])) {
                       <th>Fecha y hora</th>
                       <th>Ubicación del local</th>
                       <th>N° de documento</th>
-                      <th>Total compra</th>
+                      <th>Cantidad salidas</th>
                       <th>Tipo</th>
                       <th>Tipo Movimiento</th>
                       <th>Autorizado por</th>
@@ -151,23 +151,23 @@ if (!isset($_SESSION["nombre"])) {
                     </div>
                     <div class="form-group col-lg-3 col-md-3 col-sm-6">
                       <label>N° de documento(*):</label>
-                      <input type="text" class="form-control codigo" id="cod_1" maxlength="5" placeholder="Inicial del N° de documento de la salida." required oninput="onlyLetters()" onblur="convertirMayus()">
+                      <input type="text" class="form-control codigo" id="cod_1" maxlength="10" placeholder="Inicial del N° de documento de la salida." required oninput="onlyLetters()" onblur="convertirMayus()">
                     </div>
                     <div class="form-group col-lg-3 col-md-3 col-sm-6">
                       <label id="label2">ㅤㅤ</label>
-                      <input type="text" class="form-control codigo" id="cod_2" maxlength="5" placeholder="N° de documento de la salida." oninput="onlyNumbersAndMaxLenght(this)" onblur="formatearNumero(this)" required />
+                      <input type="text" class="form-control codigo" id="cod_2" maxlength="10" placeholder="N° de documento de la salida." oninput="onlyNumbersAndMaxLenght(this)" onblur="formatearNumero(this)" required />
                     </div>
                     <div class="form-group col-lg-6 col-md-6 col-sm-12">
                       <label>Tipo de movimiento:</label>
                       <select id="tipo_movimiento" name="tipo_movimiento" class="form-control selectpicker" onchange="evaluarMetodo()">
                         <option value="">- Seleccione -</option>
                         <option value="personal">Personal</option>
-                        <option value="maquinaria">Maquinaria</option>
+                        <option value="activo">Activo</option>
                       </select>
                     </div>
-                    <div class="form-group col-lg-6 col-md-6 col-sm-12" id="selectMaquinaria">
-                      <label>Maquinaria:</label>
-                      <select id="idmaquinaria" name="idmaquinaria" class="form-control selectpicker" data-live-search="true" data-size="5">
+                    <div class="form-group col-lg-6 col-md-6 col-sm-12" id="selectActivo">
+                      <label>Activo:</label>
+                      <select id="idactivo" name="idactivo" class="form-control selectpicker" data-live-search="true" data-size="5">
                         <option value="">- Seleccione -</option>
                       </select>
                     </div>
@@ -503,19 +503,19 @@ if (!isset($_SESSION["nombre"])) {
     </div>
     <!-- Fin modal 4 -->
 
-    <!-- Form maquinarias -->
-    <form name="formularioMaquinaria" id="formularioMaquinaria" method="POST" style="display: none;">
+    <!-- Form activos -->
+    <form name="formularioActivo" id="formularioActivo" method="POST" style="display: none;">
       <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
         <label>Nombre(*):</label>
-        <input type="hidden" name="idmaquinaria" id="idmaquinaria2">
-        <input type="text" class="form-control" name="titulo" id="titulo2" maxlength="50" placeholder="Nombre de la maquinaria." required>
+        <input type="hidden" name="idactivo" id="idactivo2">
+        <input type="text" class="form-control" name="titulo" id="titulo2" maxlength="50" placeholder="Nombre del activo." required>
       </div>
       <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
         <label>Descripción:</label>
         <input type="text" class="form-control" name="descripcion" id="descripcion2" maxlength="10000" placeholder="Descripción">
       </div>
     </form>
-    <!-- Fin form maquinarias -->
+    <!-- Fin form activos -->
 
     <!-- Form tipos -->
     <form name="formularioTipo" id="formularioTipo" method="POST" style="display: none;">

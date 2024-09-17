@@ -60,30 +60,16 @@ if (!isset($_SESSION["nombre"])) {
                     <div class="col-md-12">
                         <div class="box">
                             <div class="box-header with-border">
-                                <h1 class="box-title">Reporte de salidas generales</h1>
+                                <h1 class="box-title">Reporte de comparaciones de entradas y salidas</h1>
                                 <div class="box-tools pull-right"></div>
                                 <div class="panel-body table-responsive listadoregistros" style="overflow: visible; padding-left: 0px; padding-right: 0px; padding-bottom: 0px;">
-                                    <div class="form-group col-lg-4 col-md-4 col-sm-6 col-xs-12" style="padding: 5px; margin: 0px;">
+                                    <div class="form-group col-lg-4 col-md-4 col-sm-4 col-xs-12" style="padding: 5px; margin: 0px;">
                                         <label>Fecha Inicial:</label>
                                         <input type="date" class="form-control" name="fecha_inicio" id="fecha_inicio">
                                     </div>
-                                    <div class="form-group col-lg-4 col-md-4 col-sm-6 col-xs-12" style="padding: 5px; margin: 0px;">
+                                    <div class="form-group col-lg-4 col-md-4 col-sm-4 col-xs-12" style="padding: 5px; margin: 0px;">
                                         <label>Fecha Final:</label>
                                         <input type="date" class="form-control" name="fecha_fin" id="fecha_fin">
-                                    </div>
-                                    <div class="form-group col-lg-4 col-md-4 col-sm-6 col-xs-12" style="padding: 5px; margin: 0px;">
-                                        <label>N° documento salida:</label>
-                                        <input type="number" class="form-control" name="documentoBuscar" id="documentoBuscar" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="20" placeholder="Ingrese el N° de documento." required>
-                                    </div>
-                                    <div class="form-group col-lg-4 col-md-4 col-sm-6 col-xs-12" style="padding: 5px; margin: 0px;">
-                                        <label>Local:</label>
-                                        <select id="localBuscar" name="localBuscar" class="form-control selectpicker" data-live-search="true" data-size="5">
-                                        </select>
-                                    </div>
-                                    <div class="form-group col-lg-4 col-md-4 col-sm-4 col-xs-12" style="padding: 5px; margin: 0px;">
-                                        <label>Usuario:</label>
-                                        <select id="usuarioBuscar" name="usuarioBuscar" class="form-control selectpicker" data-live-search="true" data-size="5">
-                                        </select>
                                     </div>
                                     <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12" style="padding: 5px; margin: 0px;">
                                         <label id="labelCustom">ㅤ</label>
@@ -101,14 +87,9 @@ if (!isset($_SESSION["nombre"])) {
                                             <th style="white-space: nowrap;">Imagen</th>
                                             <th>Nombre producto</th>
                                             <th>Código producto</th>
-                                            <th>Ubicación del local</th>
+                                            <th>Cantidad entrada</th>
                                             <th>Cantidad salida</th>
                                             <th>Stock actual</th>
-                                            <th>Precio compra unitario</th>
-                                            <th>N° documento salida</th>
-                                            <th style="white-space: nowrap;">Agregado por</th>
-                                            <th>Cargo</th>
-                                            <th style="white-space: nowrap;">Fecha de salida</th>
                                         </thead>
                                         <tbody>
                                         </tbody>
@@ -116,14 +97,9 @@ if (!isset($_SESSION["nombre"])) {
                                             <th>Imagen</th>
                                             <th>Nombre producto</th>
                                             <th>Código producto</th>
-                                            <th>Ubicación del local</th>
+                                            <th>Cantidad entrada</th>
                                             <th>Cantidad salida</th>
                                             <th>Stock actual</th>
-                                            <th>Precio compra unitario</th>
-                                            <th>N° documento salida</th>
-                                            <th>Agregado por</th>
-                                            <th>Cargo</th>
-                                            <th>Fecha de salida</th>
                                         </tfoot>
                                     </table>
                                 </div>
@@ -140,7 +116,7 @@ if (!isset($_SESSION["nombre"])) {
     }
     require 'footer.php';
     ?>
-    <script type="text/javascript" src="scripts/reporteSalida.js"></script>
+    <script type="text/javascript" src="scripts/reporteComparacion.js"></script>
 <?php
 }
 ob_end_flush();

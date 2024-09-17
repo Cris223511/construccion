@@ -92,14 +92,18 @@ if (!isset($_SESSION["nombre"])) {
       $y   += $size + 2;
     }
 
-    $formatterES = new NumberFormatter("es-ES", NumberFormatter::SPELLOUT);
-    $izquierda = intval(floor($regv->total_compra));
-    $derecha = intval(($regv->total_compra - floor($regv->total_compra)) * 100);
+    // $formatterES = new NumberFormatter("es-ES", NumberFormatter::SPELLOUT);
+    // $izquierda = intval(floor($regv->total_compra));
+    // $derecha = intval(($regv->total_compra - floor($regv->total_compra)) * 100);
 
-    $texto = $formatterES->format($izquierda) . " NUEVOS SOLES CON " . $formatterES->format($derecha) . " CÉNTIMOS";
-    $textoEnMayusculas = mb_strtoupper($texto, 'UTF-8');
+    // $texto = $formatterES->format($izquierda) . " NUEVOS SOLES CON " . $formatterES->format($derecha) . " CÉNTIMOS";
+    // $textoEnMayusculas = mb_strtoupper($texto, 'UTF-8');
 
-    $pdf->addCadreTVAs("---" . utf8_decode($textoEnMayusculas));
+    // $pdf->addCadreTVAs("---" . utf8_decode($textoEnMayusculas));
+
+    // Firmas
+    $pdf->firma1();
+    $pdf->firma2();
 
     //Mostramos el impuesto
     $pdf->addTVAs($regv->impuesto, $regv->total_compra, "S/ ");

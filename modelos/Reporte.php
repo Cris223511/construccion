@@ -8,58 +8,56 @@ class Reporte
 
     public function listarEntradas($condiciones = "")
     {
-        $sql = "SELECT DISTINCT
-                  e.identrada,
-                  e.idusuario,
+        $sql = "SELECT
+                  de.identrada,
+                  de.idarticulo,
+                  de.cantidad,
+                  de.precio_compra,
+                  a.nombre as nombre,
+				  a.stock as stock,
+				  a.imagen as imagen,
+				  a.codigo_producto as codigo_producto,
                   u.nombre as usuario,
-                  u.cargo as cargo,
                   u.cargo,
-                  lo.titulo as local,
-                  t.titulo as tipo,
-                  p.nombre as proveedor,
+				  al.titulo as local,
                   e.codigo,
                   e.ubicacion,
-                  e.descripcion,
-                  DATE_FORMAT(e.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,
-                  e.total_compra,
-                  e.impuesto,
-                  e.estado 
-                FROM entradas e
-                LEFT JOIN locales lo ON e.idlocal = lo.idlocal
-                LEFT JOIN tipos t ON e.idtipo = t.idtipo
-                LEFT JOIN proveedores p ON e.idproveedor = p.idproveedor
+                  DATE_FORMAT(e.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha
+                FROM detalle_entrada de
+				LEFT JOIN articulo a ON de.idarticulo = a.idarticulo
+				LEFT JOIN entradas e ON de.identrada = e.identrada
+				LEFT JOIN locales al ON a.idlocal = al.idlocal
                 LEFT JOIN usuario u ON e.idusuario = u.idusuario
                 $condiciones
-                ORDER BY e.identrada DESC";
+                ORDER BY de.identrada DESC";
         return ejecutarConsulta($sql);
     }
 
     public function listarEntradasLocal($idlocal, $condiciones = "")
     {
-        $sql = "SELECT DISTINCT
-                  e.identrada,
-                  e.idusuario,
+        $sql = "SELECT
+                  de.identrada,
+                  de.idarticulo,
+                  de.cantidad,
+                  de.precio_compra,
+                  a.nombre as nombre,
+				  a.stock as stock,
+				  a.imagen as imagen,
+				  a.codigo_producto as codigo_producto,
                   u.nombre as usuario,
-                  u.cargo as cargo,
                   u.cargo,
-                  lo.titulo as local,
-                  t.titulo as tipo,
-                  p.nombre as proveedor,
+				  al.titulo as local,
                   e.codigo,
                   e.ubicacion,
-                  e.descripcion,
-                  DATE_FORMAT(e.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,
-                  e.total_compra,
-                  e.impuesto,
-                  e.estado 
-                FROM entradas e
-                LEFT JOIN locales lo ON e.idlocal = lo.idlocal
-                LEFT JOIN tipos t ON e.idtipo = t.idtipo
-                LEFT JOIN proveedores p ON e.idproveedor = p.idproveedor
+                  DATE_FORMAT(e.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha
+                FROM detalle_entrada de
+				LEFT JOIN articulo a ON de.idarticulo = a.idarticulo
+				LEFT JOIN entradas e ON de.identrada = e.identrada
+				LEFT JOIN locales al ON a.idlocal = al.idlocal
                 LEFT JOIN usuario u ON e.idusuario = u.idusuario
                 $condiciones
                 AND c.idlocal = '$idlocal'
-                ORDER BY e.identrada DESC";
+                ORDER BY de.identrada DESC";
         return ejecutarConsulta($sql);
     }
 
@@ -68,65 +66,113 @@ class Reporte
     public function listarSalidas($condiciones = "")
     {
         $sql = "SELECT
-                  s.idsalida,
-                  s.idusuario,
+                  ds.idsalida,
+                  ds.idarticulo,
+                  ds.cantidad,
+                  ds.precio_compra,
+                  a.nombre as nombre,
+				  a.stock as stock,
+				  a.imagen as imagen,
+				  a.codigo_producto as codigo_producto,
                   u.nombre as usuario,
-                  u.cargo as cargo,
-                  lo.titulo as local,
-                  t.titulo as tipo,
-                  ma.titulo as maquinaria,
-                  pea.nombre AS autorizado,
-                  per.nombre AS recibido,
+                  u.cargo,
+				  al.titulo as local,
                   s.codigo,
-                  s.tipo_movimiento,
                   s.ubicacion,
-                  s.descripcion,
-                  s.descripcion,
-                  DATE_FORMAT(s.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,
-                  s.total_compra,
-                  s.impuesto,
-                  s.estado FROM salidas s
-                LEFT JOIN locales lo ON s.idlocal=lo.idlocal
-                LEFT JOIN tipos t ON s.idtipo=t.idtipo
-                LEFT JOIN maquinarias ma ON s.idmaquinaria=ma.idmaquinaria
-                LEFT JOIN personales pea ON s.idautorizado=pea.idpersonal
-                LEFT JOIN personales per ON s.idrecibido=per.idpersonal
-                LEFT JOIN usuario u ON s.idusuario=u.idusuario
+                  DATE_FORMAT(s.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha
+                FROM detalle_salida ds
+				LEFT JOIN articulo a ON ds.idarticulo = a.idarticulo
+				LEFT JOIN salidas s ON ds.idsalida = s.idsalida
+				LEFT JOIN locales al ON a.idlocal = al.idlocal
+                LEFT JOIN usuario u ON s.idusuario = u.idusuario
                 $condiciones
-                ORDER BY s.idsalida DESC";
+                ORDER BY ds.idsalida DESC";
         return ejecutarConsulta($sql);
     }
 
     public function listarSalidasLocal($idlocal, $condiciones = "")
     {
         $sql = "SELECT
-                  s.idsalida,
-                  s.idusuario,
+                  ds.idsalida,
+                  ds.idarticulo,
+                  ds.cantidad,
+                  ds.precio_compra,
+                  a.nombre as nombre,
+				  a.stock as stock,
+				  a.imagen as imagen,
+				  a.codigo_producto as codigo_producto,
                   u.nombre as usuario,
-                  u.cargo as cargo,
-                  lo.titulo as local,
-                  t.titulo as tipo,
-                  ma.titulo as maquinaria,
-                  pea.nombre AS autorizado,
-                  per.nombre AS recibido,
+                  u.cargo,
+				  al.titulo as local,
                   s.codigo,
-                  s.tipo_movimiento,
                   s.ubicacion,
-                  s.descripcion,
-                  s.descripcion,
-                  DATE_FORMAT(s.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,
-                  s.total_compra,
-                  s.impuesto,
-                  s.estado FROM salidas s
-                LEFT JOIN locales lo ON s.idlocal=lo.idlocal
-                LEFT JOIN tipos t ON s.idtipo=t.idtipo
-                LEFT JOIN maquinarias ma ON s.idmaquinaria=ma.idmaquinaria
-                LEFT JOIN personales pea ON s.idautorizado=pea.idpersonal
-                LEFT JOIN personales per ON s.idrecibido=per.idpersonal
-                LEFT JOIN usuario u ON s.idusuario=u.idusuario
+                  DATE_FORMAT(s.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha
+                FROM detalle_salida ds
+				LEFT JOIN articulo a ON ds.idarticulo = a.idarticulo
+				LEFT JOIN salidas s ON ds.idsalida = s.idsalida
+				LEFT JOIN locales al ON a.idlocal = al.idlocal
+                LEFT JOIN usuario u ON s.idusuario = u.idusuario
                 $condiciones
                 AND c.idlocal = '$idlocal'
-                ORDER BY s.idsalida DESC";
+                ORDER BY ds.idsalida DESC";
+        return ejecutarConsulta($sql);
+    }
+
+    /* ======================= REPORTE DE COMBINACIONES ======================= */
+
+    public function listarCombinaciones($condiciones = "")
+    {
+        $sql = "SELECT 
+                  a.idarticulo,
+                  a.nombre AS nombre,
+                  a.codigo_producto,
+                  a.stock AS stock,
+                  a.imagen,
+                  SUM(de.cantidad) AS cantidad_entrada,
+                  SUM(ds.cantidad) AS cantidad_salida,
+                  e.codigo AS codigo_entrada,
+                  s.codigo AS codigo_salida,
+                  e.fecha_hora AS fecha_entrada,
+                  s.fecha_hora AS fecha_salida
+                FROM articulo a
+                LEFT JOIN detalle_entrada de ON a.idarticulo = de.idarticulo
+                LEFT JOIN entradas e ON de.identrada = e.identrada
+                LEFT JOIN detalle_salida ds ON a.idarticulo = ds.idarticulo
+                LEFT JOIN salidas s ON ds.idsalida = s.idsalida
+                $condiciones
+                GROUP BY a.idarticulo
+                HAVING cantidad_entrada IS NOT NULL AND cantidad_salida IS NOT NULL
+                ORDER BY a.idarticulo ASC";
+
+        return ejecutarConsulta($sql);
+    }
+
+    public function listarCombinacionesLocal($idlocal, $condiciones = "")
+    {
+        $sql = "SELECT 
+                  a.idarticulo,
+                  a.nombre AS nombre,
+                  a.codigo_producto,
+                  a.stock AS stock,
+                  a.imagen,
+                  SUM(de.cantidad) AS cantidad_entrada,
+                  SUM(ds.cantidad) AS cantidad_salida,
+                  e.codigo AS codigo_entrada,
+                  s.codigo AS codigo_salida,
+                  e.fecha_hora AS fecha_entrada,
+                  s.fecha_hora AS fecha_salida
+                FROM articulo a
+                LEFT JOIN detalle_entrada de ON a.idarticulo = de.idarticulo
+                LEFT JOIN entradas e ON de.identrada = e.identrada
+                LEFT JOIN detalle_salida ds ON a.idarticulo = ds.idarticulo
+                LEFT JOIN salidas s ON ds.idsalida = s.idsalida
+                LEFT JOIN locales l ON a.idlocal = l.idlocal
+                $condiciones
+                AND l.idlocal = '$idlocal'
+                GROUP BY a.idarticulo
+                HAVING cantidad_entrada IS NOT NULL AND cantidad_salida IS NOT NULL
+                ORDER BY a.idarticulo ASC";
+
         return ejecutarConsulta($sql);
     }
 }
