@@ -58,10 +58,6 @@ if (!isset($_SESSION["nombre"])) {
         }
       }
 
-      tbody td {
-        white-space: nowrap !important;
-      }
-
       #camera video {
         width: 250px;
         height: auto;
@@ -146,7 +142,7 @@ if (!isset($_SESSION["nombre"])) {
                     <thead>
                       <th>Opciones</th>
                       <th>Imagen</th>
-                      <th>Nombre</th>
+                      <th style="width: 20%; min-width: 260px;">Nombre</th>
                       <th style="white-space: nowrap;">U. medida</th>
                       <th style="width: 20%; min-width: 300px;">Descripción</th>
                       <th>Categoría</th>
@@ -267,10 +263,6 @@ if (!isset($_SESSION["nombre"])) {
                         <label>Imagen:</label>
                         <input type="file" class="form-control" name="imagen" id="imagen" accept="image/x-png,image/gif,image/jpeg">
                         <input type="hidden" name="imagenactual" id="imagenactual">
-                      </div>
-                      <div class="form-group col-lg-6 col-md-12">
-                        <label>Código(*):</label>
-                        <input type="text" class="form-control" name="codigo_producto" id="codigo_producto" maxlength="20" placeholder="Ingrese el código del producto." oninput="convertirMayus(this)" required>
                       </div>
                       <div class="form-group col-lg-12 col-md-12">
                         <label>Descripción:</label>

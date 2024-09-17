@@ -58,10 +58,6 @@ if (!isset($_SESSION["nombre"])) {
         }
       }
 
-      tbody td {
-        white-space: nowrap !important;
-      }
-
       #camera video {
         width: 250px;
         height: auto;
@@ -146,7 +142,7 @@ if (!isset($_SESSION["nombre"])) {
                     <thead>
                       <th>Opciones</th>
                       <th>Imagen</th>
-                      <th>Nombre</th>
+                      <th style="width: 20%; min-width: 260px;">Nombre</th>
                       <th style="white-space: nowrap;">U. medida</th>
                       <th style="width: 20%; min-width: 300px;">Descripción</th>
                       <th>Categoría</th>

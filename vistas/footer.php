@@ -145,6 +145,12 @@
         });
       }
 
+      $(document).ajaxSuccess(function(event, xhr, settings) {
+        if (settings.url.includes("op=listar") || settings.url.includes("op=listarDetalle")) {
+          nowrapCells();
+        }
+      });
+
       function changeValue(dropdown) {
         var option = dropdown.options[dropdown.selectedIndex].value;
 

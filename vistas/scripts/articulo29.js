@@ -338,7 +338,7 @@ function listar() {
 			"iDisplayLength": 5,//Paginación
 			"order": [],
 			"createdRow": function (row, data, dataIndex) {
-				$(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(3), td:eq(4), td:eq(5), td:eq(6), td:eq(7), td:eq(8), td:eq(9), td:eq(10), td:eq(11, td:eq(12), td:eq(13), td:eq(14), td:eq(15), td:eq(16), td:eq(17), td:eq(18), td:eq(19), td:eq(20), td:eq(21), td:eq(22)').addClass('nowrap-cell');
+				// $(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(3), td:eq(4), td:eq(5), td:eq(6), td:eq(7), td:eq(8), td:eq(9), td:eq(10), td:eq(11, td:eq(12), td:eq(13), td:eq(14), td:eq(15), td:eq(16), td:eq(17), td:eq(18), td:eq(19), td:eq(20), td:eq(21), td:eq(22)').addClass('nowrap-cell');
 			}
 		}).DataTable();
 }
@@ -596,7 +596,7 @@ function buscar(param) {
 			"iDisplayLength": 5,//Paginación
 			"order": [],
 			"createdRow": function (row, data, dataIndex) {
-				$(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(3), td:eq(4), td:eq(5), td:eq(6), td:eq(7), td:eq(8), td:eq(9), td:eq(10), td:eq(11, td:eq(12), td:eq(13), td:eq(14), td:eq(15), td:eq(16), td:eq(17), td:eq(18), td:eq(19), td:eq(20), td:eq(21), td:eq(22)').addClass('nowrap-cell');
+				// $(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(3), td:eq(4), td:eq(5), td:eq(6), td:eq(7), td:eq(8), td:eq(9), td:eq(10), td:eq(11, td:eq(12), td:eq(13), td:eq(14), td:eq(15), td:eq(16), td:eq(17), td:eq(18), td:eq(19), td:eq(20), td:eq(21), td:eq(22)').addClass('nowrap-cell');
 			}
 		}).DataTable();
 }
