@@ -13,6 +13,7 @@ function init() {
 		guardaryeditar2(e);
 	});
 
+	$("#imagenmuestra").hide();
 	$('#mPerfilUsuario').addClass("treeview active");
 	$('#lLocalesDisponibles').addClass("active");
 
@@ -125,7 +126,7 @@ function listar() {
 			"iDisplayLength": 5,
 			"order": [],
 			"createdRow": function (row, data, dataIndex) {
-				$(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(4), td:eq(5)').addClass('nowrap-cell');
+				// $(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(4), td:eq(5)').addClass('nowrap-cell');
 			}
 		}).DataTable();
 }
@@ -159,6 +160,10 @@ function guardaryeditar(e) {
 			mostrarform(false);
 			tabla.ajax.reload();
 			cargarLocalesDisponibles();
+
+			var idlocal = formData.get("idlocal");
+			actualizarInfoUsuario(idlocal);
+
 		}
 	});
 }
@@ -185,6 +190,23 @@ function guardaryeditar2(e) {
 	});
 }
 
+// función para actualizar la información del usuario en sesión en tiempo real
+function actualizarInfoUsuario(idlocal) {
+	$.ajax({
+		url: "../ajax/localesDisponibles.php?op=actualizarSession",
+		type: "POST",
+		data: { idlocal: idlocal },
+		dataType: 'json',
+		success: function (data) {
+			console.log(data);
+			if (data.local) {
+				// actualizar la imagen y el nombre del usuario en la cabecera
+				$('.user-menu .local').html('<strong> Local: ' + data.local + '</strong>');
+			}
+		}
+	});
+}
+
 function mostrar(idlocal) {
 	$.post("../ajax/localesDisponibles.php?op=mostrar", { idlocal: idlocal }, function (data, status) {
 		// console.log(data);
@@ -195,6 +217,9 @@ function mostrar(idlocal) {
 
 		$("#titulo").val(data.titulo);
 		$("#local_ruc").val(data.local_ruc);
+		$("#imagenmuestra").show();
+		$("#imagenmuestra").attr("src", "../files/locales/" + data.imagen);
+		$("#imagenactual").val(data.imagen);
 		$("#descripcion").val(data.descripcion);
 		$("#idlocal").val(data.idlocal);
 	})

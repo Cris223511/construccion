@@ -15,8 +15,6 @@ if (!isset($_SESSION["nombre"])) {
     $rspta = $perfil->mostrarReporte();
 
     //Establecemos los datos de la empresa
-    $logo = $rspta["imagen"];
-    $ext_logo = strtolower(pathinfo($rspta["imagen"], PATHINFO_EXTENSION));
     $empresa = $rspta["titulo"];
     $documento = ($rspta["ruc"] == '') ? 'Sin registrar.' : $rspta["ruc"];
     $direccion = ($rspta["direccion"] == '') ? 'Sin registrar.' : $rspta["direccion"];
@@ -28,6 +26,9 @@ if (!isset($_SESSION["nombre"])) {
     $rsptav = $salida->listarCabecera($_GET["id"]);
     $regv = $rsptav->fetch_object();
 
+    $logo = $regv->imagen_local;
+    $ext_logo = strtolower(pathinfo($regv->imagen_local, PATHINFO_EXTENSION));
+
     $pdf = new PDF_Invoice('P', 'mm', 'A4');
     $pdf->AddPage();
 
@@ -38,7 +39,7 @@ if (!isset($_SESSION["nombre"])) {
         utf8_decode("Teléfono: ") . $telefono . "\n" .
         "Email: " . $email . "\n" .
         utf8_decode("Local: ") . $regv->local . "\n",
-      '../files/logo_reportes/' . $logo,
+      '../files/locales/' . $logo,
       $ext_logo
     );
 

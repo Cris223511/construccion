@@ -7,11 +7,11 @@ class LocalDisponible
 	{
 	}
 
-	public function agregar($titulo, $local_ruc, $descripcion)
+	public function agregar($titulo, $local_ruc, $descripcion, $imagen)
 	{
 		date_default_timezone_set("America/Lima");
-		$sql = "INSERT INTO locales (idusuario, titulo, local_ruc, descripcion, fecha_hora, estado, eliminado)
-            VALUES (0,'$titulo','$local_ruc','$descripcion', SYSDATE(), 'activado', '0')";
+		$sql = "INSERT INTO locales (idusuario, titulo, local_ruc, descripcion, imagen, fecha_hora, estado, eliminado)
+            VALUES (0,'$titulo','$local_ruc','$descripcion','$imagen', SYSDATE(), 'activado', '0')";
 		return ejecutarConsulta($sql);
 	}
 
@@ -39,9 +39,9 @@ class LocalDisponible
 		return false;
 	}
 
-	public function editar($idlocal, $titulo, $local_ruc, $descripcion)
+	public function editar($idlocal, $titulo, $local_ruc, $descripcion, $imagen)
 	{
-		$sql = "UPDATE locales SET titulo='$titulo',local_ruc='$local_ruc',descripcion='$descripcion' WHERE idlocal='$idlocal'";
+		$sql = "UPDATE locales SET titulo='$titulo',local_ruc='$local_ruc',descripcion='$descripcion',imagen='$imagen' WHERE idlocal='$idlocal'";
 		return ejecutarConsulta($sql);
 	}
 
@@ -87,6 +87,7 @@ class LocalDisponible
 				  l.titulo,
 				  l.local_ruc,
 				  l.descripcion,
+				  l.imagen,
 				  DATE_FORMAT(l.fecha_hora, '%d-%m-%Y %H:%i:%s') AS fecha,
 				  l.estado
 				FROM locales l 
@@ -108,6 +109,7 @@ class LocalDisponible
 				  l.titulo,
 				  l.local_ruc,
 				  l.descripcion,
+				  l.imagen,
 				  DATE_FORMAT(l.fecha_hora, '%d-%m-%Y %H:%i:%s') AS fecha,
 				  l.estado
 				FROM locales l 

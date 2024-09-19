@@ -116,7 +116,7 @@ switch ($_GET["op"]) {
 		if (!isset($_SESSION["nombre"])) {
 			header("Location: ../vistas/login.html");
 		} else {
-			if ($_SESSION['perfilu'] == 1) {
+			if ($_SESSION['acceso'] == 1) {
 				$rspta = $usuario->mostrar($idusuario);
 				echo json_encode($rspta);
 			} else {
@@ -327,6 +327,7 @@ switch ($_GET["op"]) {
 			$_SESSION['idusuario'] = $fetch->idusuario;
 			$_SESSION['idlocal'] = $fetch->idlocal;
 			$_SESSION['local'] = $fetch->local;
+			$_SESSION['local_imagen'] = $fetch->local_imagen;
 			$_SESSION['nombre'] = $fetch->nombre;
 			$_SESSION['imagen'] = $fetch->imagen;
 			$_SESSION['login'] = $fetch->login;

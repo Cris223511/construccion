@@ -9,7 +9,7 @@ function init() {
 	$('#lConfUsuario').addClass("active");
 
 	// Cargamos los items al select "local principal"
-	$.post("../ajax/locales.php?op=selectLocalASC", function (data) {
+	$.post("../ajax/locales.php?op=selectLocales", function (data) {
 		// console.log(data);
 		objSelects = JSON.parse(data);
 		console.log(objSelects)

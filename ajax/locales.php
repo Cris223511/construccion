@@ -31,18 +31,43 @@ if (!isset($_SESSION["nombre"])) {
 		$titulo = isset($_POST["titulo"]) ? limpiarCadena($_POST["titulo"]) : "";
 		$local_ruc = isset($_POST["local_ruc"]) ? limpiarCadena($_POST["local_ruc"]) : "";
 		$descripcion = isset($_POST["descripcion"]) ? limpiarCadena($_POST["descripcion"]) : "";
+		$imagen = isset($_POST["imagen"]) ? limpiarCadena($_POST["imagen"]) : "";
 
 		switch ($_GET["op"]) {
 			case 'guardaryeditar':
+				if (!empty($_FILES['imagen']['name'])) {
+					$uploadDirectory = "../files/locales/";
+
+					$tempFile = $_FILES['imagen']['tmp_name'];
+					$fileExtension = strtolower(pathinfo($_FILES['imagen']['name'], PATHINFO_EXTENSION));
+					$newFileName = sprintf("%09d", rand(0, 999999999)) . '.' . $fileExtension;
+					$targetFile = $uploadDirectory . $newFileName;
+
+					// Verificar si es una imagen y mover el archivo
+					$allowedExtensions = array('jpg', 'jpeg', 'png');
+					if (in_array($fileExtension, $allowedExtensions) && move_uploaded_file($tempFile, $targetFile)) {
+						// El archivo se ha movido correctamente, ahora $newFileName contiene el nombre del archivo
+						$imagen = $newFileName;
+					} else {
+						// Error en la subida del archivo
+						echo "Error al subir la imagen.";
+						exit;
+					}
+				} else {
+					// No se ha seleccionado ninguna imagen
+					$imagen = $_POST["imagenactual"];
+				}
+
 				if (empty($idlocal)) {
 					$nombreExiste = $locales->verificarNombreExiste($titulo);
 					if ($nombreExiste) {
 						echo "El nombre del local ya existe.";
 					} else {
-						$rspta = $locales->agregar($idusuario, $titulo, $local_ruc, $descripcion);
+						$rspta = $locales->agregar($idusuario, $titulo, $local_ruc, $descripcion, $imagen);
 						echo $rspta ? "Local registrado" : "El local no se pudo registrar";
 						if ($rspta) {
 							$_SESSION['local'] = $titulo;
+							$_SESSION['local_imagen'] = $imagen;
 						}
 					}
 				} else {
@@ -50,10 +75,11 @@ if (!isset($_SESSION["nombre"])) {
 					if ($nombreExiste) {
 						echo "El nombre del local ya existe.";
 					} else {
-						$rspta = $locales->editar($idlocal, $titulo, $local_ruc, $descripcion);
-						echo $rspta ? "Local actualizado" : "El local no se pudo actualizar";
+						$rspta = $locales->editar($idlocal, $titulo, $local_ruc, $descripcion, $imagen);
+						echo $rspta ? "Local actualizado." : "El local no se pudo actualizar";
 						if ($rspta) {
 							$_SESSION['local'] = $titulo;
+							$_SESSION['local_imagen'] = $imagen;
 						}
 					}
 				}
@@ -116,11 +142,14 @@ if (!isset($_SESSION["nombre"])) {
 							'<button class="btn btn-bcp" style="margin-right: 3px; height: 35px;" onclick="mostrar2(' . $reg->idlocal . ')"><i class="fa fa-eye"></i></button>' .
 							'<a data-toggle="modal" href="#myModal"><button class="btn btn-bcp" style="margin-right: 3px; height: 35px;" onclick="trabajadores(' . $reg->idlocal . ',\'' . $reg->titulo . '\')"><i class="fa fa-user"></i></button></a>' .
 							'</div>') : ('<div style="display: flex; flex-wrap: nowrap; gap: 3px; justify-content: center;"><button class="btn btn-bcp" style="margin-right: 3px; height: 35px;" onclick="mostrar2(' . $reg->idlocal . ')"><i class="fa fa-eye"></i></button><a data-toggle="modal" href="#myModal"><button class="btn btn-bcp" style="margin-right: 3px; height: 35px;" onclick="trabajadores(' . $reg->idlocal . ',\'' . $reg->titulo . '\')"><i class="fa fa-user"></i></button></a></div>'),
-						"1" => $reg->titulo,
-						"2" => "N° " . $reg->local_ruc,
-						"3" => "<textarea type='text' class='form-control' rows='2' style='background-color: white !important; cursor: default; height: 60px !important;'' readonly>" . (($reg->descripcion == '') ? 'Sin registrar.' : $reg->descripcion) . "</textarea>",
-						"4" => $reg->fecha,
-						"5" => ($reg->estado == 'activado') ? '<span class="label bg-green">Activado</span>' :
+						"1" => '<a href="../files/locales/' . $reg->imagen . '" class="galleria-lightbox" style="z-index: 10000 !important;">
+									<img src="../files/locales/' . $reg->imagen . '" height="50px" width="50px" class="img-fluid">
+								</a>',
+						"2" => $reg->titulo,
+						"3" => "N° " . $reg->local_ruc,
+						"4" => "<textarea type='text' class='form-control' rows='2' style='background-color: white !important; cursor: default; height: 60px !important;'' readonly>" . (($reg->descripcion == '') ? 'Sin registrar.' : $reg->descripcion) . "</textarea>",
+						"5" => $reg->fecha,
+						"6" => ($reg->estado == 'activado') ? '<span class="label bg-green">Activado</span>' :
 							'<span class="label bg-red">Desactivado</span>'
 					);
 				}
@@ -208,7 +237,12 @@ if (!isset($_SESSION["nombre"])) {
 				break;
 
 			case 'selectLocales':
-				$rspta = $locales->listarActivosASC();
+				if ($cargo == "superadmin") {
+					$rspta = $locales->listarActivosASC();
+				} else {
+					$rspta = $locales->listarPorUsuarioActivosASC($idlocal_session);
+				}
+
 				$result = mysqli_fetch_all($rspta, MYSQLI_ASSOC);
 
 				$data = [];
@@ -235,7 +269,9 @@ if (!isset($_SESSION["nombre"])) {
 			case 'actualizarSession':
 				$info = array(
 					'local' => $_SESSION['local'],
+					'local_imagen' => $_SESSION['local_imagen'],
 				);
+
 				echo json_encode($info);
 				break;
 		}

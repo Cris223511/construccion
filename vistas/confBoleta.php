@@ -53,12 +53,6 @@ if (!isset($_SESSION["nombre"])) {
                       <label>Email:</label>
                       <input type="email" class="form-control" name="email" id="email" maxlength="50" placeholder="Ingrese el email.">
                     </div>
-                    <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                      <label>Logo:</label>
-                      <input type="file" class="form-control" name="imagen" id="imagen" accept="image/x-png,image/gif,image/jpeg">
-                      <input type="hidden" name="imagenactual" id="imagenactual"><br>
-                      <img src="" width="150px" height="150px" id="imagenmuestra">
-                    </div>
                     <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-bottom: 0;">
                       <button class="btn btn-bcp" type="submit" id="btnGuardar"><i class="fa fa-save"></i> Guardar</button>
                     </div>

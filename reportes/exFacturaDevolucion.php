@@ -16,8 +16,8 @@ if (!isset($_SESSION["nombre"])) {
     $rspta = $perfil->mostrarReporte();
 
     //Establecemos los datos de la empresa
-    $logo = $rspta["imagen"];
-    $ext_logo = strtolower(pathinfo($rspta["imagen"], PATHINFO_EXTENSION));
+    $logo = $_SESSION["local_imagen"];
+    $ext_logo = strtolower(pathinfo($rspta["local_imagen"], PATHINFO_EXTENSION));
     $empresa = $rspta["titulo"];
     $documento = ($rspta["ruc"] == '') ? 'Sin registrar' : $rspta["ruc"];
     $direccion = ($rspta["direccion"] == '') ? 'Sin registrar' : $rspta["direccion"];
@@ -42,7 +42,7 @@ if (!isset($_SESSION["nombre"])) {
         utf8_decode("Dirección: ") . utf8_decode($direccion) . "\n" .
         utf8_decode("Teléfono: ") . $telefono . "\n" .
         "Email: " . $email,
-      '../files/logo_reportes/' . $logo,
+      '../files/locales/' . $logo,
       $ext_logo
     );
 

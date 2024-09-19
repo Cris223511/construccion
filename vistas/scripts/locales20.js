@@ -15,6 +15,7 @@ function init() {
 	$("#formulario").on("submit", function (e) {
 		guardaryeditar(e);
 	});
+
 	$('#mAlmacen').addClass("treeview active");
 	$('#lLocales').addClass("active");
 }
@@ -26,6 +27,10 @@ function limpiar() {
 	$("#idlocal").val("");
 	$("#titulo").val("");
 	$("#local_ruc").val("");
+	$("#imagenmuestra").attr("src", "");
+	$("#imagenmuestra").hide();
+	$("#imagenactual").val("");
+	$("#imagen").val("");
 	$("#descripcion").val("");
 }
 
@@ -84,7 +89,7 @@ function listar() {
 			"iDisplayLength": 5,
 			"order": [],
 			"createdRow": function (row, data, dataIndex) {
-				$(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(4), td:eq(5), td:eq(6), td:eq(7)').addClass('nowrap-cell');
+				// $(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(4), td:eq(5), td:eq(6), td:eq(7)').addClass('nowrap-cell');
 			}
 		}).DataTable();
 }
@@ -147,6 +152,9 @@ function mostrar(idlocal) {
 		$("#local_ruc").val(data.local_ruc);
 		$("#descripcion").val(data.descripcion);
 		$("#idlocal").val(data.idlocal);
+		$("#imagenmuestra").show();
+		$("#imagenmuestra").attr("src", "../files/locales/" + data.imagen);
+		$("#imagenactual").val(data.imagen);
 	})
 }
 
@@ -164,6 +172,9 @@ function mostrar2(idlocal) {
 		$("#local_ruc").val(data.local_ruc);
 		$("#descripcion").val(data.descripcion);
 		$("#idlocal").val(data.idlocal);
+		$("#imagenmuestra").show();
+		$("#imagenmuestra").attr("src", "../files/locales/" + data.imagen);
+		$("#imagenactual").val(data.imagen);
 	})
 }
 
@@ -186,7 +197,7 @@ function trabajadores(idlocal, titulo) {
 		"iDisplayLength": 5,
 		"order": [],
 		"createdRow": function (row, data, dataIndex) {
-			$(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(4), td:eq(5), td:eq(6), td:eq(8), td:eq(9), td:eq(10)').addClass('nowrap-cell');
+			// $(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(4), td:eq(5), td:eq(6), td:eq(8), td:eq(9), td:eq(10)').addClass('nowrap-cell');
 		}
 	});
 }
