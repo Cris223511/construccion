@@ -32,11 +32,6 @@ if (!isset($_SESSION["nombre"])) {
         }
       }
 
-      tbody td,
-      tfoot tr th {
-        white-space: nowrap !important;
-      }
-
       input[id="cantidad[]"],
       input[id="precio_compra[]"] {
         width: 150px;
@@ -128,9 +123,11 @@ if (!isset($_SESSION["nombre"])) {
               <div class="panel-body" id="formularioregistros" style="background-color: #ecf0f5 !important; padding-left: 0 !important; padding-right: 0 !important;">
                 <form name="formulario" id="formulario" method="POST">
                   <div class="form-group col-lg-12 col-md-12 col-sm-12" style="background-color: white; border-top: 3px #002a8e solid; padding: 20px;">
-                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group col-lg-6 col-md-6 col-md-12">
                       <label>Ubicación del producto:</label>
-                      <input type="text" class="form-control" name="ubicacion" id="ubicacion" maxlength="50" placeholder="Ingrese la ubicación del producto." autocomplete="off">
+                      <select id="idubicacion" name="idubicacion" class="form-control selectpicker" data-live-search="true" data-size="5">
+                        <option value="">- Seleccione -</option>
+                      </select>
                     </div>
                     <div class="form-group col-lg-6 col-md-6 col-sm-12">
                       <label>Fecha y hora(*):</label>
@@ -170,7 +167,7 @@ if (!isset($_SESSION["nombre"])) {
                   <div class="form-group col-lg-12 col-md-12 col-sm-12" style="background-color: white !important; padding: 20px !important;">
                     <div class="form-group col-lg-6 col-md-12 col-sm-12 botonArt" id="botonArt">
                       <a data-toggle="modal" href="#myModal">
-                        <button id="btnAgregarArt" type="button" class="btn btn-secondary" style="color: black !important"> <span class="fa fa-plus"></span> Agregar Productos</button>
+                        <button id="btnAgregarArt" type="button" class="btn btn-bcp"> <span class="fa fa-plus"></span> Agregar Productos</button>
                       </a>
                     </div>
                     <div class="form-group col-lg-3 col-md-6 col-sm-6">
@@ -261,14 +258,14 @@ if (!isset($_SESSION["nombre"])) {
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title">Seleccione un artículo</h4>
+            <h4 class="modal-title">SELECCIONE UN ARTÍCULO</h4>
           </div>
           <div class="modal-body table-responsive">
             <table id="tblarticulos" class="table table-striped table-bordered table-condensed table-hover w-100" style="width: 100% !important">
               <thead>
                 <th>Opciones</th>
                 <th>Imagen</th>
-                <th>Nombre</th>
+                <th style="width: 20%; min-width: 200px;">Nombre</th>
                 <th style="white-space: nowrap;">U. medida</th>
                 <th style="width: 20%; min-width: 300px;">Descripción</th>
                 <th>Categoría</th>
@@ -465,10 +462,25 @@ if (!isset($_SESSION["nombre"])) {
       </div>
       <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <label>Descripción:</label>
-        <textarea type="text" class="form-control" name="descripcion" id="descripcion3" maxlength="10000" rows="4" placeholder="Descripción"></textarea>
+        <textarea type="text" class="form-control" name="descripcion" maxlength="10000" rows="4" placeholder="Descripción"></textarea>
       </div>
     </form>
     <!-- Fin form tipos -->
+
+    <!-- Form ubicaciones -->
+    <form name="formularioUbicacion" id="formularioUbicacion" method="POST" style="display: none;">
+      <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <label>Nombre(*):</label>
+        <input type="hidden" name="idubicacion" id="idubicacion2">
+        <input type="text" class="form-control" name="titulo" id="titulo4" maxlength="50" placeholder="Nombre de la ubicación." required>
+      </div>
+      <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <label>Descripción:</label>
+        <textarea type="text" class="form-control" name="descripcion" maxlength="10000" rows="4" placeholder="Descripción"></textarea>
+      </div>
+    </form>
+    <!-- Fin form ubicaciones -->
+
   <?php
   } else {
     require 'noacceso.php';

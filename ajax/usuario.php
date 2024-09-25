@@ -372,6 +372,7 @@ switch ($_GET["op"]) {
 			in_array(6, $valores) ? $_SESSION['salidas'] = 1 : $_SESSION['salidas'] = 0;
 			in_array(7, $valores) ? $_SESSION['prestamo'] = 1 : $_SESSION['prestamo'] = 0;
 			in_array(8, $valores) ? $_SESSION['reportes'] = 1 : $_SESSION['reportes'] = 0;
+			in_array(9, $valores) ? $_SESSION['transferencias'] = 1 : $_SESSION['transferencias'] = 0;
 		}
 		echo json_encode($fetch);
 		break;

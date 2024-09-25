@@ -3,11 +3,9 @@ require "../config/Conexion.php";
 
 class Entrada
 {
-	public function __construct()
-	{
-	}
+	public function __construct() {}
 
-	public function agregar($idlocal, $idusuario, $idproveedor, $idtipo, $codigo, $ubicacion, $descripcion, $impuesto, $total_compra, $idarticulo, $cantidad, $precio_compra)
+	public function agregar($idlocal, $idusuario, $idproveedor, $idtipo, $codigo, $idubicacion, $descripcion, $impuesto, $total_compra, $idarticulo, $cantidad, $precio_compra)
 	{
 		// Primero, debemos verificar si hay suficiente stock para cada artículo
 		$error = $this->validarStock($idarticulo, $cantidad);
@@ -18,8 +16,8 @@ class Entrada
 
 		date_default_timezone_set("America/Lima");
 		// Si no hay errores, continuamos con el registro de la entrada
-		$sql = "INSERT INTO entradas (idlocal,idusuario,idproveedor,idtipo,codigo,ubicacion,descripcion,fecha_hora,impuesto,total_compra,estado)
-            VALUES ('$idlocal','$idusuario','$idproveedor','$idtipo','$codigo','$ubicacion','$descripcion', SYSDATE(),'$impuesto','$total_compra','activado')";
+		$sql = "INSERT INTO entradas (idlocal,idusuario,idproveedor,idtipo,codigo,idubicacion,descripcion,fecha_hora,impuesto,total_compra,estado)
+            VALUES ('$idlocal','$idusuario','$idproveedor','$idtipo','$codigo','$idubicacion','$descripcion', SYSDATE(),'$impuesto','$total_compra','activado')";
 		$identradanew = ejecutarConsulta_retornarID($sql);
 
 		$num_elementos = 0;
@@ -88,31 +86,31 @@ class Entrada
 
 	public function listar()
 	{
-		$sql = "SELECT e.identrada,e.idusuario,u.nombre as usuario,u.cargo as cargo,u.cargo,lo.titulo as local, lo.imagen as imagen_local,t.titulo as tipo,p.nombre as proveedor,e.codigo,e.ubicacion,e.descripcion,e.descripcion,DATE_FORMAT(e.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,e.total_compra,e.impuesto,e.estado,SUM(de.cantidad) as total_cantidad FROM entradas e LEFT JOIN locales lo ON e.idlocal=lo.idlocal LEFT JOIN tipos t ON e.idtipo=t.idtipo LEFT JOIN detalle_entrada de ON e.identrada = de.identrada LEFT JOIN proveedores p ON e.idproveedor=p.idproveedor LEFT JOIN usuario u ON e.idusuario=u.idusuario GROUP BY e.identrada ORDER BY e.identrada DESC";
+		$sql = "SELECT e.identrada,e.idusuario,u.nombre as usuario,u.cargo as cargo,u.cargo,lo.titulo as local, lo.imagen as imagen_local,t.titulo as tipo,p.nombre as proveedor,ubi.titulo as ubicacion,e.codigo,e.descripcion,e.descripcion,DATE_FORMAT(e.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,e.total_compra,e.impuesto,e.estado,SUM(de.cantidad) as total_cantidad FROM entradas e LEFT JOIN locales lo ON e.idlocal=lo.idlocal LEFT JOIN ubicaciones ubi ON e.idubicacion=ubi.idubicacion LEFT JOIN tipos t ON e.idtipo=t.idtipo LEFT JOIN detalle_entrada de ON e.identrada = de.identrada LEFT JOIN proveedores p ON e.idproveedor=p.idproveedor LEFT JOIN usuario u ON e.idusuario=u.idusuario GROUP BY e.identrada ORDER BY e.identrada DESC";
 		return ejecutarConsulta($sql);
 	}
 
 	public function listarPorFecha($fecha_inicio, $fecha_fin)
 	{
-		$sql = "SELECT e.identrada,e.idusuario,u.nombre as usuario,u.cargo as cargo,u.cargo,lo.titulo as local, lo.imagen as imagen_local,t.titulo as tipo,p.nombre as proveedor,e.codigo,e.ubicacion,e.descripcion,e.descripcion,DATE_FORMAT(e.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,e.total_compra,e.impuesto,e.estado,SUM(de.cantidad) as total_cantidad FROM entradas e LEFT JOIN locales lo ON e.idlocal=lo.idlocal LEFT JOIN tipos t ON e.idtipo=t.idtipo LEFT JOIN detalle_entrada de ON e.identrada = de.identrada LEFT JOIN proveedores p ON e.idproveedor=p.idproveedor LEFT JOIN usuario u ON e.idusuario=u.idusuario WHERE DATE(e.fecha_hora) >= '$fecha_inicio' AND DATE(e.fecha_hora) <= '$fecha_fin' GROUP BY e.identrada ORDER BY e.identrada DESC";
+		$sql = "SELECT e.identrada,e.idusuario,u.nombre as usuario,u.cargo as cargo,u.cargo,lo.titulo as local, lo.imagen as imagen_local,t.titulo as tipo,p.nombre as proveedor,ubi.titulo as ubicacion,e.codigo,e.descripcion,e.descripcion,DATE_FORMAT(e.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,e.total_compra,e.impuesto,e.estado,SUM(de.cantidad) as total_cantidad FROM entradas e LEFT JOIN locales lo ON e.idlocal=lo.idlocal LEFT JOIN ubicaciones ubi ON e.idubicacion=ubi.idubicacion LEFT JOIN tipos t ON e.idtipo=t.idtipo LEFT JOIN detalle_entrada de ON e.identrada = de.identrada LEFT JOIN proveedores p ON e.idproveedor=p.idproveedor LEFT JOIN usuario u ON e.idusuario=u.idusuario WHERE DATE(e.fecha_hora) >= '$fecha_inicio' AND DATE(e.fecha_hora) <= '$fecha_fin' GROUP BY e.identrada ORDER BY e.identrada DESC";
 		return ejecutarConsulta($sql);
 	}
 
 	public function listarPorUsuario($idlocalSession)
 	{
-		$sql = "SELECT e.identrada,e.idusuario,u.nombre as usuario,u.cargo as cargo,u.cargo,lo.titulo as local, lo.imagen as imagen_local,t.titulo as tipo,p.nombre as proveedor,e.codigo,e.ubicacion,e.descripcion,e.descripcion,DATE_FORMAT(e.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,e.total_compra,e.impuesto,e.estado,SUM(de.cantidad) as total_cantidad FROM entradas e LEFT JOIN locales lo ON e.idlocal=lo.idlocal LEFT JOIN tipos t ON e.idtipo=t.idtipo LEFT JOIN detalle_entrada de ON e.identrada = de.identrada LEFT JOIN proveedores p ON e.idproveedor=p.idproveedor LEFT JOIN usuario u ON e.idusuario=u.idusuario WHERE e.idlocal = '$idlocalSession' GROUP BY e.identrada ORDER BY e.identrada DESC";
+		$sql = "SELECT e.identrada,e.idusuario,u.nombre as usuario,u.cargo as cargo,u.cargo,lo.titulo as local, lo.imagen as imagen_local,t.titulo as tipo,p.nombre as proveedor,ubi.titulo as ubicacion,e.codigo,e.descripcion,e.descripcion,DATE_FORMAT(e.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,e.total_compra,e.impuesto,e.estado,SUM(de.cantidad) as total_cantidad FROM entradas e LEFT JOIN locales lo ON e.idlocal=lo.idlocal LEFT JOIN ubicaciones ubi ON e.idubicacion=ubi.idubicacion LEFT JOIN tipos t ON e.idtipo=t.idtipo LEFT JOIN detalle_entrada de ON e.identrada = de.identrada LEFT JOIN proveedores p ON e.idproveedor=p.idproveedor LEFT JOIN usuario u ON e.idusuario=u.idusuario WHERE e.idlocal = '$idlocalSession' GROUP BY e.identrada ORDER BY e.identrada DESC";
 		return ejecutarConsulta($sql);
 	}
 
 	public function listarPorUsuarioFecha($idlocalSession, $fecha_inicio, $fecha_fin)
 	{
-		$sql = "SELECT e.identrada,e.idusuario,u.nombre as usuario,u.cargo as cargo,u.cargo,lo.titulo as local, lo.imagen as imagen_local,t.titulo as tipo,p.nombre as proveedor,e.codigo,e.ubicacion,e.descripcion,e.descripcion,DATE_FORMAT(e.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,e.total_compra,e.impuesto,e.estado,SUM(de.cantidad) as total_cantidad FROM entradas e LEFT JOIN locales lo ON e.idlocal=lo.idlocal LEFT JOIN tipos t ON e.idtipo=t.idtipo LEFT JOIN detalle_entrada de ON e.identrada = de.identrada LEFT JOIN proveedores p ON e.idproveedor=p.idproveedor LEFT JOIN usuario u ON e.idusuario=u.idusuario WHERE e.idlocal = '$idlocalSession' AND DATE(e.fecha_hora) >= '$fecha_inicio' AND DATE(e.fecha_hora) <= '$fecha_fin' GROUP BY e.identrada ORDER BY e.identrada DESC";
+		$sql = "SELECT e.identrada,e.idusuario,u.nombre as usuario,u.cargo as cargo,u.cargo,lo.titulo as local, lo.imagen as imagen_local,t.titulo as tipo,p.nombre as proveedor,ubi.titulo as ubicacion,e.codigo,e.descripcion,e.descripcion,DATE_FORMAT(e.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,e.total_compra,e.impuesto,e.estado,SUM(de.cantidad) as total_cantidad FROM entradas e LEFT JOIN locales lo ON e.idlocal=lo.idlocal LEFT JOIN ubicaciones ubi ON e.idubicacion=ubi.idubicacion LEFT JOIN tipos t ON e.idtipo=t.idtipo LEFT JOIN detalle_entrada de ON e.identrada = de.identrada LEFT JOIN proveedores p ON e.idproveedor=p.idproveedor LEFT JOIN usuario u ON e.idusuario=u.idusuario WHERE e.idlocal = '$idlocalSession' AND DATE(e.fecha_hora) >= '$fecha_inicio' AND DATE(e.fecha_hora) <= '$fecha_fin' GROUP BY e.identrada ORDER BY e.identrada DESC";
 		return ejecutarConsulta($sql);
 	}
 
 	public function listarCabecera($identrada)
 	{
-		$sql = "SELECT e.identrada,e.idusuario,u.nombre as usuario,u.cargo as cargo, u.tipo_documento, u.num_documento, u.direccion, u.email, u.direccion, u.telefono, lo.titulo as local, lo.imagen as imagen_local, t.titulo as tipo, p.nombre, p.tipo_documento, p.num_documento, p.direccion, p.email, p.direccion, p.telefono, e.codigo,DATE_FORMAT(e.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,e.total_compra,e.impuesto,e.estado,SUM(de.cantidad) as total_cantidad FROM entradas e LEFT JOIN locales AS lo ON e.idlocal=lo.idlocal LEFT JOIN tipos t ON e.idtipo=t.idtipo LEFT JOIN detalle_entrada de ON e.identrada = de.identrada LEFT JOIN proveedores p ON e.idproveedor=p.idproveedor LEFT JOIN usuario u ON e.idusuario=u.idusuario WHERE e.identrada = '$identrada' GROUP BY e.identrada ORDER BY e.identrada DESC";
+		$sql = "SELECT e.identrada,e.idusuario,u.nombre as usuario,u.cargo as cargo, u.tipo_documento, u.num_documento, u.direccion, u.email, u.direccion, u.telefono, lo.titulo as local, lo.imagen as imagen_local, t.titulo as tipo, p.nombre, p.tipo_documento, p.num_documento, p.direccion, p.email, p.direccion, p.telefono, e.codigo,DATE_FORMAT(e.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha,e.total_compra,e.impuesto,e.estado,SUM(de.cantidad) as total_cantidad FROM entradas e LEFT JOIN locales lo ON e.idlocal=lo.idlocal LEFT JOIN tipos t ON e.idtipo=t.idtipo LEFT JOIN detalle_entrada de ON e.identrada = de.identrada LEFT JOIN proveedores p ON e.idproveedor=p.idproveedor LEFT JOIN usuario u ON e.idusuario=u.idusuario WHERE e.identrada = '$identrada' GROUP BY e.identrada ORDER BY e.identrada DESC";
 		return ejecutarConsulta($sql);
 	}
 
@@ -136,6 +134,8 @@ class Entrada
 			UNION ALL
 			SELECT 'tipo' AS tabla, t.idtipo AS id, t.titulo, u.nombre AS usuario, NULL AS ruc FROM tipos t LEFT JOIN usuario u ON t.idusuario = u.idusuario WHERE t.estado='activado' AND t.eliminado='0'
 			UNION ALL
+			SELECT 'ubicacion' AS tabla, ubi.idubicacion AS id, ubi.titulo, u.nombre AS usuario, NULL AS ruc FROM ubicaciones ubi LEFT JOIN usuario u ON ubi.idusuario = u.idusuario WHERE ubi.estado='activado' AND ubi.eliminado='0'
+			UNION ALL
 			SELECT 'local' AS tabla, l.idlocal AS id, l.titulo, u.nombre AS usuario, local_ruc AS ruc FROM locales l LEFT JOIN usuario u ON l.idusuario = u.idusuario WHERE l.idusuario <> 0 AND l.estado='activado' AND l.eliminado='0'";
 
 		return ejecutarConsulta($sql);
@@ -146,6 +146,8 @@ class Entrada
 		$sql = "SELECT 'proveedor' AS tabla, p.idproveedor AS id, p.nombre, u.nombre AS usuario, NULL AS ruc FROM proveedores p LEFT JOIN usuario u ON p.idusuario = u.idusuario WHERE p.estado='activado' AND p.eliminado='0'
 			UNION ALL
 			SELECT 'tipo' AS tabla, t.idtipo AS id, t.titulo, u.nombre AS usuario, NULL AS ruc FROM tipos t LEFT JOIN usuario u ON t.idusuario = u.idusuario WHERE t.estado='activado' AND t.eliminado='0'
+			UNION ALL
+			SELECT 'ubicacion' AS tabla, ubi.idubicacion AS id, ubi.titulo, u.nombre AS usuario, NULL AS ruc FROM ubicaciones ubi LEFT JOIN usuario u ON ubi.idusuario = u.idusuario WHERE ubi.estado='activado' AND ubi.eliminado='0'
 			UNION ALL
 			SELECT 'local' AS tabla, l.idlocal AS id, l.titulo, u.nombre AS usuario, local_ruc AS ruc FROM locales l LEFT JOIN usuario u ON l.idusuario = u.idusuario WHERE l.idlocal='$idlocal' AND l.idusuario <> 0 AND l.estado='activado' AND l.eliminado='0'";
 

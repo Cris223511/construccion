@@ -308,7 +308,7 @@ if (!isset($_SESSION["nombre"])) {
               <thead>
                 <th>Opciones</th>
                 <th>Imagen</th>
-                <th>Nombre</th>
+                <th style="width: 20%; min-width: 150px;">Nombre</th>
                 <th style="white-space: nowrap;">U. medida</th>
                 <th style="width: 20%; min-width: 300px;">Descripción</th>
                 <th>Categoría</th>

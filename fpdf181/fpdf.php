@@ -861,69 +861,58 @@ function Ln($h=null)
 		$this->y += $h;
 }
 
-function Image($file, $x=null, $y=null, $w=0, $h=0, $type='', $link='')
+protected $image_counter = 0;
+
+protected function _parseimage($file)
 {
-	// Put an image on the page
-	if($file=='')
-		$this->Error('Image file name is empty');
-	if(!isset($this->images[$file]))
-	{
-		// First use of this image, get info
-		if($type=='')
-		{
-			$pos = strrpos($file,'.');
-			if(!$pos)
-				$this->Error('Image file has no extension and no type was specified: '.$file);
-			$type = substr($file,$pos+1);
-		}
-		$type = strtolower($type);
-		if($type=='jpeg')
-			$type = 'jpg';
-		$mtd = '_parse'.$type;
-		if(!method_exists($this,$mtd))
-			$this->Error('Unsupported image type: '.$type);
-		$info = $this->$mtd($file);
-		$info['i'] = count($this->images)+1;
-		$this->images[$file] = $info;
-	}
-	else
-		$info = $this->images[$file];
-
-	// Automatic width and height calculation if needed
-	if($w==0 && $h==0)
-	{
-		// Put image at 96 dpi
-		$w = -96;
-		$h = -96;
-	}
-	if($w<0)
-		$w = -$info['w']*72/$w/$this->k;
-	if($h<0)
-		$h = -$info['h']*72/$h/$this->k;
-	if($w==0)
-		$w = $h*$info['w']/$info['h'];
-	if($h==0)
-		$h = $w*$info['h']/$info['w'];
-
-	// Flowing mode
-	if($y===null)
-	{
-		if($this->y+$h>$this->PageBreakTrigger && !$this->InHeader && !$this->InFooter && $this->AcceptPageBreak())
-		{
-			// Automatic page break
-			$x2 = $this->x;
-			$this->AddPage($this->CurOrientation,$this->CurPageSize,$this->CurRotation);
-			$this->x = $x2;
-		}
-		$y = $this->y;
-		$this->y += $h;
+	$info = getimagesize($file);
+	if (!$info) {
+		$this->Error('Missing or incorrect image file: ' . $file);
 	}
 
-	if($x===null)
+	switch ($info[2]) {
+		case IMAGETYPE_JPEG:
+			return $this->_parsejpg($file);
+		case IMAGETYPE_PNG:
+			return $this->_parsepng($file);
+		case IMAGETYPE_BMP:
+			return $this->_parsebmp($file);
+		default:
+			$this->Error('Unsupported image type: ' . $file);
+	}
+}
+
+function Image($file, $x = null, $y = null, $w = 0, $h = 0, $type = '', $link = '')
+{
+	// Procesar la imagen y obtener su información
+	$info = $this->_parseimage($file);
+
+	// Asignar un índice único a la imagen
+	$this->image_counter++;
+	$index = $this->image_counter;
+
+	// Guardar la información de la imagen
+	$this->images[$file] = array('w' => $info['w'], 'h' => $info['h'], 'cs' => $info['cs'], 'bpc' => $info['bpc'], 'f' => $info['f'], 'data' => $info['data'], 'i' => $index, 'n' => $index);
+
+	// Establecer las coordenadas y dimensiones de la imagen en el PDF
+	if ($x === null)
 		$x = $this->x;
-	$this->_out(sprintf('q %.2F 0 0 %.2F %.2F %.2F cm /I%d Do Q',$w*$this->k,$h*$this->k,$x*$this->k,($this->h-($y+$h))*$this->k,$info['i']));
-	if($link)
-		$this->Link($x,$y,$w,$h,$link);
+	if ($y === null)
+		$y = $this->y;
+	if ($w == 0 && $h == 0) {
+		// Colocar la imagen a 72 dpi
+		$w = $info['w'] / $this->k;
+		$h = $info['h'] / $this->k;
+	} elseif ($w == 0)
+		$w = $h * $info['w'] / $info['h'];
+	elseif ($h == 0)
+		$h = $w * $info['h'] / $info['w'];
+
+	// Salida de la imagen en el PDF
+	$this->_out(sprintf('q %.2F %.2F %.2F %.2F %.2F %.2F cm /I%d Do Q', $w * $this->k, 0, 0, $h * $this->k, $x * $this->k, ($this->h - ($y + $h)) * $this->k, $index));
+
+	if ($link)
+		$this->Link($x, $y, $w, $h, $link);
 }
 
 function GetPageWidth()
@@ -1236,154 +1225,196 @@ protected function _dounderline($x, $y, $txt)
 
 protected function _parsejpg($file)
 {
-	// Extract info from a JPEG file
 	$a = getimagesize($file);
-	if(!$a)
-		$this->Error('Missing or incorrect image file: '.$file);
-	if($a[2]!=2)
-		$this->Error('Not a JPEG file: '.$file);
-	if(!isset($a['channels']) || $a['channels']==3)
+	if ($a[2] != IMAGETYPE_JPEG) {
+		$this->Error('Not a JPEG file: ' . $file);
+	}
+	if (!isset($a['channels']) || $a['channels'] == 3) {
 		$colspace = 'DeviceRGB';
-	elseif($a['channels']==4)
+	} elseif ($a['channels'] == 4) {
 		$colspace = 'DeviceCMYK';
-	else
+	} else {
 		$colspace = 'DeviceGray';
+	}
 	$bpc = isset($a['bits']) ? $a['bits'] : 8;
 	$data = file_get_contents($file);
-	return array('w'=>$a[0], 'h'=>$a[1], 'cs'=>$colspace, 'bpc'=>$bpc, 'f'=>'DCTDecode', 'data'=>$data);
+	return array('w' => $a[0], 'h' => $a[1], 'cs' => $colspace, 'bpc' => $bpc, 'f' => 'DCTDecode', 'data' => $data);
 }
 
 protected function _parsepng($file)
 {
-	// Extract info from a PNG file
-	$f = fopen($file,'rb');
-	if(!$f)
-		$this->Error('Can\'t open image file: '.$file);
-	$info = $this->_parsepngstream($f,$file);
-	fclose($f);
-	return $info;
+	// Abrir la imagen PNG
+	$im = imagecreatefrompng($file);
+	imagealphablending($im, false);
+	imagesavealpha($im, true);
+
+	// Crear una nueva imagen en blanco (JPEG no soporta transparencia, por lo que utilizamos blanco como fondo)
+	$width = imagesx($im);
+	$height = imagesy($im);
+	$background = imagecreatetruecolor($width, $height);
+
+	// Rellenar con blanco (puedes cambiar a otro color si es necesario)
+	$white = imagecolorallocate($background, 255, 255, 255);
+	imagefilledrectangle($background, 0, 0, $width, $height, $white);
+
+	// Copiar el PNG sobre el fondo blanco manteniendo la transparencia
+	imagecopy($background, $im, 0, 0, 0, 0, $width, $height);
+
+	// Guardar la imagen como JPEG en memoria
+	ob_start();
+	imagejpeg($background);
+	$data = ob_get_clean();
+
+	// Liberar la memoria
+	imagedestroy($im);
+	imagedestroy($background);
+
+	// Obtener información de la imagen convertida
+	$a = getimagesizefromstring($data);
+	if ($a[2] != IMAGETYPE_JPEG) {
+		$this->Error('PNG conversion failed for: ' . $file);
+	}
+	if (!isset($a['channels']) || $a['channels'] == 3) {
+		$colspace = 'DeviceRGB';
+	} elseif ($a['channels'] == 4) {
+		$colspace = 'DeviceCMYK';
+	} else {
+		$colspace = 'DeviceGray';
+	}
+	$bpc = isset($a['bits']) ? $a['bits'] : 8;
+	return array('w' => $a[0], 'h' => $a[1], 'cs' => $colspace, 'bpc' => $bpc, 'f' => 'DCTDecode', 'data' => $data);
+}
+
+protected function _parsebmp($file)
+{
+	// Abrir la imagen BMP y convertir a JPEG en memoria
+	$im = imagecreatefrombmp($file);
+	ob_start();
+	imagejpeg($im);
+	$data = ob_get_clean();
+	imagedestroy($im);
+
+	// Obtener información de la imagen convertida
+	$a = getimagesizefromstring($data);
+	if ($a[2] != IMAGETYPE_JPEG) {
+		$this->Error('BMP conversion failed for: ' . $file);
+	}
+	if (!isset($a['channels']) || $a['channels'] == 3) {
+		$colspace = 'DeviceRGB';
+	} elseif ($a['channels'] == 4) {
+		$colspace = 'DeviceCMYK';
+	} else {
+		$colspace = 'DeviceGray';
+	}
+	$bpc = isset($a['bits']) ? $a['bits'] : 8;
+	return array('w' => $a[0], 'h' => $a[1], 'cs' => $colspace, 'bpc' => $bpc, 'f' => 'DCTDecode', 'data' => $data);
 }
 
 protected function _parsepngstream($f, $file)
 {
 	// Check signature
-	if($this->_readstream($f,8)!=chr(137).'PNG'.chr(13).chr(10).chr(26).chr(10))
-		$this->Error('Not a PNG file: '.$file);
+	if ($this->_readstream($f, 8) != chr(137) . 'PNG' . chr(13) . chr(10) . chr(26) . chr(10))
+		$this->Error('Not a PNG file: ' . $file);
 
 	// Read header chunk
-	$this->_readstream($f,4);
-	if($this->_readstream($f,4)!='IHDR')
-		$this->Error('Incorrect PNG file: '.$file);
+	$this->_readstream($f, 4);
+	if ($this->_readstream($f, 4) != 'IHDR')
+		$this->Error('Incorrect PNG file: ' . $file);
 	$w = $this->_readint($f);
 	$h = $this->_readint($f);
-	$bpc = ord($this->_readstream($f,1));
-	if($bpc>8)
-		$this->Error('16-bit depth not supported: '.$file);
-	$ct = ord($this->_readstream($f,1));
-	if($ct==0 || $ct==4)
+	$bpc = ord($this->_readstream($f, 1));
+	if ($bpc > 8)
+		$this->Error('16-bit depth not supported: ' . $file);
+	$ct = ord($this->_readstream($f, 1));
+	if ($ct == 0 || $ct == 4)
 		$colspace = 'DeviceGray';
-	elseif($ct==2 || $ct==6)
+	elseif ($ct == 2 || $ct == 6)
 		$colspace = 'DeviceRGB';
-	elseif($ct==3)
+	elseif ($ct == 3)
 		$colspace = 'Indexed';
 	else
-		$this->Error('Unknown color type: '.$file);
-	if(ord($this->_readstream($f,1))!=0)
-		$this->Error('Unknown compression method: '.$file);
-	if(ord($this->_readstream($f,1))!=0)
-		$this->Error('Unknown filter method: '.$file);
-	if(ord($this->_readstream($f,1))!=0)
-		$this->Error('Interlacing not supported: '.$file);
-	$this->_readstream($f,4);
-	$dp = '/Predictor 15 /Colors '.($colspace=='DeviceRGB' ? 3 : 1).' /BitsPerComponent '.$bpc.' /Columns '.$w;
+		$this->Error('Unknown color type: ' . $file);
+	if (ord($this->_readstream($f, 1)) != 0)
+		$this->Error('Unknown compression method: ' . $file);
+	if (ord($this->_readstream($f, 1)) != 0)
+		$this->Error('Unknown filter method: ' . $file);
+	if (ord($this->_readstream($f, 1)) != 0)
+		$this->Error('Interlacing not supported: ' . $file);
+	$this->_readstream($f, 4);
+	$dp = '/Predictor 15 /Colors ' . ($colspace == 'DeviceRGB' ? 3 : 1) . ' /BitsPerComponent ' . $bpc . ' /Columns ' . $w;
 
 	// Scan chunks looking for palette, transparency and image data
 	$pal = '';
 	$trns = '';
 	$data = '';
-	do
-	{
+	do {
 		$n = $this->_readint($f);
-		$type = $this->_readstream($f,4);
-		if($type=='PLTE')
-		{
+		$type = $this->_readstream($f, 4);
+		if ($type == 'PLTE') {
 			// Read palette
-			$pal = $this->_readstream($f,$n);
-			$this->_readstream($f,4);
-		}
-		elseif($type=='tRNS')
-		{
+			$pal = $this->_readstream($f, $n);
+			$this->_readstream($f, 4);
+		} elseif ($type == 'tRNS') {
 			// Read transparency info
-			$t = $this->_readstream($f,$n);
-			if($ct==0)
-				$trns = array(ord(substr($t,1,1)));
-			elseif($ct==2)
-				$trns = array(ord(substr($t,1,1)), ord(substr($t,3,1)), ord(substr($t,5,1)));
-			else
-			{
-				$pos = strpos($t,chr(0));
-				if($pos!==false)
+			$t = $this->_readstream($f, $n);
+			if ($ct == 0)
+				$trns = array(ord(substr($t, 1, 1)));
+			elseif ($ct == 2)
+				$trns = array(ord(substr($t, 1, 1)), ord(substr($t, 3, 1)), ord(substr($t, 5, 1)));
+			else {
+				$pos = strpos($t, chr(0));
+				if ($pos !== false)
 					$trns = array($pos);
 			}
-			$this->_readstream($f,4);
-		}
-		elseif($type=='IDAT')
-		{
+			$this->_readstream($f, 4);
+		} elseif ($type == 'IDAT') {
 			// Read image data block
-			$data .= $this->_readstream($f,$n);
-			$this->_readstream($f,4);
-		}
-		elseif($type=='IEND')
+			$data .= $this->_readstream($f, $n);
+			$this->_readstream($f, 4);
+		} elseif ($type == 'IEND')
 			break;
 		else
-			$this->_readstream($f,$n+4);
-	}
-	while($n);
+			$this->_readstream($f, $n + 4);
+	} while ($n);
 
-	if($colspace=='Indexed' && empty($pal))
-		$this->Error('Missing palette in '.$file);
-	$info = array('w'=>$w, 'h'=>$h, 'cs'=>$colspace, 'bpc'=>$bpc, 'f'=>'FlateDecode', 'dp'=>$dp, 'pal'=>$pal, 'trns'=>$trns);
-	if($ct>=4)
-	{
+	if ($colspace == 'Indexed' && empty($pal))
+		$this->Error('Missing palette in ' . $file);
+	$info = array('w' => $w, 'h' => $h, 'cs' => $colspace, 'bpc' => $bpc, 'f' => 'FlateDecode', 'dp' => $dp, 'pal' => $pal, 'trns' => $trns);
+	if ($ct >= 4) {
 		// Extract alpha channel
-		if(!function_exists('gzuncompress'))
-			$this->Error('Zlib not available, can\'t handle alpha channel: '.$file);
+		if (!function_exists('gzuncompress'))
+			$this->Error('Zlib not available, can\'t handle alpha channel: ' . $file);
 		$data = gzuncompress($data);
 		$color = '';
 		$alpha = '';
-		if($ct==4)
-		{
+		if ($ct == 4) {
 			// Gray image
-			$len = 2*$w;
-			for($i=0;$i<$h;$i++)
-			{
-				$pos = (1+$len)*$i;
+			$len = 2 * $w;
+			for ($i = 0; $i < $h; $i++) {
+				$pos = (1 + $len) * $i;
 				$color .= $data[$pos];
 				$alpha .= $data[$pos];
-				$line = substr($data,$pos+1,$len);
-				$color .= preg_replace('/(.)./s','$1',$line);
-				$alpha .= preg_replace('/.(.)/s','$1',$line);
+				$line = substr($data, $pos + 1, $len);
+				$color .= preg_replace('/(.)./s', '$1', $line);
+				$alpha .= preg_replace('/.(.)/s', '$1', $line);
 			}
-		}
-		else
-		{
+		} else {
 			// RGB image
-			$len = 4*$w;
-			for($i=0;$i<$h;$i++)
-			{
-				$pos = (1+$len)*$i;
+			$len = 4 * $w;
+			for ($i = 0; $i < $h; $i++) {
+				$pos = (1 + $len) * $i;
 				$color .= $data[$pos];
 				$alpha .= $data[$pos];
-				$line = substr($data,$pos+1,$len);
-				$color .= preg_replace('/(.{3})./s','$1',$line);
-				$alpha .= preg_replace('/.{3}(.)/s','$1',$line);
+				$line = substr($data, $pos + 1, $len);
+				$color .= preg_replace('/(.{3})./s', '$1', $line);
+				$alpha .= preg_replace('/.{3}(.)/s', '$1', $line);
 			}
 		}
 		unset($data);
 		$data = gzcompress($color);
 		$info['smask'] = gzcompress($alpha);
 		$this->WithAlpha = true;
-		if($this->PDFVersion<'1.4')
+		if ($this->PDFVersion < '1.4')
 			$this->PDFVersion = '1.4';
 	}
 	$info['data'] = $data;

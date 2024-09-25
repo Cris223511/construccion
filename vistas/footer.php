@@ -131,7 +131,7 @@
         if (!table) return;
 
         var columnIndices = Array.from(table.querySelectorAll("th")).reduce((indices, th, index) => {
-          if (["CLIENTE", "PROVEEDOR", "NOMBRE", "NOMBRE PRODUCTO", "NOMBRES", "DESCRIPCIÓN", "DESCRIPCIÓN DEL LOCAL", "ALMACÉN", "LOCAL"].includes(th.innerText.trim())) {
+          if (["CLIENTE", "PROVEEDOR", "NOMBRE", "NOMBRE PRODUCTO", "NOMBRES", "DESCRIPCIÓN", "DESCRIPCIÓN DEL LOCAL", "UBICACIÓN DEL LOCAL", "ORIGEN", "DESTINO", "ALMACÉN", "LOCAL"].includes(th.innerText.trim())) {
             indices.push(index);
           }
           return indices;

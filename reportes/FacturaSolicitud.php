@@ -140,10 +140,10 @@ class PDF_Invoice extends FPDF
 	// Company
 	function addSociete($nom, $adresse, $logo, $ext_logo)
 	{
-		$x1 = 33;
+		$x1 = 38;
 		$y1 = 8;
 		//Positionnement en bas
-		$this->Image($logo, 5, 3, 25, 25, $ext_logo);
+		$this->Image($logo, 11, 7, 25, 25, $ext_logo);
 		$this->SetXY($x1, $y1);
 		$this->SetFont('Arial', 'B', 12);
 		$length = $this->GetStringWidth($nom);

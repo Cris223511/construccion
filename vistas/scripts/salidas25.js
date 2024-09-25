@@ -110,6 +110,7 @@ function init() {
 		const selects = {
 			"idtipo": $("#idtipo"),
 			"idactivo": $("#idactivo"),
+			"idubicacion": $("#idubicacion"),
 			"idlocal": $("#idlocal"),
 			"idlocal2": $("#idlocal2"),
 			"idlocal3": $("#idlocal3"),
@@ -158,6 +159,9 @@ function init() {
 
 		$('#idtipo').closest('.form-group').find('input[type="text"]').attr('onkeydown', 'agregarTipo(event)');
 		$('#idtipo').closest('.form-group').find('input[type="text"]').attr('maxlength', '40');
+
+		$('#idubicacion').closest('.form-group').find('input[type="text"]').attr('onkeydown', 'agregarUbicacion(event)');
+		$('#idubicacion').closest('.form-group').find('input[type="text"]').attr('maxlength', '40');
 	});
 
 	$.post("../ajax/salidas.php?op=selectProducto", function (r) {
@@ -225,7 +229,6 @@ function agregarActivo(e) {
 						listarTodosActivos("idactivo");
 						$("#idactivo2").val("");
 						$("#titulo2").val("");
-						$("#descripcion2").val("");
 					}
 				}
 			});
@@ -263,7 +266,43 @@ function agregarTipo(e) {
 						listarTodosActivos("idtipo");
 						$("#idtipo2").val("");
 						$("#titulo3").val("");
-						$("#descripcion2").val("");
+					}
+				}
+			});
+		}
+	}
+}
+
+function agregarUbicacion(e) {
+	let inputValue = $('#idubicacion').closest('.form-group').find('input[type="text"]');
+
+	if (e.key === "Enter") {
+		if ($('.no-results').is(':visible')) {
+			e.preventDefault();
+			$("#titulo4").val(inputValue.val());
+
+			var formData = new FormData($("#formularioUbicacion")[0]);
+
+			$.ajax({
+				url: "../ajax/ubicaciones.php?op=guardaryeditar",
+				type: "POST",
+				data: formData,
+				contentType: false,
+				processData: false,
+
+				success: function (datos) {
+					datos = limpiarCadena(datos);
+					if (!datos) {
+						console.log("No se recibieron datos del servidor.");
+						return;
+					} else if (datos == "El nombre de la ubicación ya existe.") {
+						bootbox.alert(datos);
+						return;
+					} else {
+						// bootbox.alert(datos);
+						listarTodosActivos("idubicacion");
+						$("#idubicacion2").val("");
+						$("#titulo4").val("");
 					}
 				}
 			});
@@ -615,8 +654,10 @@ function limpiar() {
 	$("#cod_2").val(siguienteCorrelativo);
 	$("#codigo_producto").val("");
 	$("#nombre").val("");
+	$("#origen").val("");
+	$("#destino").val("");
+	$("#num_guia").val("");
 	$("#descripcion").val("");
-	$("#ubicacion").val("");
 	$("#print").hide();
 	$("#idsalida").val("");
 	$("#impuesto").val("0");
@@ -637,6 +678,8 @@ function limpiar() {
 	$("#idrecibido").selectpicker('refresh');
 	$("#idactivo").val($("#idactivo option:first").val());
 	$("#idactivo").selectpicker('refresh');
+	$("#idubicacion").val($("#idubicacion option:first").val());
+	$("#idubicacion").selectpicker('refresh');
 
 	$(".filas").remove();
 	$('#myModal').modal('hide');
@@ -852,6 +895,8 @@ function mostrar(idsalida) {
 			$('#idrecibido').selectpicker('refresh');
 			$("#idactivo").val(data.idactivo);
 			$('#idactivo').selectpicker('refresh');
+			$("#idubicacion").val(data.idubicacion);
+			$('#idubicacion').selectpicker('refresh');
 
 			const { letras, numeros } = separarLetrasYNumeros(data.codigo);
 			// Establecer valores en los campos correspondientes
@@ -861,7 +906,9 @@ function mostrar(idsalida) {
 			$("#codigo_producto").val(data.codigo_producto);
 			$("#nombre").val(data.nombre);
 			$("#descripcion").val(data.descripcion);
-			$("#ubicacion").val(data.ubicacion);
+			$("#origen").val(data.origen);
+			$("#destino").val(data.destino);
+			$("#num_guia").val(data.num_guia);
 			$("#fecha_hora").val(data.fecha_hora);
 			$("#print").hide();
 
@@ -1140,6 +1187,13 @@ function eliminarDetalle(indice, idarticulo) {
 	console.log("Habilito a: " + idarticulo + " =)");
 	detalles = detalles - 1;
 	evaluar();
+}
+
+function prueba(idsalida) {
+	$.post("../ajax/salidas.php?op=prueba", { idsalida: idsalida }, function (e) {
+		console.log(e);
+		console.log(JSON.parse(e));
+	});
 }
 
 init();

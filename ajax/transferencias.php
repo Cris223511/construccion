@@ -12,59 +12,59 @@ if (empty($_SESSION['idusuario']) || empty($_SESSION['cargo'])) {
 if (!isset($_SESSION["nombre"])) {
 	header("Location: ../vistas/login.html");
 } else {
-	if ($_SESSION['entradas'] == 1) {
-		require_once "../modelos/Entradas.php";
+	if ($_SESSION['transferencias'] == 1) {
+		require_once "../modelos/Transferencias.php";
 
-		$entradas = new Entrada();
+		$transferencias = new Transferencia();
 
 		// Variables de sesión a utilizar.
 		$idusuario = $_SESSION["idusuario"];
 		$idlocalSession = $_SESSION["idlocal"];
 		$cargo = $_SESSION["cargo"];
 
-		$identrada = isset($_POST["identrada"]) ? limpiarCadena($_POST["identrada"]) : "";
-		$idlocal = isset($_POST["idlocal"]) ? limpiarCadena($_POST["idlocal"]) : "";
-		$idproveedor = isset($_POST["idproveedor"]) ? limpiarCadena($_POST["idproveedor"]) : "";
-		$idtipo = isset($_POST["idtipo"]) ? limpiarCadena($_POST["idtipo"]) : "";
+		$idtransferencia = isset($_POST["idtransferencia"]) ? limpiarCadena($_POST["idtransferencia"]) : "";
+		$origen = isset($_POST["origen"]) ? limpiarCadena($_POST["origen"]) : "";
+		$destino = isset($_POST["destino"]) ? limpiarCadena($_POST["destino"]) : "";
+		$lugar_destino = isset($_POST["lugar_destino"]) ? limpiarCadena($_POST["lugar_destino"]) : "";
 		$codigo = isset($_POST["codigo"]) ? limpiarCadena($_POST["codigo"]) : "";
-		$idubicacion = isset($_POST["idubicacion"]) ? limpiarCadena($_POST["idubicacion"]) : "";
-		$descripcion = isset($_POST["descripcion"]) ? limpiarCadena($_POST["descripcion"]) : "";
-		$impuesto = isset($_POST["impuesto"]) ? limpiarCadena($_POST["impuesto"]) : "";
-		$total_compra = isset($_POST["total_compra"]) ? limpiarCadena($_POST["total_compra"]) : "";
-
-		$sunat = isset($_POST["sunat"]) ? limpiarCadena($_POST["sunat"]) : "";
+		$comentario = isset($_POST["comentario"]) ? limpiarCadena($_POST["comentario"]) : "";
 
 		switch ($_GET["op"]) {
 			case 'guardaryeditar':
-				$rspta = $entradas->agregar($idlocal, $idusuario, $idproveedor, $idtipo, $codigo, $idubicacion, $descripcion, $impuesto, $total_compra, $_POST["idarticulo"], $_POST["cantidad"], $_POST["precio_compra"]);
-				echo $rspta ? "Entrada registrada" : "Una de las cantidades superan al stock normal del artículo.";
+				$rspta = $transferencias->agregar($origen, $destino, $idusuario, $codigo, $lugar_destino, $comentario, $_POST["idarticulo"], $_POST["cantidad"]);
+				echo $rspta ? "Transferencia registrada" : "Una de las cantidades superan al stock normal del artículo.";
 				break;
 
 			case 'desactivar':
-				$rspta = $entradas->desactivar($identrada);
-				echo $rspta ? "Entrada desactivada" : "La entrada no se pudo desactivar";
+				$rspta = $transferencias->desactivar($idtransferencia);
+				echo $rspta ? "Transferencia desactivada" : "La transferencia no se pudo desactivar";
 				break;
 
 			case 'activar':
-				$rspta = $entradas->activar($identrada);
-				echo $rspta ? "Entrada activada" : "La entrada no se pudo activar";
+				$rspta = $transferencias->activar($idtransferencia);
+				echo $rspta ? "Transferencia activada" : "La transferencia no se pudo activar";
 				break;
 
 			case 'eliminar':
-				$rspta = $entradas->eliminar($identrada);
-				echo $rspta ? "Entrada eliminada" : "La entrada no se pudo eliminar";
+				$rspta = $transferencias->eliminar($idtransferencia);
+				echo $rspta ? "Transferencia eliminada" : "La transferencia no se pudo eliminar";
+				break;
+
+			case 'limpiar':
+				$rspta = $transferencias->limpiar($idtransferencia);
+				echo $rspta ? "Transferencia removida" : "La transferencia no se pudo remover";
 				break;
 
 			case 'mostrar':
-				$rspta = $entradas->mostrar($identrada);
+				$rspta = $transferencias->mostrar($idtransferencia);
 				echo json_encode($rspta);
 				break;
 
 			case 'listarDetalle':
 				$id = $_GET['id'];
 
-				$rspta = $entradas->listarDetalle($id);
-				$rspta2 = $entradas->mostrar($id);
+				$rspta = $transferencias->listarDetalle($id);
+				$rspta2 = $transferencias->mostrar($id);
 
 				$total = 0;
 				echo '<thead style="background-color:#A9D0F5">
@@ -77,50 +77,14 @@ if (!isset($_SESSION["nombre"])) {
 										<th style="white-space: nowrap;">Código de barra</th>
 										<th>Stock</th>
 										<th style="white-space: nowrap;">Stock Mínimo</th>
-										<th>Cantidad</th>
+										<th>Cantidad a transferir</th>
 										<th>Precio compra</th>
 										<th style="white-space: nowrap;">Unidad de medida</th>
-										<th>Subtotal</th>
 									</thead>';
 
 				while ($reg = $rspta->fetch_object()) {
-					echo '<tr class="filas"><td></td> <td><a href="../files/articulos/' . $reg->imagen . '" class="galleria-lightbox" style="z-index: 10000 !important;"><img src="../files/articulos/' . $reg->imagen . '" height="50px" width="50px" class="img-fluid"></a></td> <td>' . $reg->articulo . '</td><td>' . (($reg->categoria != "") ? $reg->categoria : "Sin registrar.") . '</td><td>' . (($reg->marca != "") ? $reg->marca : "Sin registrar.") . '</td><td>' . $reg->codigo_producto . '</td><td>' . (($reg->codigo != "") ? $reg->codigo : "Sin registrar.") . '</td><td>' . $reg->stock . '</td><td>' . $reg->stock_minimo . '</td><td>' . $reg->cantidad . '</td><td>' . "<nav>S/. " . number_format($reg->precio_compra, 2) . "</nav>" . '</td><td>' . $reg->medida . '</td><td>' . "<nav>S/. " . number_format($reg->subtotal, 2) . "</nav>" . '</td></tr>';
-					$igv = $igv + ($rspta2["impuesto"] == 18 ? $reg->subtotal * 0.18 : $reg->subtotal * 0);
+					echo '<tr class="filas"><td></td> <td><a href="../files/articulos/' . $reg->imagen . '" class="galleria-lightbox" style="z-index: 10000 !important;"><img src="../files/articulos/' . $reg->imagen . '" height="50px" width="50px" class="img-fluid"></a></td><td>' . $reg->articulo . '</td><td>' . (($reg->categoria != "") ? $reg->categoria : "Sin registrar.") . '</td><td>' . (($reg->marca != "") ? $reg->marca : "Sin registrar.") . '</td><td>' . $reg->codigo_producto . '</td><td>' . (($reg->codigo != "") ? $reg->codigo : "Sin registrar.") . '</td><td>' . $reg->stock . '</td><td>' . $reg->stock_minimo . '</td><td>' . $reg->cantidad . '</td><td>' . "<nav>S/. " . number_format($reg->precio_compra, 2) . "</nav>" . '</td><td>' . $reg->medida . '</td></tr>';
 				}
-
-				echo '
-				<tfoot>
-					<tr>
-					<th>IGV</th>
-					<th></th>
-					<th></th>
-					<th></th>
-					<th></th>
-					<th></th>
-					<th></th>
-					<th></th>
-					<th></th>
-					<th></th>
-					<th></th>
-					<th></th>
-					<th><h4 id="igv">S/.' . number_format($igv, 2) . '</h4><input type="hidden" name="total_igv" id="total_igv"></th>
-					</tr>
-					<tr>
-					<th>TOTAL</th>
-					<th></th>
-					<th></th>
-					<th></th>
-					<th></th>
-					<th></th>
-					<th></th>
-					<th></th>
-					<th></th>
-					<th></th>
-					<th></th>
-					<th></th>
-					<th><h4 id="total">S/.' . number_format($rspta2["total_compra"], 2) . '</h4><input type="hidden" name="total_compra" id="total_compra"></th>
-					</tr>
-				</tfoot>';
 				break;
 
 			case 'listar':
@@ -129,15 +93,15 @@ if (!isset($_SESSION["nombre"])) {
 
 				if ($cargo == "superadmin") {
 					if ($fecha_inicio == "" && $fecha_fin == "") {
-						$rspta = $entradas->listar();
+						$rspta = $transferencias->listar();
 					} else {
-						$rspta = $entradas->listarPorFecha($fecha_inicio, $fecha_fin);
+						$rspta = $transferencias->listarPorFecha($fecha_inicio, $fecha_fin);
 					}
 				} else {
 					if ($fecha_inicio == "" && $fecha_fin == "") {
-						$rspta = $entradas->listarPorUsuario($idlocalSession);
+						$rspta = $transferencias->listarPorUsuario($idlocalSession);
 					} else {
-						$rspta = $entradas->listarPorUsuarioFecha($idlocalSession, $fecha_inicio, $fecha_fin);
+						$rspta = $transferencias->listarPorUsuarioFecha($idlocalSession, $fecha_inicio, $fecha_fin);
 					}
 				}
 
@@ -158,7 +122,6 @@ if (!isset($_SESSION["nombre"])) {
 
 				$firstIteration = true;
 				$totalCantidad = 0;
-				$totalPrecioCompra = 0;
 
 				while ($reg = $rspta->fetch_object()) {
 					$cargo_detalle = "";
@@ -188,27 +151,25 @@ if (!isset($_SESSION["nombre"])) {
 
 					$data[] = array(
 						"0" => '<div style="display: flex; flex-wrap: nowrap; gap: 3px">' .
-							'<button class="btn btn-bcp" style="margin-right: 3px; height: 35px;" onclick="mostrar(' . $reg->identrada . ')"><i class="fa fa-eye"></i></button>' .
+							'<button class="btn btn-bcp" style="margin-right: 3px; height: 35px;" onclick="mostrar(' . $reg->idtransferencia . ')"><i class="fa fa-eye"></i></button>' .
 							(($reg->estado == 'activado') ?
-								(mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-danger" style="margin-right: 3px; height: 35px;" onclick="desactivar(' . $reg->identrada . ')"><i class="fa fa-close"></i></button>')) .
-								('<a target="_blank" href="../reportes/exEntrada.php?id=' . $reg->identrada . '"><button class="btn btn-success" style="margin-right: 3px; height: 35px;"><i class="fa fa-file"></i></button></a>') : (mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-success" style="margin-right: 3px; width: 35px; height: 35px;" onclick="activar(' . $reg->identrada . ')"><i style="margin-left: -2px" class="fa fa-check"></i></button>'))) .
-							mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-danger" style="height: 35px;" onclick="eliminar(' . $reg->identrada . ')"><i class="fa fa-trash"></i></button>') .
+								(mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-danger" style="margin-right: 3px; height: 35px;" onclick="desactivar(' . $reg->idtransferencia . ')"><i class="fa fa-close"></i></button>')) : (mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-success" style="margin-right: 3px; width: 35px; height: 35px;" onclick="activar(' . $reg->idtransferencia . ')"><i style="margin-left: -2px" class="fa fa-check"></i></button>'))) .
+							(mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-danger" style="margin-right: 3px; height: 35px;" onclick="eliminar(' . $reg->idtransferencia . ')"><i class="fa fa-trash"></i></button>')) .
+							(mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-warning" style="height: 35px;" onclick="limpiarTransferencia(' . $reg->idtransferencia . ')"><i class="fa fa-minus-circle"></i></button>')) .
 							'</div>',
 						"1" => $reg->fecha,
-						"2" => $reg->local,
-						"3" => "N° " . (($reg->codigo != "") ? $reg->codigo : "Sin registrar."),
-						"4" => $reg->total_cantidad,
-						"5" => $reg->total_compra,
-						"6" => ($reg->tipo == '' ? 'Sin registrar.' : $reg->tipo),
-						"7" => $reg->proveedor,
-						"8" => $reg->usuario,
-						"9" => $cargo_detalle,
-						"10" => ($reg->estado == 'activado') ? '<span class="label bg-green">Activado</span>' :
+						"2" => "N° " . (($reg->codigo != "") ? $reg->codigo : "Sin registrar."),
+						"3" => $reg->total_cantidad,
+						"4" => $reg->origen,
+						"5" => $reg->destino,
+						"6" => "<textarea type='text' class='form-control' rows='2' style='background-color: white !important; cursor: default; height: 60px !important;' readonly>" . (($reg->comentario == "") ? 'Sin registrar.' : $reg->comentario) . "</textarea>",
+						"7" => $reg->usuario,
+						"8" => $cargo_detalle,
+						"9" => ($reg->estado == 'activado') ? '<span class="label bg-green">Activado</span>' :
 							'<span class="label bg-red">Desactivado</span>'
 					);
 
 					$totalCantidad += $reg->total_cantidad;
-					$totalPrecioCompra += $reg->total_compra;
 					$firstIteration = false; // Marcar que ya no es la primera iteración
 				}
 
@@ -216,15 +177,14 @@ if (!isset($_SESSION["nombre"])) {
 					$data[] = array(
 						"0" => "",
 						"1" => "",
-						"2" => "",
-						"3" => "<strong>TOTAL</strong>",
-						"4" => '<strong>' . number_format($totalCantidad, 2) . '</strong>',
-						"5" => '<strong>' . number_format($totalPrecioCompra, 2) . '</strong>',
+						"2" => "<strong>TOTAL</strong>",
+						"3" => '<strong>' . number_format($totalCantidad, 2) . '</strong>',
+						"4" => "",
+						"5" => "",
 						"6" => "",
 						"7" => "",
 						"8" => "",
 						"9" => "",
-						"10" => "",
 					);
 				}
 
@@ -238,27 +198,13 @@ if (!isset($_SESSION["nombre"])) {
 				echo json_encode($results);
 				break;
 
-			case 'selectProveedor':
-				require_once "../modelos/Proveedores.php";
-				$proveedores = new Proveedor();
-
-				$rspta = $proveedores->listarASC();
-
-				echo '<option value="">- Seleccione -</option>';
-				while ($reg = $rspta->fetch_object()) {
-					echo '<option value=' . $reg->idproveedor . '>' . $reg->nombre . '</option>';
-				}
-				break;
-
 			case 'listarArticulos':
 				require_once "../modelos/Articulo.php";
 				$articulo = new Articulo();
 
-				if ($cargo == "superadmin") {
-					$rspta = $articulo->listar();
-				} else {
-					$rspta = $articulo->listarPorUsuario($idlocalSession);
-				}
+				$idlocal = $_GET["idlocal"];
+
+				$rspta = $articulo->listarPorUsuario($idlocal);
 
 				$data = array();
 
@@ -334,16 +280,14 @@ if (!isset($_SESSION["nombre"])) {
 				require_once "../modelos/Articulo.php";
 				$articulo = new Articulo();
 
-				if ($cargo == "superadmin") {
-					$rspta = $articulo->listar();
-				} else {
-					$rspta = $articulo->listarPorUsuario($idlocalSession);
-				}
+				$idlocal = $_GET["idlocal"];
+
+				$rspta = $articulo->listarPorUsuario($idlocal);
 
 				echo '<option value="">Busca un producto.</option>';
 				while ($reg = $rspta->fetch_object()) {
 					if ($reg->stock != '0') {
-						echo '<option value="' . $reg->idarticulo . '">' . (($reg->codigo != "") ? $reg->codigo : "Sin registrar.") . ' - ' . $reg->nombre . '</option>';
+						echo '<option value="' . $reg->idarticulo . '">' . (($reg->codigo != "") ? $reg->codigo : "Sin registrar.") . ' - ' . $reg->nombre . ' - ' . $reg->local . '</option>';
 					}
 				}
 				break;
@@ -381,9 +325,9 @@ if (!isset($_SESSION["nombre"])) {
 
 			case 'listarTodosActivos':
 				if ($cargo == "superadmin") {
-					$rspta = $entradas->listarTodosActivos();
+					$rspta = $transferencias->listarTodosActivos();
 				} else {
-					$rspta = $entradas->listarTodosActivosPorUsuario($idusuario, $idlocalSession);
+					$rspta = $transferencias->listarTodosActivosPorUsuario($idusuario, $idlocalSession);
 				}
 
 				$result = mysqli_fetch_all($rspta, MYSQLI_ASSOC);
@@ -396,77 +340,6 @@ if (!isset($_SESSION["nombre"])) {
 				}
 
 				echo json_encode($data);
-				break;
-
-				/* ======================= SUNAT ======================= */
-
-			case 'consultaSunat':
-				// Token para la API
-				$token = 'apis-token-10245.si7J3XHG51QGHXgWHmECBYq6MOBBWDC2';
-
-				$data = "";
-				$curl = curl_init();
-
-				try {
-					if (strlen($sunat) == 8) {
-						// DNI
-						$url = 'https://api.apis.net.pe/v2/reniec/dni?numero=' . $sunat;
-						$referer = 'https://apis.net.pe/consulta-dni-api';
-					} elseif (strlen($sunat) == 11) {
-						// RUC
-						$url = 'https://api.apis.net.pe/v2/sunat/ruc?numero=' . $sunat;
-						$referer = 'http://apis.net.pe/api-ruc';
-					} elseif (strlen($sunat) < 8) {
-						// Mensaje para DNI no válido
-						$data = "El DNI debe tener 8 caracteres.";
-						echo $data;
-						break;
-					} elseif (strlen($sunat) > 8 && strlen($sunat) < 11) {
-						// Mensaje para RUC no válido
-						$data = "El RUC debe tener 11 caracteres.";
-						echo $data;
-						break;
-					}
-
-					// configuración de cURL
-					curl_setopt_array($curl, array(
-						CURLOPT_URL => $url,
-						CURLOPT_RETURNTRANSFER => true,
-						CURLOPT_SSL_VERIFYPEER => 0,
-						CURLOPT_ENCODING => '',
-						CURLOPT_MAXREDIRS => 2,
-						CURLOPT_TIMEOUT => 0,
-						CURLOPT_FOLLOWLOCATION => true,
-						CURLOPT_CUSTOMREQUEST => 'GET',
-						CURLOPT_HTTPHEADER => array(
-							'Referer: ' . $referer,
-							'Authorization: Bearer ' . $token
-						),
-					));
-
-					$response = curl_exec($curl);
-
-					if ($response === false) {
-						throw new Exception(curl_error($curl));
-					}
-
-					if (stripos($response, 'Not Found') !== false || stripos($response, '{"message":"ruc no valido"}') !== false) {
-						// Mensaje para DNI no válido o RUC no válido
-						$data = (strlen($sunat) == 8) ? "DNI no valido" : "RUC no valido";
-					} elseif (stripos($response, '{"message":"Superaste el limite permitido por tu token"}') !== false) {
-						// Mensaje cuando se supera el límite de consultas a la SUNAT
-						$data = "Acaba de superar el límite de 1000 consultas a la SUNAT este mes";
-					} else {
-						// Respuesta válida de la API
-						$data = $response;
-					}
-				} catch (Exception $e) {
-					$data = "Error al procesar la solicitud: " . $e->getMessage();
-				} finally {
-					curl_close($curl);
-				}
-
-				echo $data;
 				break;
 		}
 	} else {

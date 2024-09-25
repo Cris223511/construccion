@@ -16,13 +16,13 @@ if (!isset($_SESSION["nombre"])) {
           <div class="col-md-12">
             <div class="box">
               <div class="box-header with-border">
-                <h1 class="box-title">Activos
+                <h1 class="box-title">Ubicaciones
                   <?php if ($_SESSION["cargo"] != "mirador") { ?>
                     <button class="btn btn-bcp" id="btnagregar" onclick="mostrarform(true)">
                       <i class="fa fa-plus-circle"></i> Agregar
                     </button>
                   <?php } ?>
-                  <a href="../reportes/rptactivos.php" target="_blank">
+                  <a href="../reportes/rptubicaciones.php" target="_blank">
                     <button class="btn btn-secondary" style="color: black !important;">
                       <i class="fa fa-clipboard"></i> Reporte
                     </button>
@@ -54,7 +54,7 @@ if (!isset($_SESSION["nombre"])) {
                     <thead>
                       <th>Opciones</th>
                       <th style="width: 20%; min-width: 200px;">Nombre</th>
-                      <th style="width: 40%; min-width: 280px; white-space: nowrap;">Descripción del activo</th>
+                      <th style="width: 40%; min-width: 280px; white-space: nowrap;">Descripción de la ubicación</th>
                       <th style="white-space: nowrap;">Agregado por</th>
                       <th>Cargo</th>
                       <th style="white-space: nowrap;">Fecha y hora</th>
@@ -65,7 +65,7 @@ if (!isset($_SESSION["nombre"])) {
                     <tfoot>
                       <th>Opciones</th>
                       <th>Nombre</th>
-                      <th>Descripción del activo</th>
+                      <th>Descripción de la ubicación</th>
                       <th>Agregado por</th>
                       <th>Cargo</th>
                       <th>Fecha y hora</th>
@@ -77,9 +77,9 @@ if (!isset($_SESSION["nombre"])) {
               <div class="panel-body" style="height: max-content;" id="formularioregistros">
                 <form name="formulario" id="formulario" method="POST">
                   <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                    <label>Activo(*):</label>
-                    <input type="hidden" name="idactivo" id="idactivo">
-                    <input type="text" class="form-control" name="titulo" id="titulo" maxlength="40" placeholder="Ingrese el nombre del activo." autocomplete="off" required>
+                    <label>Ubicación(*):</label>
+                    <input type="hidden" name="idubicacion" id="idubicacion">
+                    <input type="text" class="form-control" name="titulo" id="titulo" maxlength="40" placeholder="Ingrese el nombre de la ubicación." autocomplete="off" required>
                   </div>
                   <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
                     <label>Descripción:</label>
@@ -103,7 +103,7 @@ if (!isset($_SESSION["nombre"])) {
 
   require 'footer.php';
   ?>
-  <script type="text/javascript" src="scripts/activos.js"></script>
+  <script type="text/javascript" src="scripts/ubicaciones.js"></script>
 <?php
 }
 ob_end_flush();

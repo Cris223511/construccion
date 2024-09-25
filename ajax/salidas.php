@@ -29,8 +29,11 @@ if (!isset($_SESSION["nombre"])) {
 		$idactivo = isset($_POST["idactivo"]) ? limpiarCadena($_POST["idactivo"]) : "";
 		$idautorizado = isset($_POST["idautorizado"]) ? limpiarCadena($_POST["idautorizado"]) : "";
 		$idrecibido = isset($_POST["idrecibido"]) ? limpiarCadena($_POST["idrecibido"]) : "";
+		$idubicacion = isset($_POST["idubicacion"]) ? limpiarCadena($_POST["idubicacion"]) : "";
 		$codigo = isset($_POST["codigo"]) ? limpiarCadena($_POST["codigo"]) : "";
-		$ubicacion = isset($_POST["ubicacion"]) ? limpiarCadena($_POST["ubicacion"]) : "";
+		$origen = isset($_POST["origen"]) ? limpiarCadena($_POST["origen"]) : "";
+		$destino = isset($_POST["destino"]) ? limpiarCadena($_POST["destino"]) : "";
+		$num_guia = isset($_POST["num_guia"]) ? limpiarCadena($_POST["num_guia"]) : "";
 		$descripcion = isset($_POST["descripcion"]) ? limpiarCadena($_POST["descripcion"]) : "";
 		$impuesto = isset($_POST["impuesto"]) ? limpiarCadena($_POST["impuesto"]) : "";
 		$total_compra = isset($_POST["total_compra"]) ? limpiarCadena($_POST["total_compra"]) : "";
@@ -43,7 +46,7 @@ if (!isset($_SESSION["nombre"])) {
 				if ($codigoExiste) {
 					echo "El N° de documento de la salida ya existe.";
 				} else {
-					$rspta = $salidas->agregar($idlocal, $idusuario, $idtipo, $tipo_movimiento, $idactivo, $idautorizado, $idrecibido, $codigo, $ubicacion, $descripcion, $impuesto, $total_compra, $_POST["idarticulo"], $_POST["cantidad"], $_POST["precio_compra"]);
+					$rspta = $salidas->agregar($idlocal, $idusuario, $idtipo, $tipo_movimiento, $idactivo, $idautorizado, $idrecibido, $idubicacion, $codigo, $origen, $destino, $num_guia, $descripcion, $impuesto, $total_compra, $_POST["idarticulo"], $_POST["cantidad"], $_POST["precio_compra"]);
 					echo $rspta ? "Salida registrada" : "Una de las cantidades superan al stock normal del artículo.";
 				}
 				break;
@@ -196,6 +199,7 @@ if (!isset($_SESSION["nombre"])) {
 					$data[] = array(
 						"0" => '<div style="display: flex; flex-wrap: nowrap; gap: 3px">' .
 							'<button class="btn btn-bcp" style="margin-right: 3px; height: 35px;" onclick="mostrar(' . $reg->idsalida . ')"><i class="fa fa-eye"></i></button>' .
+							// ('<button class="btn btn-info" style="margin-right: 3px; height: 35px;" onclick="prueba(' . $reg->idsalida . ')"><i class="fa fa-info-circle"></i></button>') .
 							(($reg->estado == 'activado') ?
 								(mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-danger" style="margin-right: 3px; height: 35px;" onclick="desactivar(' . $reg->idsalida . ')"><i class="fa fa-close"></i></button>')) .
 								('<a target="_blank" href="../reportes/exSalida.php?id=' . $reg->idsalida . '"><button class="btn btn-success" style="margin-right: 3px; height: 35px;"><i class="fa fa-file"></i></button></a>') : (mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-success" style="margin-right: 3px; width: 35px; height: 35px;" onclick="activar(' . $reg->idsalida . ')"><i style="margin-left: -2px" class="fa fa-check"></i></button>'))) .
@@ -205,13 +209,16 @@ if (!isset($_SESSION["nombre"])) {
 						"2" => $reg->local,
 						"3" => 'N° ' . (($reg->codigo != "") ? $reg->codigo : "Sin registrar."),
 						"4" => $reg->total_cantidad,
-						"5" => ($reg->tipo == '' ? 'Sin registrar.' : $reg->tipo),
-						"6" => ($reg->tipo_movimiento == '' ? 'Sin registrar.' : ucwords($reg->tipo_movimiento)),
-						"7" => ($reg->autorizado == '' ? 'Sin registrar.' : $reg->autorizado),
-						"8" => ($reg->recibido == '' ? 'Sin registrar.' : $reg->recibido),
-						"9" => $reg->usuario,
-						"10" => $cargo_detalle,
-						"11" => ($reg->estado == 'activado') ? '<span class="label bg-green">Activado</span>' :
+						"5" => ($reg->num_guia == '' ? 'Sin registrar.' : $reg->num_guia),
+						"6" => ($reg->origen == '' ? 'Sin registrar.' : $reg->origen),
+						"7" => ($reg->destino == '' ? 'Sin registrar.' : $reg->destino),
+						"8" => ($reg->tipo == '' ? 'Sin registrar.' : $reg->tipo),
+						"9" => ($reg->tipo_movimiento == '' ? 'Sin registrar.' : ucwords($reg->tipo_movimiento)),
+						"10" => ($reg->autorizado == '' ? 'Sin registrar.' : $reg->autorizado),
+						"11" => ($reg->recibido == '' ? 'Sin registrar.' : $reg->recibido),
+						"12" => $reg->usuario,
+						"13" => $cargo_detalle,
+						"14" => ($reg->estado == 'activado') ? '<span class="label bg-green">Activado</span>' :
 							'<span class="label bg-red">Desactivado</span>'
 					);
 
@@ -233,6 +240,9 @@ if (!isset($_SESSION["nombre"])) {
 						"9" => "",
 						"10" => "",
 						"11" => "",
+						"12" => "",
+						"13" => "",
+						"14" => "",
 					);
 				}
 
@@ -354,7 +364,7 @@ if (!isset($_SESSION["nombre"])) {
 
 				echo '<option value="">Busca un producto.</option>';
 				while ($reg = $rspta->fetch_object()) {
-					if (!empty((($reg->codigo != "") ? $reg->codigo : "Sin registrar.")) && $reg->stock != '0') {
+					if ($reg->stock != '0') {
 						echo '<option value="' . $reg->idarticulo . '">' . (($reg->codigo != "") ? $reg->codigo : "Sin registrar.") . ' - ' . $reg->nombre . '</option>';
 					}
 				}
@@ -398,6 +408,22 @@ if (!isset($_SESSION["nombre"])) {
 					$last_codigo = 0;
 				}
 				echo $last_codigo;
+				break;
+
+			case 'prueba':
+				$rspta = $salidas->listarCabecera($idsalida);
+
+				$data = array();
+
+				while ($reg = $rspta->fetch_object()) {
+					$rowData = array();
+					foreach ($reg as $key => $value) {
+						$rowData[$key] = $value;
+					}
+					$data[] = $rowData;
+				}
+
+				echo json_encode(["data" => $data]);
 				break;
 
 				/* ======================= SELECTS ======================= */

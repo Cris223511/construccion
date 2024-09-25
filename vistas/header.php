@@ -300,7 +300,18 @@ $local_login = $_SESSION['local'];
                 <li id="lSalidas"><a href="salidas.php"><i class="fa fa-circle-o"></i> Salidas</a></li>
                 <li id="lPersonales"><a href="personales.php"><i class="fa fa-circle-o"></i> Personales</a></li>
                 <li id="lActivos"><a href="activos.php"><i class="fa fa-circle-o"></i> Activos</a></li>
+                <li id="lUbicaciones"><a href="ubicaciones.php"><i class="fa fa-circle-o"></i> Ubicaciones</a></li>
               </ul>
+            </li>';
+          }
+          ?>
+
+          <?php
+          if ($_SESSION['transferencias'] == 1) {
+            echo '<li id="mTransferencias">
+              <a href="transferencias.php">
+                <i class="fa fa-exchange"></i> <span>Transferencias</span>
+              </a>
             </li>';
           }
           ?>

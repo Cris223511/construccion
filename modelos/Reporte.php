@@ -21,7 +21,6 @@ class Reporte
                   u.cargo,
 				  al.titulo as local,
                   e.codigo,
-                  e.ubicacion,
                   DATE_FORMAT(e.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha
                 FROM detalle_entrada de
 				LEFT JOIN articulo a ON de.idarticulo = a.idarticulo
@@ -48,7 +47,6 @@ class Reporte
                   u.cargo,
 				  al.titulo as local,
                   e.codigo,
-                  e.ubicacion,
                   DATE_FORMAT(e.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha
                 FROM detalle_entrada de
 				LEFT JOIN articulo a ON de.idarticulo = a.idarticulo
@@ -78,7 +76,6 @@ class Reporte
                   u.cargo,
 				  al.titulo as local,
                   s.codigo,
-                  s.ubicacion,
                   DATE_FORMAT(s.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha
                 FROM detalle_salida ds
 				LEFT JOIN articulo a ON ds.idarticulo = a.idarticulo
@@ -105,7 +102,6 @@ class Reporte
                   u.cargo,
 				  al.titulo as local,
                   s.codigo,
-                  s.ubicacion,
                   DATE_FORMAT(s.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha
                 FROM detalle_salida ds
 				LEFT JOIN articulo a ON ds.idarticulo = a.idarticulo

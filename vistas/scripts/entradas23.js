@@ -64,6 +64,7 @@ function init() {
 
 		const selects = {
 			"idtipo": $("#idtipo"),
+			"idubicacion": $("#idubicacion"),
 			"idproveedor": $("#idproveedor"),
 			"idlocal": $("#idlocal"),
 		};
@@ -94,6 +95,9 @@ function init() {
 
 		$('#idtipo').closest('.form-group').find('input[type="text"]').attr('onkeydown', 'agregarTipo(event)');
 		$('#idtipo').closest('.form-group').find('input[type="text"]').attr('maxlength', '40');
+
+		$('#idubicacion').closest('.form-group').find('input[type="text"]').attr('onkeydown', 'agregarUbicacion(event)');
+		$('#idubicacion').closest('.form-group').find('input[type="text"]').attr('maxlength', '40');
 	});
 
 	$.post("../ajax/entradas.php?op=selectProducto", function (r) {
@@ -159,6 +163,43 @@ function agregarTipo(e) {
 						$("#idtipo2").val("");
 						$("#titulo3").val("");
 						$("#descripcion2").val("");
+					}
+				}
+			});
+		}
+	}
+}
+
+function agregarUbicacion(e) {
+	let inputValue = $('#idubicacion').closest('.form-group').find('input[type="text"]');
+
+	if (e.key === "Enter") {
+		if ($('.no-results').is(':visible')) {
+			e.preventDefault();
+			$("#titulo4").val(inputValue.val());
+
+			var formData = new FormData($("#formularioUbicacion")[0]);
+
+			$.ajax({
+				url: "../ajax/ubicaciones.php?op=guardaryeditar",
+				type: "POST",
+				data: formData,
+				contentType: false,
+				processData: false,
+
+				success: function (datos) {
+					datos = limpiarCadena(datos);
+					if (!datos) {
+						console.log("No se recibieron datos del servidor.");
+						return;
+					} else if (datos == "El nombre de la ubicación ya existe.") {
+						bootbox.alert(datos);
+						return;
+					} else {
+						// bootbox.alert(datos);
+						listarTodosActivos("idubicacion");
+						$("#idubicacion2").val("");
+						$("#titulo4").val("");
 					}
 				}
 			});
@@ -437,6 +478,8 @@ function limpiar() {
 	$("#idlocal").selectpicker('refresh');
 	$("#idproveedor").val($("#idproveedor option:first").val());
 	$("#idproveedor").selectpicker('refresh');
+	$("#idubicacion").val($("#idubicacion option:first").val());
+	$("#idubicacion").selectpicker('refresh');
 
 	$(".filas").remove();
 	$('#myModal').modal('hide');
@@ -639,6 +682,8 @@ function mostrar(identrada) {
 		var impuesto = parseInt(data.impuesto);
 		$("#impuesto").val(impuesto);
 		$("#impuesto").selectpicker('refresh');
+		$("#idubicacion").val(data.idubicacion);
+		$('#idubicacion').selectpicker('refresh');
 
 		$("#identrada").val(data.identrada);
 
