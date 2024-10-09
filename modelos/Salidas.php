@@ -28,11 +28,11 @@ class Salida
 			$sql_medida = "SELECT m.titulo FROM medidas m INNER JOIN articulo a ON a.idmedida = m.idmedida WHERE a.idarticulo = '$idarticulo[$num_elementos]'";
 			$resultado = ejecutarConsultaSimpleFila($sql_medida);
 
-			if ($resultado['titulo'] == 'Paquetes') {
-				$actualizar_art = "UPDATE articulo SET precio_compra_mayor='$precio_compra[$num_elementos]' WHERE idarticulo='$idarticulo[$num_elementos]'";
-			} else {
-				$actualizar_art = "UPDATE articulo SET precio_compra='$precio_compra[$num_elementos]' WHERE idarticulo='$idarticulo[$num_elementos]'";
-			}
+			// if ($resultado['titulo'] == 'Paquetes') {
+			$actualizar_art = "UPDATE articulo SET precio_compra_mayor='$precio_compra[$num_elementos]' WHERE idarticulo='$idarticulo[$num_elementos]'";
+			// } else {
+			// $actualizar_art = "UPDATE articulo SET precio_compra='$precio_compra[$num_elementos]' WHERE idarticulo='$idarticulo[$num_elementos]'";
+			// }
 
 			ejecutarConsulta($actualizar_art) or $sw = false;
 

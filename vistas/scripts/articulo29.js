@@ -23,6 +23,7 @@ function init() {
 			"idcategoria": $("#idcategoria, #idcategoriaBuscar"),
 			"idlocal": $("#idlocal"),
 			"idmedida": $("#idmedida"),
+			"idubicacion": $("#idubicacion"),
 		};
 
 		for (const selectId in selects) {
@@ -57,6 +58,9 @@ function init() {
 		$('#idmedida').closest('.form-group').find('input[type="text"]').attr('onkeydown', 'agregarMedida(event)');
 		$('#idmedida').closest('.form-group').find('input[type="text"]').attr('maxlength', '40');
 
+		$('#idubicacion').closest('.form-group').find('input[type="text"]').attr('onkeydown', 'agregarUbicacion(event)');
+		$('#idubicacion').closest('.form-group').find('input[type="text"]').attr('maxlength', '40');
+
 		actualizarRUC();
 	});
 }
@@ -86,6 +90,43 @@ function listarTodosActivos(selectId) {
 		select.selectpicker('refresh');
 		select.selectpicker('toggle');
 	});
+}
+
+function agregarUbicacion(e) {
+	let inputValue = $('#idubicacion').closest('.form-group').find('input[type="text"]');
+
+	if (e.key === "Enter") {
+		if ($('.no-results').is(':visible')) {
+			e.preventDefault();
+			$("#titulo4").val(inputValue.val());
+
+			var formData = new FormData($("#formularioUbicacion")[0]);
+
+			$.ajax({
+				url: "../ajax/ubicaciones.php?op=guardaryeditar",
+				type: "POST",
+				data: formData,
+				contentType: false,
+				processData: false,
+
+				success: function (datos) {
+					datos = limpiarCadena(datos);
+					if (!datos) {
+						console.log("No se recibieron datos del servidor.");
+						return;
+					} else if (datos == "El nombre de la ubicación ya existe.") {
+						bootbox.alert(datos);
+						return;
+					} else {
+						// bootbox.alert(datos);
+						listarTodosActivos("idubicacion");
+						$("#idubicacion2").val("");
+						$("#titulo4").val("");
+					}
+				}
+			});
+		}
+	}
 }
 
 function agregarCategoria(e) {
@@ -222,7 +263,6 @@ function limpiar() {
 	$("#nombre").val("");
 	$("#local_ruc").val("");
 	$("#descripcion").val("");
-	$("#casillero").val("");
 	$("#stock").val("");
 	$("#stock_minimo").val("");
 	$("#precio_compra").val("");
@@ -251,6 +291,8 @@ function limpiar() {
 	$("#idmarca").selectpicker('refresh');
 	$("#idmedida").val($("#idmedida option:first").val());
 	$("#idmedida").selectpicker('refresh');
+	$("#idubicacion").val($("#idubicacion option:first").val());
+	$("#idubicacion").selectpicker('refresh');
 	actualizarRUC();
 
 	$(".btn1").show();
@@ -368,7 +410,7 @@ function guardaryeditar(e) {
 	$("#btnGuardar").prop("disabled", true);
 	var formData = new FormData($("#formulario")[0]);
 
-	let detalles = frmDetallesVisible() ? obtenerDetalles() : { talla: '', color: '', peso: '0.00', casillero: '', fecha_emision: '', fecha_vencimiento: '', nota_1: '', nota_2: '', codigo: '' };
+	let detalles = frmDetallesVisible() ? obtenerDetalles() : { talla: '', color: '', peso: '0.00', idubicacion: '', fecha_emision: '', fecha_vencimiento: '', nota_1: '', nota_2: '', codigo: '' };
 
 	for (let key in detalles) {
 		formData.append(key, detalles[key]);
@@ -400,7 +442,7 @@ function obtenerDetalles() {
 		talla: $("#talla").val(),
 		color: $("#color").val(),
 		peso: $("#peso").val(),
-		casillero: $("#casillero").val(),
+		idubicacion: $("#idubicacion").val(),
 		fecha_emision: $("#fecha_emision").val(),
 		fecha_vencimiento: $("#fecha_vencimiento").val(),
 		nota_1: $("#nota_1").val(),
@@ -413,7 +455,7 @@ function obtenerDetalles() {
 	if (!detalles.talla) detalles.talla = '';
 	if (!detalles.color) detalles.color = '';
 	if (!detalles.peso) detalles.peso = '0.00';
-	if (!detalles.casillero) detalles.casillero = '0.00';
+	if (!detalles.idubicacion) detalles.idubicacion = '';
 	if (!detalles.fecha_emision) detalles.fecha_emision = '';
 	if (!detalles.fecha_vencimiento) detalles.fecha_vencimiento = '';
 	if (!detalles.nota_1) detalles.nota_1 = '';
@@ -421,6 +463,8 @@ function obtenerDetalles() {
 	if (!detalles.imei) detalles.imei = '';
 	if (!detalles.serial) detalles.serial = '';
 	if (!detalles.codigo) detalles.codigo = '';
+
+	$("#idubicacion").selectpicker("refresh");
 
 	return detalles;
 }
@@ -448,6 +492,8 @@ function mostrar(idarticulo) {
 		$('#idmarca').selectpicker('refresh');
 		$("#idmedida").val(data.idmedida);
 		$('#idmedida').selectpicker('refresh');
+		$("#idubicacion").val(data.idubicacion);
+		$('#idubicacion').selectpicker('refresh');
 		$("#codigo").val(data.codigo);
 		$("#codigo_producto").val(data.codigo_producto);
 		$("#nombre").val(data.nombre);
@@ -459,7 +505,6 @@ function mostrar(idarticulo) {
 		$("#color").val(data.color);
 		$("#peso").val(data.peso);
 		$("#descripcion").val(data.descripcion);
-		$("#casillero").val(data.casillero);
 		$("#imagenmuestra").show();
 		$("#imagenmuestra").attr("src", "../files/articulos/" + data.imagen);
 		$("#imagenactual").val(data.imagen);

@@ -126,7 +126,7 @@ if (!isset($_SESSION["nombre"])) {
               <div class="panel-body" id="formularioregistros" style="background-color: #ecf0f5 !important; padding-left: 0 !important; padding-right: 0 !important;">
                 <form name="formulario" id="formulario" method="POST">
                   <div class="form-group col-lg-12 col-md-12 col-sm-12" style="background-color: white; border-top: 3px #002a8e solid; padding: 20px;">
-                    <div class="form-group col-lg-6 col-md-6 col-md-12">
+                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
                       <label>Ubicación del producto:</label>
                       <select id="idubicacion" name="idubicacion" class="form-control selectpicker" data-live-search="true" data-size="5">
                         <option value="">- Seleccione -</option>
@@ -136,13 +136,13 @@ if (!isset($_SESSION["nombre"])) {
                       <label>Fecha y hora(*):</label>
                       <input type="datetime-local" class="form-control" id="fecha_hora" readonly>
                     </div>
-                    <div class="form-group col-lg-6 col-md-6 col-md-12">
+                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
                       <label>Local(*):</label>
                       <select id="idlocal" name="idlocal" class="form-control selectpicker idlocal" data-live-search="true" data-size="5" onchange="actualizarRUC(); actualizarPersonales(this.value);" required>
                         <option value="">- Seleccione -</option>
                       </select>
                     </div>
-                    <div class="form-group col-lg-6 col-md-6 col-md-12">
+                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
                       <label>RUC local(*):</label>
                       <input type="number" class="form-control" id="local_ruc" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="11" placeholder="RUC del local" disabled>
                     </div>

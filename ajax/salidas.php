@@ -184,7 +184,7 @@ if (!isset($_SESSION["nombre"])) {
 							$cargo_detalle = "Usuario";
 							break;
 						case 'mirador':
-							$cargo_detalle = "Mirador";
+							$cargo_detalle = "Usuario mirador";
 							break;
 						case 'almacenero':
 							$cargo_detalle = "Almacenero";
@@ -298,7 +298,7 @@ if (!isset($_SESSION["nombre"])) {
 							$cargo_detalle = "Usuario";
 							break;
 						case 'mirador':
-							$cargo_detalle = "Mirador";
+							$cargo_detalle = "Usuario mirador";
 							break;
 						case 'almacenero':
 							$cargo_detalle = "Almacenero";
@@ -311,7 +311,7 @@ if (!isset($_SESSION["nombre"])) {
 					}
 
 					$data[] = array(
-						"0" => '<div style="display: flex; justify-content: center;"><button class="btn btn-warning" style="height: 35px;" data-idarticulo="' . $reg->idarticulo . '" onclick="agregarDetalle(' . $reg->idarticulo . ',\'' . $reg->nombre . '\',\'' . (($reg->categoria != "") ? $reg->categoria : "Sin registrar.") . '\',\'' . (($reg->marca != "") ? $reg->marca : "Sin registrar.") . '\',\'' . $reg->medida . '\',\'' . $reg->stock . '\',\'' . $reg->stock_minimo . '\',\'' . (($reg->precio_compra)) . '\',\'' . $reg->codigo_producto . '\',\'' . (($reg->codigo != "") ? $reg->codigo : "Sin registrar.") . '\',\'' . $reg->imagen . '\'); disableButton(this);"><span class="fa fa-plus"></span></button></div>',
+						"0" => ($reg->stock != '0') ? '<div style="display: flex; justify-content: center;"><button class="btn btn-warning" style="height: 35px;" data-idarticulo="' . $reg->idarticulo . '" onclick="agregarDetalle(' . $reg->idarticulo . ',\'' . $reg->nombre . '\',\'' . (($reg->categoria != "") ? $reg->categoria : "Sin registrar.") . '\',\'' . (($reg->marca != "") ? $reg->marca : "Sin registrar.") . '\',\'' . $reg->medida . '\',\'' . $reg->stock . '\',\'' . $reg->stock_minimo . '\',\'' . (($reg->precio_compra)) . '\',\'' . $reg->codigo_producto . '\',\'' . (($reg->codigo != "") ? $reg->codigo : "Sin registrar.") . '\',\'' . $reg->imagen . '\'); disableButton(this);"><span class="fa fa-plus"></span></button></div>' : '',
 						"1" => '<a href="../files/articulos/' . $reg->imagen . '" class="galleria-lightbox" style="z-index: 10000 !important;">
 									<img src="../files/articulos/' . $reg->imagen . '" height="50px" width="50px" class="img-fluid">
 								</a>',

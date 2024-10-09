@@ -33,6 +33,7 @@ if (!isset($_SESSION["nombre"])) {
 		$idlocal = isset($_POST["idlocal"]) ? limpiarCadena($_POST["idlocal"]) : "";
 		$idmarca = isset($_POST["idmarca"]) ? limpiarCadena($_POST["idmarca"]) : "";
 		$idmedida = isset($_POST["idmedida"]) ? limpiarCadena($_POST["idmedida"]) : "";
+		$idubicacion = isset($_POST["idubicacion"]) ? limpiarCadena($_POST["idubicacion"]) : "";
 		$codigo = isset($_POST["codigo"]) ? limpiarCadena($_POST["codigo"]) : "";
 		$codigo_producto = isset($_POST["codigo_producto"]) ? limpiarCadena($_POST["codigo_producto"]) : "";
 		$nombre = isset($_POST["nombre"]) ? limpiarCadena($_POST["nombre"]) : "";
@@ -41,7 +42,6 @@ if (!isset($_SESSION["nombre"])) {
 		$precio_compra = isset($_POST["precio_compra"]) ? limpiarCadena($_POST["precio_compra"]) : "";
 		$precio_compra_mayor = isset($_POST["precio_compra_mayor"]) ? limpiarCadena($_POST["precio_compra_mayor"]) : "";
 		$descripcion = isset($_POST["descripcion"]) ? limpiarCadena($_POST["descripcion"]) : "";
-		$casillero = isset($_POST["casillero"]) ? limpiarCadena($_POST["casillero"]) : "";
 		$imagen = isset($_POST["imagen"]) ? limpiarCadena($_POST["imagen"]) : "";
 		$fecha_emision = isset($_POST["fecha_emision"]) ? limpiarCadena($_POST["fecha_emision"]) : "";
 		$fecha_vencimiento = isset($_POST["fecha_vencimiento"]) ? limpiarCadena($_POST["fecha_vencimiento"]) : "";
@@ -88,7 +88,7 @@ if (!isset($_SESSION["nombre"])) {
 					} else if ($codigoExiste && $codigo != "") {
 						echo "El código de barra del producto que ha ingresado ya existe.";
 					} else {
-						$rspta = $articulo->insertar($idusuario, $idcategoria, $idlocal, $idmarca, $idmedida, $codigo, $codigo_producto, $nombre, $stock, $stock_minimo, $precio_compra, $precio_compra_mayor, $descripcion, $casillero, $imagen, $fecha_emision, $fecha_vencimiento, $talla, $color, $peso, $nota_1, $nota_2, $imei, $serial);
+						$rspta = $articulo->insertar($idusuario, $idcategoria, $idlocal, $idmarca, $idmedida, $idubicacion, $codigo, $codigo_producto, $nombre, $stock, $stock_minimo, $precio_compra, $precio_compra_mayor, $descripcion, $imagen, $fecha_emision, $fecha_vencimiento, $talla, $color, $peso, $nota_1, $nota_2, $imei, $serial);
 						echo $rspta ? "Producto registrado" : "El producto no se pudo registrar";
 					}
 				} else {
@@ -96,7 +96,7 @@ if (!isset($_SESSION["nombre"])) {
 					if ($nombreExiste) {
 						echo "El código del producto que ha ingresado ya existe.";
 					} else {
-						$rspta = $articulo->editar($idarticulo, $idcategoria, $idlocal, $idmarca, $idmedida, $codigo, $codigo_producto, $nombre, $stock, $stock_minimo, $precio_compra, $precio_compra_mayor, $descripcion, $casillero, $imagen, $fecha_emision, $fecha_vencimiento, $talla, $color, $peso, $nota_1, $nota_2, $imei, $serial);
+						$rspta = $articulo->editar($idarticulo, $idcategoria, $idlocal, $idmarca, $idmedida, $idubicacion, $codigo, $codigo_producto, $nombre, $stock, $stock_minimo, $precio_compra, $precio_compra_mayor, $descripcion, $imagen, $fecha_emision, $fecha_vencimiento, $talla, $color, $peso, $nota_1, $nota_2, $imei, $serial);
 						echo $rspta ? "Producto actualizado" : "El producto no se pudo actualizar";
 					}
 				}
@@ -224,7 +224,7 @@ if (!isset($_SESSION["nombre"])) {
 							$cargo_detalle = "Usuario";
 							break;
 						case 'mirador':
-							$cargo_detalle = "Mirador";
+							$cargo_detalle = "Usuario mirador";
 							break;
 						case 'almacenero':
 							$cargo_detalle = "Almacenero";

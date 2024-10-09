@@ -147,7 +147,7 @@ switch ($_GET["op"]) {
 							$cargo_detalle = "Usuario";
 							break;
 						case 'mirador':
-							$cargo_detalle = "Mirador";
+							$cargo_detalle = "Usuario mirador";
 							break;
 						case 'almacenero':
 							$cargo_detalle = "Almacenero";
@@ -213,7 +213,7 @@ switch ($_GET["op"]) {
 					$cargo_detalle = "Usuario";
 					break;
 				case 'mirador':
-					$cargo_detalle = "Mirador";
+					$cargo_detalle = "Usuario mirador";
 					break;
 				case 'almacenero':
 					$cargo_detalle = "Almacenero";
@@ -250,7 +250,7 @@ switch ($_GET["op"]) {
 					$cargo_detalle = "Usuario";
 					break;
 				case 'mirador':
-					$cargo_detalle = "Mirador";
+					$cargo_detalle = "Usuario mirador";
 					break;
 				case 'almacenero':
 					$cargo_detalle = "Almacenero";
@@ -342,7 +342,7 @@ switch ($_GET["op"]) {
 					$_SESSION['cargo_detalle'] = "Administrador del local";
 					break;
 				case 'mirador':
-					$_SESSION['cargo_detalle'] = "Mirador";
+					$_SESSION['cargo_detalle'] = "Usuario mirador";
 					break;
 				case 'usuario':
 					$_SESSION['cargo_detalle'] = "Usuario";

@@ -5,18 +5,16 @@ require "../config/Conexion.php";
 class Articulo
 {
 	//Implementamos nuestro constructor
-	public function __construct()
-	{
-	}
+	public function __construct() {}
 
 	//Implementamos un método para insertar registros
-	public function insertar($idusuario, $idcategoria, $idlocal, $idmarca, $idmedida, $codigo, $codigo_producto, $nombre, $stock, $stock_minimo, $precio_compra, $precio_compra_mayor, $descripcion, $casillero, $imagen, $fecha_emision, $fecha_vencimiento, $talla, $color, $peso, $nota_1, $nota_2, $imei, $serial)
+	public function insertar($idusuario, $idcategoria, $idlocal, $idmarca, $idmedida, $idubicacion, $codigo, $codigo_producto, $nombre, $stock, $stock_minimo, $precio_compra, $precio_compra_mayor, $descripcion, $imagen, $fecha_emision, $fecha_vencimiento, $talla, $color, $peso, $nota_1, $nota_2, $imei, $serial)
 	{
 		if (empty($imagen))
 			$imagen = "product.jpg";
 
-		$sql = "INSERT INTO articulo (idusuario,idcategoria,idlocal,idmarca,idmedida,codigo,codigo_producto,nombre,stock,stock_minimo,precio_compra,precio_compra_mayor,descripcion,casillero,imagen,fecha_emision,fecha_vencimiento,talla,color,peso,nota_1,nota_2,imei,serial,fecha_hora,estado,eliminado)
-		VALUES ('$idusuario','$idcategoria','$idlocal','$idmarca','$idmedida','$codigo','$codigo_producto','$nombre','$stock', '$stock_minimo','$precio_compra','$precio_compra_mayor','$descripcion','$casillero','$imagen','$fecha_emision','$fecha_vencimiento','$talla','$color','$peso','$nota_1','$nota_2','$imei','$serial',SYSDATE(),'1','0')";
+		$sql = "INSERT INTO articulo (idusuario,idcategoria,idlocal,idmarca,idmedida,idubicacion,codigo,codigo_producto,nombre,stock,stock_minimo,precio_compra,precio_compra_mayor,descripcion,imagen,fecha_emision,fecha_vencimiento,talla,color,peso,nota_1,nota_2,imei,serial,fecha_hora,estado,eliminado)
+		VALUES ('$idusuario','$idcategoria','$idlocal','$idmarca','$idmedida','$idubicacion','$codigo','$codigo_producto','$nombre','$stock', '$stock_minimo','$precio_compra','$precio_compra_mayor','$descripcion','$imagen','$fecha_emision','$fecha_vencimiento','$talla','$color','$peso','$nota_1','$nota_2','$imei','$serial',SYSDATE(),'1','0')";
 		return ejecutarConsulta($sql);
 	}
 
@@ -70,9 +68,9 @@ class Articulo
 	}
 
 	//Implementamos un método para editar registros
-	public function editar($idarticulo, $idcategoria, $idlocal, $idmarca, $idmedida, $codigo, $codigo_producto, $nombre, $stock, $stock_minimo, $precio_compra, $precio_compra_mayor, $descripcion, $casillero, $imagen, $fecha_emision, $fecha_vencimiento, $talla, $color, $peso, $nota_1, $nota_2, $imei, $serial)
+	public function editar($idarticulo, $idcategoria, $idlocal, $idmarca, $idmedida, $idubicacion, $codigo, $codigo_producto, $nombre, $stock, $stock_minimo, $precio_compra, $precio_compra_mayor, $descripcion, $imagen, $fecha_emision, $fecha_vencimiento, $talla, $color, $peso, $nota_1, $nota_2, $imei, $serial)
 	{
-		$sql = "UPDATE articulo SET idcategoria='$idcategoria',idlocal='$idlocal',idmarca='$idmarca',idmedida='$idmedida',codigo='$codigo',codigo_producto='$codigo_producto',nombre='$nombre',stock='$stock',stock_minimo='$stock_minimo',precio_compra='$precio_compra',precio_compra_mayor='$precio_compra_mayor',descripcion='$descripcion',casillero='$casillero',imagen='$imagen',fecha_emision='$fecha_emision',fecha_vencimiento='$fecha_vencimiento',talla='$talla',color='$color',peso='$peso',nota_1='$nota_1',nota_2='$nota_2',imei='$imei',serial='$serial' WHERE idarticulo='$idarticulo'";
+		$sql = "UPDATE articulo SET idcategoria='$idcategoria',idlocal='$idlocal',idmarca='$idmarca',idmedida='$idmedida',idubicacion='$idubicacion',codigo='$codigo',codigo_producto='$codigo_producto',nombre='$nombre',stock='$stock',stock_minimo='$stock_minimo',precio_compra='$precio_compra',precio_compra_mayor='$precio_compra_mayor',descripcion='$descripcion',imagen='$imagen',fecha_emision='$fecha_emision',fecha_vencimiento='$fecha_vencimiento',talla='$talla',color='$color',peso='$peso',nota_1='$nota_1',nota_2='$nota_2',imei='$imei',serial='$serial' WHERE idarticulo='$idarticulo'";
 		return ejecutarConsulta($sql);
 	}
 
@@ -168,7 +166,9 @@ class Articulo
 			UNION ALL
 			SELECT 'local' AS tabla, l.idlocal AS id, l.titulo, u.nombre AS usuario, local_ruc AS ruc FROM locales l LEFT JOIN usuario u ON l.idusuario = u.idusuario WHERE l.idusuario <> 0 AND l.estado='activado' AND l.eliminado='0'
 			UNION ALL
-			SELECT 'medida' AS tabla, m.idmedida AS id, m.titulo, u.nombre AS usuario, NULL AS ruc FROM medidas m LEFT JOIN usuario u ON m.idusuario = u.idusuario WHERE m.estado='activado' AND m.eliminado='0'";
+			SELECT 'medida' AS tabla, m.idmedida AS id, m.titulo, u.nombre AS usuario, NULL AS ruc FROM medidas m LEFT JOIN usuario u ON m.idusuario = u.idusuario WHERE m.estado='activado' AND m.eliminado='0'
+			UNION ALL
+			SELECT 'ubicacion' AS tabla, ub.idubicacion AS id, ub.titulo, u.nombre AS usuario, NULL AS ruc FROM ubicaciones ub LEFT JOIN usuario u ON u.idusuario = ub.idusuario WHERE ub.estado='activado' AND ub.eliminado='0'";
 
 		return ejecutarConsulta($sql);
 	}
@@ -181,7 +181,9 @@ class Articulo
 			UNION ALL
 			SELECT 'local' AS tabla, l.idlocal AS id, l.titulo, u.nombre AS usuario, local_ruc AS ruc FROM locales l LEFT JOIN usuario u ON l.idusuario = u.idusuario WHERE l.idlocal='$idlocal' AND l.idusuario <> 0 AND l.estado='activado' AND l.eliminado='0'
 			UNION ALL
-			SELECT 'medida' AS tabla, m.idmedida AS id, m.titulo, u.nombre AS usuario, NULL AS ruc FROM medidas m LEFT JOIN usuario u ON m.idusuario = u.idusuario WHERE m.estado='activado' AND m.eliminado='0'";
+			SELECT 'medida' AS tabla, m.idmedida AS id, m.titulo, u.nombre AS usuario, NULL AS ruc FROM medidas m LEFT JOIN usuario u ON m.idusuario = u.idusuario WHERE m.estado='activado' AND m.eliminado='0'
+			UNION ALL
+			SELECT 'ubicacion' AS tabla, ub.idubicacion AS id, ub.titulo, u.nombre AS usuario, NULL AS ruc FROM ubicaciones ub LEFT JOIN usuario u ON u.idusuario = ub.idusuario WHERE ub.estado='activado' AND ub.eliminado='0'";
 
 		return ejecutarConsulta($sql);
 	}

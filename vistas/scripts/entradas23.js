@@ -58,7 +58,7 @@ function init() {
 	$('[data-toggle="popover"]').popover();
 
 	$.post("../ajax/entradas.php?op=listarTodosActivos", function (data) {
-		console.log(data)
+		// console.log(data)
 		const obj = JSON.parse(data);
 		console.log(obj);
 

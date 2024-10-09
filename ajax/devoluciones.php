@@ -188,7 +188,7 @@ if (!isset($_SESSION["nombre"])) {
               $cargo_pedido = "Usuario";
               break;
             case 'mirador':
-              $cargo_pedido = "Mirador";
+              $cargo_pedido = "Usuario mirador";
               break;
             case 'almacenero':
               $cargo_pedido = "Almacenero";
@@ -211,7 +211,7 @@ if (!isset($_SESSION["nombre"])) {
               $cargo_despacho = "Usuario";
               break;
             case 'mirador':
-              $cargo_despacho = "Mirador";
+              $cargo_despacho = "Usuario mirador";
               break;
             case 'almacenero':
               $cargo_despacho = "Almacenero";

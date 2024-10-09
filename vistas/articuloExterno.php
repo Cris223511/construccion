@@ -7,7 +7,7 @@ if (!isset($_SESSION["nombre"])) {
   header("Location: login.html");
 } else {
   require 'header.php';
-  if ($_SESSION['almacen'] == 1 && ($_SESSION["cargo"] == "superadmin" || $_SESSION["cargo"] == "mirador")) {
+  if ($_SESSION['almacen'] == 1) {
 ?>
     <style>
       .caja1 .contenedor {
@@ -252,12 +252,12 @@ if (!isset($_SESSION["nombre"])) {
                         <input type="number" class="form-control" name="precio_compra_mayor" id="precio_compra_mayor" step="any" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="8" onkeydown="evitarNegativo(event)" onpaste="return false;" onDrop="return false;" step="any" min="0" placeholder="Ingrese el precio de compra al mayor.">
                       </div> -->
                       <div class="form-group col-lg-6 col-md-12">
-                        <label>Stock(*):</label>
-                        <input type="number" class="form-control" name="stock" id="stock" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="6" onkeydown="evitarNegativo(event)" onpaste="return false;" onDrop="return false;" step="any" min="0.1" placeholder="Ingrese el stock." required>
+                        <label>Stock:</label>
+                        <input type="number" class="form-control" name="stock" id="stock" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="6" onkeydown="evitarNegativo(event)" onpaste="return false;" onDrop="return false;" step="any" min="0" placeholder="Ingrese el stock.">
                       </div>
                       <div class="form-group col-lg-6 col-md-12">
                         <label>Stock mínimo:</label>
-                        <input type="number" class="form-control" name="stock_minimo" id="stock_minimo" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="6" onkeydown="evitarNegativo(event)" onpaste="return false;" onDrop="return false;" step="any" placeholder="Ingrese el stock mínimo.">
+                        <input type="number" class="form-control" name="stock_minimo" id="stock_minimo" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="6" onkeydown="evitarNegativo(event)" onpaste="return false;" onDrop="return false;" step="any" min="0" placeholder="Ingrese el stock mínimo.">
                       </div>
                       <div class="form-group col-lg-12 col-md-12">
                         <label>Imagen:</label>
@@ -287,8 +287,10 @@ if (!isset($_SESSION["nombre"])) {
                           <input type="number" class="form-control" name="peso" id="peso" step="any" onkeydown="evitarNegativo(event)" oninput="if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="6" min="0" placeholder="Ingrese el peso.">
                         </div>
                         <div class="form-group col-lg-6 col-md-12">
-                          <label>Casillero:</label>
-                          <input type="text" class="form-control" name="casillero" id="casillero" maxlength="100" placeholder="Ingrese la ubicación del casillero." oninput="convertirMayus(this)">
+                          <label>Ubicación del producto:</label>
+                          <select id="idubicacion" name="idubicacion" class="form-control selectpicker" data-live-search="true" data-size="5">
+                            <option value="">- Seleccione -</option>
+                          </select>
                         </div>
                         <div class="form-group col-lg-6 col-md-12">
                           <label>Fecha Emisión:</label>
@@ -360,6 +362,20 @@ if (!isset($_SESSION["nombre"])) {
         </div>
       </section>
     </div>
+
+    <!-- Form ubicaciones -->
+    <form name="formularioUbicacion" id="formularioUbicacion" method="POST" style="display: none;">
+      <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <label>Nombre(*):</label>
+        <input type="hidden" name="idubicacion" id="idubicacion2">
+        <input type="text" class="form-control" name="titulo" id="titulo4" maxlength="50" placeholder="Nombre de la ubicación." required>
+      </div>
+      <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <label>Descripción:</label>
+        <textarea type="text" class="form-control" name="descripcion" maxlength="10000" rows="4" placeholder="Descripción"></textarea>
+      </div>
+    </form>
+    <!-- Fin form ubicaciones -->
 
     <!-- Form categoría -->
     <form name="formularioCategoria" id="formularioCategoria" method="POST" style="display: none;">

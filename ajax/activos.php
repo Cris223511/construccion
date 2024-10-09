@@ -113,7 +113,7 @@ if (!isset($_SESSION["nombre"])) {
 							$cargo_detalle = "Usuario";
 							break;
 						case 'mirador':
-							$cargo_detalle = "Mirador";
+							$cargo_detalle = "Usuario mirador";
 							break;
 						case 'almacenero':
 							$cargo_detalle = "Almacenero";
