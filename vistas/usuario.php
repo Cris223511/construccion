@@ -141,7 +141,7 @@ if (!isset($_SESSION["nombre"])) {
                   </div>
                   <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
                     <label>Imagen:</label>
-                    <input type="file" class="form-control" name="imagen" id="imagen" accept="image/x-png,image/gif,image/jpeg">
+                    <input type="file" class="form-control" name="imagen" id="imagen" accept=".jpg,.jpeg,.png,.jfif,.bmp">
                     <input type="hidden" name="imagenactual" id="imagenactual">
                     <img src="" width="150px" id="imagenmuestra">
                   </div>

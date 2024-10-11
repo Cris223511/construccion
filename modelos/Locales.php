@@ -3,9 +3,7 @@ require "../config/Conexion.php";
 
 class Local
 {
-	public function __construct()
-	{
-	}
+	public function __construct() {}
 
 	public function agregar($idusuario, $titulo, $local_ruc, $descripcion, $imagen)
 	{
@@ -76,25 +74,25 @@ class Local
 
 	public function listarPorUsuario($idlocalSession)
 	{
-		$sql = "SELECT l.idlocal, u.idusuario, u.nombre as nombre, u.cargo as cargo, l.titulo, l.imagen, l.local_ruc, l.descripcion, l.imagen, DATE_FORMAT(l.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, l.estado FROM locales l LEFT JOIN usuario u ON l.idusuario = u.idusuario WHERE l.idlocal = '$idlocalSession' AND l.eliminado = '0' ORDER BY l.idlocal DESC";
+		$sql = "SELECT l.idlocal, u.idusuario, u.nombre as nombre, u.cargo as cargo, l.titulo, l.imagen, l.local_ruc, l.descripcion, DATE_FORMAT(l.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, l.estado FROM locales l LEFT JOIN usuario u ON l.idusuario = u.idusuario WHERE l.idlocal = '$idlocalSession' AND l.eliminado = '0' ORDER BY l.idlocal DESC";
 		return ejecutarConsulta($sql);
 	}
 
 	public function listarPorUsuarioFecha($idlocalSession, $fecha_inicio, $fecha_fin)
 	{
-		$sql = "SELECT l.idlocal, u.idusuario, u.nombre as nombre, u.cargo as cargo, l.titulo, l.imagen, l.local_ruc, l.descripcion, l.imagen, DATE_FORMAT(l.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, l.estado FROM locales l LEFT JOIN usuario u ON l.idusuario = u.idusuario WHERE l.idlocal = '$idlocalSession' AND l.eliminado = '0' AND DATE(l.fecha_hora) >= '$fecha_inicio' AND DATE(l.fecha_hora) <= '$fecha_fin' ORDER BY l.idlocal DESC";
+		$sql = "SELECT l.idlocal, u.idusuario, u.nombre as nombre, u.cargo as cargo, l.titulo, l.imagen, l.local_ruc, l.descripcion, DATE_FORMAT(l.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, l.estado FROM locales l LEFT JOIN usuario u ON l.idusuario = u.idusuario WHERE l.idlocal = '$idlocalSession' AND l.eliminado = '0' AND DATE(l.fecha_hora) >= '$fecha_inicio' AND DATE(l.fecha_hora) <= '$fecha_fin' ORDER BY l.idlocal DESC";
 		return ejecutarConsulta($sql);
 	}
 
 	public function listarActivos()
 	{
-		$sql = "SELECT l.idlocal, u.idusuario, u.nombre as nombre, u.cargo as cargo, l.titulo, l.imagen, l.local_ruc, l.descripcion, l.imagen, DATE_FORMAT(l.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, l.estado FROM locales l LEFT JOIN usuario u ON l.idusuario = u.idusuario WHERE l.estado='activado' AND l.eliminado = '0' ORDER BY l.idlocal DESC";
+		$sql = "SELECT l.idlocal, u.idusuario, u.nombre as nombre, u.cargo as cargo, l.titulo, l.imagen, l.local_ruc, l.descripcion, DATE_FORMAT(l.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, l.estado FROM locales l LEFT JOIN usuario u ON l.idusuario = u.idusuario WHERE l.estado='activado' AND l.eliminado = '0' ORDER BY l.idlocal DESC";
 		return ejecutarConsulta($sql);
 	}
 
 	public function listarActivosASC()
 	{
-		$sql = "SELECT l.idlocal, u.idusuario, u.nombre as nombre, u.cargo as cargo, l.titulo, l.imagen, l.local_ruc, l.descripcion, l.imagen, DATE_FORMAT(l.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, l.estado FROM locales l LEFT JOIN usuario u ON l.idusuario = u.idusuario WHERE l.estado='activado' AND l.eliminado = '0' ORDER BY l.idlocal ASC";
+		$sql = "SELECT l.idlocal, u.idusuario, u.nombre as nombre, u.cargo as cargo, l.titulo, l.imagen, l.local_ruc, l.descripcion, DATE_FORMAT(l.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, l.estado FROM locales l LEFT JOIN usuario u ON l.idusuario = u.idusuario WHERE l.estado='activado' AND l.eliminado = '0' ORDER BY l.idlocal ASC";
 		return ejecutarConsulta($sql);
 	}
 
@@ -124,13 +122,13 @@ class Local
 
 	public function listarPorUsuarioActivos($idlocalSession)
 	{
-		$sql = "SELECT l.idlocal, u.idusuario, u.nombre as nombre, u.cargo as cargo, l.titulo, l.imagen, l.local_ruc, l.descripcion, l.imagen, DATE_FORMAT(l.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, l.estado FROM locales l LEFT JOIN usuario u ON l.idusuario = u.idusuario WHERE l.idlocal = '$idlocalSession' AND l.estado='activado' AND l.eliminado = '0' ORDER BY l.idlocal DESC";
+		$sql = "SELECT l.idlocal, u.idusuario, u.nombre as nombre, u.cargo as cargo, l.titulo, l.imagen, l.local_ruc, l.descripcion, DATE_FORMAT(l.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, l.estado FROM locales l LEFT JOIN usuario u ON l.idusuario = u.idusuario WHERE l.idlocal = '$idlocalSession' AND l.estado='activado' AND l.eliminado = '0' ORDER BY l.idlocal DESC";
 		return ejecutarConsulta($sql);
 	}
 
 	public function listarPorUsuarioActivosASC($idlocalSession)
 	{
-		$sql = "SELECT l.idlocal, u.idusuario, u.nombre as nombre, u.cargo as cargo, l.titulo, l.imagen, l.local_ruc, l.descripcion, l.imagen, DATE_FORMAT(l.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, l.estado FROM locales l LEFT JOIN usuario u ON l.idusuario = u.idusuario WHERE l.idlocal = '$idlocalSession' AND l.estado='activado' AND l.eliminado = '0' ORDER BY l.idlocal ASC";
+		$sql = "SELECT l.idlocal, u.idusuario, u.nombre as nombre, u.cargo as cargo, l.titulo, l.imagen, l.local_ruc, l.descripcion, DATE_FORMAT(l.fecha_hora, '%d-%m-%Y %H:%i:%s') as fecha, l.estado FROM locales l LEFT JOIN usuario u ON l.idusuario = u.idusuario WHERE l.idlocal = '$idlocalSession' AND l.estado='activado' AND l.eliminado = '0' ORDER BY l.idlocal ASC";
 		return ejecutarConsulta($sql);
 	}
 

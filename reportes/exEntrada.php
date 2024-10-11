@@ -26,8 +26,8 @@ if (!isset($_SESSION["nombre"])) {
     $rsptav = $entrada->listarCabecera($_GET["id"]);
     $regv = $rsptav->fetch_object();
 
-    $logo = $regv->imagen_local;
-    $ext_logo = strtolower(pathinfo($regv->imagen_local, PATHINFO_EXTENSION));
+    $logo = $_SESSION["local_imagen"];
+    $ext_logo = strtolower(pathinfo($_SESSION["local_imagen"], PATHINFO_EXTENSION));
 
     $pdf = new PDF_Invoice('P', 'mm', 'A4');
     $pdf->AddPage();

@@ -26,7 +26,7 @@ if (!isset($_SESSION["nombre"])) {
 						$targetFile = $uploadDirectory . $newFileName;
 
 						// Verificar si es una imagen y mover el archivo
-						$allowedExtensions = array('jpg', 'jpeg', 'png');
+						$allowedExtensions = array('jpg', 'jpeg', 'png', 'jfif', 'bmp');
 						if (in_array($fileExtension, $allowedExtensions) && move_uploaded_file($tempFile, $targetFile)) {
 							// El archivo se ha movido correctamente, ahora $newFileName contiene el nombre del archivo
 							$imagen = $newFileName;

@@ -22,7 +22,7 @@ if (!isset($_SESSION["nombre"])) {
           <div class="col-md-12">
             <div class="box">
               <div class="box-header with-border">
-                <h1 class="box-title">Configuración de perfil del <?php echo $_SESSION["cargo_detalle"] ?></h1>
+                <h1 class="box-title">Configuración de perfil del <strong style="text-transform: uppercase;"><?php echo $_SESSION["cargo_detalle"] ?></strong></h1>
                 <div class="box-tools pull-right">
                 </div>
               </div>
@@ -81,7 +81,7 @@ if (!isset($_SESSION["nombre"])) {
                   </div>
                   <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
                     <label>Imagen:</label>
-                    <input type="file" class="form-control" name="imagen" id="imagen" accept="image/x-png,image/gif,image/jpeg">
+                    <input type="file" class="form-control" name="imagen" id="imagen" accept=".jpg,.jpeg,.png,.jfif,.bmp">
                     <input type="hidden" name="imagenactual" id="imagenactual"><br>
                     <img src="" width="150px" id="imagenmuestra">
                   </div>

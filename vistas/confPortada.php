@@ -76,7 +76,7 @@ if (!isset($_SESSION["nombre"])) {
                     <form name="formulario" id="formulario" method="POST" enctype="multipart/form-data">
                       <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <label>Actualizar imagen(*):</label>
-                        <input type="file" class="form-control" name="imagen" id="imagen" accept="image/x-png,image/gif,image/jpeg" required>
+                        <input type="file" class="form-control" name="imagen" id="imagen" accept=".jpg,.jpeg,.png,.jfif,.bmp" required>
                       </div>
                       <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-bottom: 0;">
                         <button class="btn btn-bcp" type="submit" id="btnGuardar"><i class="fa fa-save"></i> Guardar</button>
