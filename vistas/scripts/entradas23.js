@@ -639,6 +639,7 @@ function guardaryeditar(e) {
 		processData: false,
 
 		success: function (datos) {
+			datos = limpiarCadena(datos);
 			if (datos == "Una de las cantidades superan al stock normal del artículo.") {
 				bootbox.alert(datos);
 				$("#btnGuardar").prop("disabled", false);

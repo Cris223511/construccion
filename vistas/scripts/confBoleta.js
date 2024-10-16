@@ -23,6 +23,7 @@ function guardaryeditar(e) {
 		contentType: false,
 		processData: false,
 		success: function (datos) {
+			datos = limpiarCadena(datos);
 			if (!datos) {
 				console.log("No se recibieron datos del servidor.");
 				$("#btnGuardar").prop("disabled", false);

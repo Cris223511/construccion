@@ -149,6 +149,7 @@ function guardaryeditar(e) {
 		processData: false,
 
 		success: function (datos) {
+			datos = limpiarCadena(datos);
 			if (datos == "El nombre del tipo ya existe.") {
 				bootbox.alert(datos);
 				$("#btnGuardar").prop("disabled", false);

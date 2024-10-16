@@ -29,11 +29,11 @@ if (!isset($_SESSION["nombre"])) {
 
     $regE = $rsptaE->fetch_object();
     $totalE = $regE->total_entradas;
-    $totalEE = $regE->cantidad_total_entradas;
+    $totalEE = $regE->cantidad_total_entradas !== null ? $regE->cantidad_total_entradas : '0.00';
 
     $regS = $rsptaS->fetch_object();
     $totalS = $regS->total_salidas;
-    $totalSS = $regS->cantidad_total_salidas;
+    $totalSS = $regS->cantidad_total_salidas !== null ? $regS->cantidad_total_salidas : '0.00';
 
     $fechasE = '';
     $totalesE = '';

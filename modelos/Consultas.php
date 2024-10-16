@@ -4,9 +4,7 @@ require "../config/Conexion.php";
 class Consultas
 {
     //Implementamos nuestro constructor
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
     public function totalentradahoy()
     {
@@ -18,8 +16,6 @@ class Consultas
         return ejecutarConsulta($sql);
     }
 
-
-
     public function totalsalidahoy()
     {
         $sql = "SELECT 
@@ -29,8 +25,6 @@ class Consultas
             LEFT JOIN detalle_salida ds ON s.idsalida = ds.idsalida";
         return ejecutarConsulta($sql);
     }
-
-
 
     public function listarTotalesEntradasSalidas($condiciones_entradas = "", $condiciones_salidas = "")
     {
@@ -68,27 +62,47 @@ class Consultas
 
     public function totalentradahoyUsuario($idlocal)
     {
-        $sql = "SELECT COUNT(*) AS cantidad FROM entradas WHERE idlocal = '$idlocal'";
+        $sql = "SELECT 
+                  COUNT(DISTINCT e.identrada) AS total_entradas, 
+                  SUM(de.cantidad) AS cantidad_total_entradas 
+                FROM entradas e 
+                LEFT JOIN detalle_entrada de ON e.identrada = de.identrada
+                WHERE e.idlocal = '$idlocal'";
         return ejecutarConsulta($sql);
     }
 
     public function totalsalidahoyUsuario($idlocal)
     {
-        $sql = "SELECT COUNT(*) AS cantidad FROM salidas WHERE idlocal = '$idlocal'";
+        $sql = "SELECT 
+                  COUNT(DISTINCT s.idsalida) AS total_salidas, 
+                  SUM(ds.cantidad) AS cantidad_total_salidas 
+                FROM salidas s 
+                LEFT JOIN detalle_salida ds ON s.idsalida = ds.idsalida
+                WHERE s.idlocal = '$idlocal'";
         return ejecutarConsulta($sql);
     }
 
     public function entradasultimos_10diasUsuario($idlocal)
     {
         ejecutarConsulta("SET lc_time_names = 'es_ES'");
-        $sql = "SELECT DATE_FORMAT(fecha_hora, '%d-%M') AS fecha, COUNT(*) AS total FROM entradas WHERE idlocal = '$idlocal' AND fecha_hora >= DATE_SUB(CURDATE(), INTERVAL 10 DAY) GROUP BY DATE(fecha_hora) ORDER BY fecha_hora ASC LIMIT 30";
+        $sql = "SELECT DATE_FORMAT(fecha_hora, '%d-%M') AS fecha, COUNT(*) AS total 
+                FROM entradas 
+                WHERE idlocal = '$idlocal' AND fecha_hora >= DATE_SUB(CURDATE(), INTERVAL 10 DAY) 
+                GROUP BY DATE(fecha_hora) 
+                ORDER BY fecha_hora ASC 
+                LIMIT 30";
         return ejecutarConsulta($sql);
     }
 
     public function salidasultimos_10diasUsuario($idlocal)
     {
         ejecutarConsulta("SET lc_time_names = 'es_ES'");
-        $sql = "SELECT DATE_FORMAT(fecha_hora, '%d-%M') AS fecha, COUNT(*) AS total FROM salidas WHERE idlocal = '$idlocal' AND fecha_hora >= DATE_SUB(CURDATE(), INTERVAL 10 DAY) GROUP BY DATE(fecha_hora) ORDER BY fecha_hora ASC LIMIT 30";
+        $sql = "SELECT DATE_FORMAT(fecha_hora, '%d-%M') AS fecha, COUNT(*) AS total 
+                FROM salidas 
+                WHERE idlocal = '$idlocal' AND fecha_hora >= DATE_SUB(CURDATE(), INTERVAL 10 DAY) 
+                GROUP BY DATE(fecha_hora) 
+                ORDER BY fecha_hora ASC 
+                LIMIT 30";
         return ejecutarConsulta($sql);
     }
 

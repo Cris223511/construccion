@@ -29,9 +29,9 @@ class Entrada
 			$resultado = ejecutarConsultaSimpleFila($sql_medida);
 
 			// if ($resultado['titulo'] == 'Paquetes') {
-			$actualizar_art = "UPDATE articulo SET precio_compra_mayor='$precio_compra[$num_elementos]' WHERE idarticulo='$idarticulo[$num_elementos]'";
+			// $actualizar_art = "UPDATE articulo SET precio_compra_mayor='$precio_compra[$num_elementos]' WHERE idarticulo='$idarticulo[$num_elementos]'";
 			// } else {
-			// $actualizar_art = "UPDATE articulo SET precio_compra='$precio_compra[$num_elementos]' WHERE idarticulo='$idarticulo[$num_elementos]'";
+			$actualizar_art = "UPDATE articulo SET precio_compra='$precio_compra[$num_elementos]' WHERE idarticulo='$idarticulo[$num_elementos]'";
 			// }
 
 			ejecutarConsulta($actualizar_art) or $sw = false;
