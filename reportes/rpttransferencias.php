@@ -19,16 +19,17 @@ if (!isset($_SESSION["nombre"])) {
 
     $pdf->SetFont('Arial', 'B', 12);
 
-    $pdf->Cell(40, 6, '', 0, 0, 'C');
-    $pdf->Cell(100, 6, 'LISTA DE ENTRADAS', 1, 0, 'C');
+    $pdf->Cell(45, 6, '', 0, 0, 'C');
+    $pdf->Cell(100, 6, 'LISTA DE TRANSFERENCIAS', 1, 0, 'C');
     $pdf->Ln(10);
 
     $pdf->SetFillColor(232, 232, 232);
     $pdf->SetFont('Arial', 'B', 10);
-    $pdf->Cell(47.5, 6, utf8_decode('Tipo'), 1, 0, 'C', 1);
-    $pdf->Cell(47.5, 6, utf8_decode('N° de documento'), 1, 0, 'C', 1);
-    $pdf->Cell(47.5, 6, utf8_decode('Proveedor'), 1, 0, 'C', 1);
-    $pdf->Cell(47.5, 6, utf8_decode('Estado'), 1, 0, 'C', 1);
+    $pdf->Cell(33, 6, utf8_decode('N° de documento'), 1, 0, 'C', 1);
+    $pdf->Cell(38, 6, utf8_decode('Cantidad transferida'), 1, 0, 'C', 1);
+    $pdf->Cell(42, 6, utf8_decode('Local Origen'), 1, 0, 'C', 1);
+    $pdf->Cell(42, 6, utf8_decode('Local Destino'), 1, 0, 'C', 1);
+    $pdf->Cell(35, 6, utf8_decode('Fecha y hora'), 1, 0, 'C', 1);
 
     $pdf->Ln(10);
     require_once "../modelos/Transferencias.php";
@@ -44,16 +45,17 @@ if (!isset($_SESSION["nombre"])) {
       $rspta = $transferencia->listarPorUsuario($idlocalSession);
     }
 
-    $pdf->SetWidths(array(47.5, 47.5, 47.5, 47.5));
+    $pdf->SetWidths(array(33, 38, 42, 42, 35));
 
     while ($reg = $rspta->fetch_object()) {
-      $tipo = $reg->tipo;
       $codigo = (($reg->codigo != "") ? $reg->codigo : "Sin registrar.");
-      $proveedor = $reg->proveedor;
-      $estado = $reg->estado;
+      $total_cantidad = $reg->total_cantidad;
+      $origen = $reg->origen;
+      $destino = $reg->destino;
+      $fecha_hora = $reg->fecha;
 
       $pdf->SetFont('Arial', '', 10);
-      $pdf->Row(array(utf8_decode($tipo), $codigo, utf8_decode($proveedor), $estado));
+      $pdf->Row(array($codigo, $total_cantidad, utf8_decode($origen), utf8_decode($destino), $fecha_hora));
     }
 
     $pdf->Output();

@@ -19,7 +19,7 @@ if (!isset($_SESSION["nombre"])) {
 
     $pdf->SetFont('Arial', 'B', 12);
 
-    $pdf->Cell(40, 6, '', 0, 0, 'C');
+    $pdf->Cell(45, 6, '', 0, 0, 'C');
     $pdf->Cell(100, 6, 'LISTA DE USUARIOS', 1, 0, 'C');
     $pdf->Ln(10);
 

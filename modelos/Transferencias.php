@@ -186,7 +186,7 @@ class Transferencia
 
 	public function listarDetalle($idtransferencia)
 	{
-		$sql = "SELECT dtr.idtransferencia, dtr.idarticulo, a.nombre AS articulo, c.titulo AS categoria, ma.titulo AS marca, me.titulo AS medida, a.codigo, a.codigo_producto, a.stock, a.stock_minimo, a.imagen, dtr.cantidad
+		$sql = "SELECT dtr.idtransferencia, dtr.idarticulo, a.nombre AS articulo, c.titulo AS categoria, ma.titulo AS marca, me.titulo AS medida, a.codigo, a.codigo_producto, a.stock, a.stock_minimo, a.imagen, a.precio_compra, dtr.cantidad
 				FROM detalle_transferencia dtr
 				LEFT JOIN articulo a ON dtr.idarticulo = a.idarticulo
 				LEFT JOIN categoria c ON a.idcategoria = c.idcategoria

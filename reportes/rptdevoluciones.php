@@ -24,7 +24,7 @@ if (!isset($_SESSION["nombre"])) {
     //Seteamos el tipo de letra y creamos el título de la página. No es un encabezado no se repetirá
     $pdf->SetFont('Arial', 'B', 12);
 
-    $pdf->Cell(40, 6, '', 0, 0, 'C');
+    $pdf->Cell(45, 6, '', 0, 0, 'C');
     $pdf->Cell(100, 6, 'LISTA DE DEVOLUCIONES', 1, 0, 'C');
     $pdf->Ln(10);
 
