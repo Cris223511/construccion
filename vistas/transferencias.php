@@ -97,7 +97,7 @@ if (!isset($_SESSION["nombre"])) {
                       <th style="width: 20%; min-width: 200px;">Comentario</th>
                       <th style="white-space: nowrap;">Agregado por</th>
                       <th>Cargo</th>
-                      <th>Estado</th>
+                      <!-- <th>Estado</th> -->
                     </thead>
                     <tbody>
                     </tbody>
@@ -111,7 +111,7 @@ if (!isset($_SESSION["nombre"])) {
                       <th>Comentario</th>
                       <th>Agregado por</th>
                       <th>Cargo</th>
-                      <th>Estado</th>
+                      <!-- <th>Estado</th> -->
                     </tfoot>
                   </table>
                 </div>
@@ -162,6 +162,7 @@ if (!isset($_SESSION["nombre"])) {
                           <th>Opciones</th>
                           <th>Imagen</th>
                           <th>Artículo</th>
+                          <th>Local</th>
                           <th>Categoría</th>
                           <th>Marca</th>
                           <th style="white-space: nowrap;">Código de producto</th>

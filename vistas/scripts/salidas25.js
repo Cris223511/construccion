@@ -1187,6 +1187,7 @@ function eliminarDetalle(indice, idarticulo) {
 	$('#tblarticulos button[data-idarticulo="' + idarticulo + '"]').removeAttr('disabled');
 	console.log("Habilito a: " + idarticulo + " =)");
 	detalles = detalles - 1;
+	modificarSubototales();
 	evaluar();
 }
 

@@ -129,7 +129,7 @@ class Salida
 
 	public function listarDetalle($idsalida)
 	{
-		$sql = "SELECT ds.idsalida, ds.idarticulo, a.nombre AS articulo, c.titulo AS categoria, ma.titulo AS marca, me.titulo AS medida, a.codigo, a.codigo_producto, a.stock, a.stock_minimo, a.imagen, ds.cantidad, ds.precio_compra, SUM(ds.cantidad) as total_cantidad
+		$sql = "SELECT ds.idsalida, ds.idarticulo, a.nombre AS articulo, c.titulo AS categoria, ma.titulo AS marca, me.titulo AS medida, a.codigo, a.codigo_producto, a.stock, a.stock_minimo, a.imagen, ds.cantidad, ds.precio_compra, SUM(ds.cantidad) as total_cantidad, (ds.cantidad * ds.precio_compra) as subtotal
 				FROM detalle_salida ds
 				LEFT JOIN salidas s ON ds.idsalida = s.idsalida
 				LEFT JOIN articulo a ON ds.idarticulo = a.idarticulo

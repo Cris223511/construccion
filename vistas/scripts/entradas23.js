@@ -931,6 +931,7 @@ function eliminarDetalle(indice, idarticulo) {
 	console.log("Habilito a: " + idarticulo + " =)");
 	detalles = detalles - 1;
 	evaluar();
+	modificarSubototales();
 }
 
 init();

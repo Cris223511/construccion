@@ -44,8 +44,8 @@ class Transferencia
 				if ($articulo_datos) {
 					// Creamos el nuevo artículo en el local de destino con el stock transferido
 					$sql_insertar_articulo_destino = "INSERT INTO articulo 
-													  (idusuario, idcategoria, idlocal, idmarca, idmedida, codigo, codigo_producto, nombre, stock, stock_minimo, precio_compra, 
-													   precio_compra_mayor, descripcion, talla, color, peso, casillero, imagen, imei, serial, nota_1, nota_2, fecha_emision, 
+													  (idusuario, idcategoria, idlocal, idmarca, idmedida, idubicacion, codigo, codigo_producto, nombre, stock, stock_minimo, precio_compra, 
+													   precio_compra_mayor, descripcion, talla, color, peso, imagen, imei, serial, nota_1, nota_2, fecha_emision, 
 													   fecha_vencimiento, fecha_hora, estado, eliminado) 
 													  VALUES 
 													  ('" . $articulo_datos['idusuario'] . "', 
@@ -53,6 +53,7 @@ class Transferencia
 													   '$destino', 
 													   '" . $articulo_datos['idmarca'] . "', 
 													   '" . $articulo_datos['idmedida'] . "', 
+													   '" . $articulo_datos['idubicacion'] . "', 
 													   '" . $articulo_datos['codigo'] . "', 
 													   '" . $articulo_datos['codigo_producto'] . "', 
 													   '" . $articulo_datos['nombre'] . "', 
@@ -64,7 +65,6 @@ class Transferencia
 													   '" . $articulo_datos['talla'] . "', 
 													   '" . $articulo_datos['color'] . "', 
 													   '" . $articulo_datos['peso'] . "', 
-													   '" . $articulo_datos['casillero'] . "', 
 													   '" . $articulo_datos['imagen'] . "', 
 													   '" . $articulo_datos['imei'] . "', 
 													   '" . $articulo_datos['serial'] . "', 
@@ -186,9 +186,10 @@ class Transferencia
 
 	public function listarDetalle($idtransferencia)
 	{
-		$sql = "SELECT dtr.idtransferencia, dtr.idarticulo, a.nombre AS articulo, c.titulo AS categoria, ma.titulo AS marca, me.titulo AS medida, a.codigo, a.codigo_producto, a.stock, a.stock_minimo, a.imagen, a.precio_compra, dtr.cantidad
+		$sql = "SELECT dtr.idtransferencia, dtr.idarticulo, a.nombre AS articulo, c.titulo AS categoria, ma.titulo AS marca, me.titulo AS medida, l.titulo AS local, a.codigo, a.codigo_producto, a.stock, a.stock_minimo, a.imagen, a.precio_compra, dtr.cantidad
 				FROM detalle_transferencia dtr
 				LEFT JOIN articulo a ON dtr.idarticulo = a.idarticulo
+				LEFT JOIN locales l ON l.idlocal = a.idlocal
 				LEFT JOIN categoria c ON a.idcategoria = c.idcategoria
 				LEFT JOIN marcas ma ON a.idmarca = ma.idmarca
 				LEFT JOIN medidas me ON a.idmedida = me.idmedida

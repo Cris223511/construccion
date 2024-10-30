@@ -71,6 +71,7 @@ if (!isset($_SESSION["nombre"])) {
 										<th>Opciones</th>
 										<th>Imagen</th>
 										<th>Artículo</th>
+										<th>Local</th>
 										<th>Categoría</th>
 										<th>Marca</th>
 										<th style="white-space: nowrap;">Código de producto</th>
@@ -83,7 +84,7 @@ if (!isset($_SESSION["nombre"])) {
 									</thead>';
 
 				while ($reg = $rspta->fetch_object()) {
-					echo '<tr class="filas"><td></td> <td><a href="../files/articulos/' . $reg->imagen . '" class="galleria-lightbox" style="z-index: 10000 !important;"><img src="../files/articulos/' . $reg->imagen . '" height="50px" width="50px" class="img-fluid"></a></td><td>' . $reg->articulo . '</td><td>' . (($reg->categoria != "") ? $reg->categoria : "Sin registrar.") . '</td><td>' . (($reg->marca != "") ? $reg->marca : "Sin registrar.") . '</td><td>' . $reg->codigo_producto . '</td><td>' . (($reg->codigo != "") ? $reg->codigo : "Sin registrar.") . '</td><td>' . $reg->stock . '</td><td>' . $reg->stock_minimo . '</td><td>' . $reg->cantidad . '</td><td>' . "<nav>S/. " . number_format($reg->precio_compra, 2) . "</nav>" . '</td><td>' . $reg->medida . '</td></tr>';
+					echo '<tr class="filas"><td></td> <td><a href="../files/articulos/' . $reg->imagen . '" class="galleria-lightbox" style="z-index: 10000 !important;"><img src="../files/articulos/' . $reg->imagen . '" height="50px" width="50px" class="img-fluid"></a></td><td>' . $reg->articulo . '</td><td>' . $reg->local . '</td><td>' . (($reg->categoria != "") ? $reg->categoria : "Sin registrar.") . '</td><td>' . (($reg->marca != "") ? $reg->marca : "Sin registrar.") . '</td><td>' . $reg->codigo_producto . '</td><td>' . (($reg->codigo != "") ? $reg->codigo : "Sin registrar.") . '</td><td>' . $reg->stock . '</td><td>' . $reg->stock_minimo . '</td><td>' . $reg->cantidad . '</td><td>' . "<nav>S/. " . number_format($reg->precio_compra, 2) . "</nav>" . '</td><td>' . $reg->medida . '</td></tr>';
 				}
 				break;
 
@@ -152,8 +153,8 @@ if (!isset($_SESSION["nombre"])) {
 					$data[] = array(
 						"0" => '<div style="display: flex; flex-wrap: nowrap; gap: 3px">' .
 							'<button class="btn btn-bcp" style="margin-right: 3px; height: 35px;" onclick="mostrar(' . $reg->idtransferencia . ')"><i class="fa fa-eye"></i></button>' .
-							(($reg->estado == 'activado') ?
-								(mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-danger" style="margin-right: 3px; height: 35px;" onclick="desactivar(' . $reg->idtransferencia . ')"><i class="fa fa-close"></i></button>')) : (mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-success" style="margin-right: 3px; width: 35px; height: 35px;" onclick="activar(' . $reg->idtransferencia . ')"><i style="margin-left: -2px" class="fa fa-check"></i></button>'))) .
+							// (($reg->estado == 'activado') ?
+							// (mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-danger" style="margin-right: 3px; height: 35px;" onclick="desactivar(' . $reg->idtransferencia . ')"><i class="fa fa-close"></i></button>')) : (mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-success" style="margin-right: 3px; width: 35px; height: 35px;" onclick="activar(' . $reg->idtransferencia . ')"><i style="margin-left: -2px" class="fa fa-check"></i></button>'))) .
 							(mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-danger" style="margin-right: 3px; height: 35px;" onclick="eliminar(' . $reg->idtransferencia . ')"><i class="fa fa-trash"></i></button>')) .
 							(mostrarBoton($reg->cargo, $cargo, $reg->idusuario, '<button class="btn btn-warning" style="height: 35px;" onclick="limpiarTransferencia(' . $reg->idtransferencia . ')"><i class="fa fa-minus-circle"></i></button>')) .
 							'</div>',
@@ -165,8 +166,8 @@ if (!isset($_SESSION["nombre"])) {
 						"6" => "<textarea type='text' class='form-control' rows='2' style='background-color: white !important; cursor: default; height: 60px !important;' readonly>" . (($reg->comentario == "") ? 'Sin registrar.' : $reg->comentario) . "</textarea>",
 						"7" => $reg->usuario,
 						"8" => $cargo_detalle,
-						"9" => ($reg->estado == 'activado') ? '<span class="label bg-green">Activado</span>' :
-							'<span class="label bg-red">Desactivado</span>'
+						// "9" => ($reg->estado == 'activado') ? '<span class="label bg-green">Activado</span>' :
+						// '<span class="label bg-red">Desactivado</span>'
 					);
 
 					$totalCantidad += $reg->total_cantidad;
@@ -235,7 +236,7 @@ if (!isset($_SESSION["nombre"])) {
 					}
 
 					$data[] = array(
-						"0" => ($reg->stock != '0') ? '<div style="display: flex; justify-content: center;"><button class="btn btn-warning" style="height: 35px;" data-idarticulo="' . $reg->idarticulo . '" onclick="agregarDetalle(' . $reg->idarticulo . ',\'' . $reg->nombre . '\',\'' . (($reg->categoria != "") ? $reg->categoria : "Sin registrar.") . '\',\'' . (($reg->marca != "") ? $reg->marca : "Sin registrar.") . '\',\'' . $reg->medida . '\',\'' . $reg->stock . '\',\'' . $reg->stock_minimo . '\',\'' . ($reg->precio_compra) . '\',\'' . $reg->codigo_producto . '\',\'' . (($reg->codigo != "") ? $reg->codigo : "Sin registrar.") . '\',\'' . $reg->imagen . '\'); disableButton(this);"><span class="fa fa-plus"></span></button></div>' : '',
+						"0" => ($reg->stock != '0') ? '<div style="display: flex; justify-content: center;"><button class="btn btn-warning" style="height: 35px;" data-idarticulo="' . $reg->idarticulo . '" onclick="agregarDetalle(' . $reg->idarticulo . ',\'' . $reg->nombre . '\',\'' . $reg->local . '\',\'' . (($reg->categoria != "") ? $reg->categoria : "Sin registrar.") . '\',\'' . (($reg->marca != "") ? $reg->marca : "Sin registrar.") . '\',\'' . $reg->medida . '\',\'' . $reg->stock . '\',\'' . $reg->stock_minimo . '\',\'' . ($reg->precio_compra) . '\',\'' . $reg->codigo_producto . '\',\'' . (($reg->codigo != "") ? $reg->codigo : "Sin registrar.") . '\',\'' . $reg->imagen . '\'); disableButton(this);"><span class="fa fa-plus"></span></button></div>' : '',
 						"1" => '<a href="../files/articulos/' . $reg->imagen . '" class="galleria-lightbox" style="z-index: 10000 !important;">
 										<img src="../files/articulos/' . $reg->imagen . '" height="50px" width="50px" class="img-fluid">
 									</a>',

@@ -443,7 +443,7 @@ var detalles = 0;
 //$("#guardar").hide();
 $("#btnGuardar").hide();
 
-function agregarDetalle(idarticulo, articulo, categoria, marca, medida, stock, stock_minimo, precio_compra, codigo_producto, codigo, imagen) {
+function agregarDetalle(idarticulo, articulo, local, categoria, marca, medida, stock, stock_minimo, precio_compra, codigo_producto, codigo, imagen) {
 	var cantidad = 1;
 
 	if (idarticulo != "") {
@@ -451,6 +451,7 @@ function agregarDetalle(idarticulo, articulo, categoria, marca, medida, stock, s
 			'<td><button type="button" class="btn btn-danger" onclick="eliminarDetalle(' + cont + ', ' + idarticulo + ')">X</button></td>' +
 			'<td><a href="../files/articulos/' + imagen + '" class="galleria-lightbox" style="z-index: 10000 !important;"><img src="../files/articulos/' + imagen + '" height="50px" width="50px" class="img-fluid"></a>' +
 			'<td><input type="hidden" name="idarticulo[]" value="' + idarticulo + '">' + articulo + '</td>' +
+			'<td>' + local + '</td>' +
 			'<td>' + categoria + '</td>' +
 			'<td>' + marca + '</td>' +
 			'<td>' + codigo_producto + '</td>' +
